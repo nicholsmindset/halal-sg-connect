@@ -17,15 +17,6 @@
   to = "/seo/:category"
   status = 200
 
-[[redirects]]
-  from = "/:district"
-  to = "/seo/:district"
-  status = 200
-  
-[[redirects]]
-  from = "/:district/:category"
-  to = "/seo/:district/:category"
-  status = 200
 
 [[redirects]]
   from = "/features/:feature"
