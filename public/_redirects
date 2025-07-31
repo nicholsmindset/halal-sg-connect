@@ -1,0 +1,15 @@
+# Netlify redirects for SPA routing
+# API endpoints
+/api/* /.netlify/functions/:splat 200
+
+# SEO files  
+/sitemap.xml /.netlify/functions/generate-sitemap?type=sitemap 200
+/robots.txt /.netlify/functions/generate-sitemap?type=robots 200
+
+# SEO pages
+/category/* /seo/category/:splat 200
+/features/* /seo/features/:splat 200  
+/price/* /seo/price/:splat 200
+
+# SPA fallback - MUST be last
+/* /index.html 200
