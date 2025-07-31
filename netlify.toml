@@ -6,49 +6,6 @@
 [build.environment]
   NODE_VERSION = "18"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# SEO page redirects for programmatic pages
-[[redirects]]
-  from = "/category/:category"
-  to = "/seo/:category"
-  status = 200
-
-
-[[redirects]]
-  from = "/features/:feature"
-  to = "/seo/features/:feature"
-  status = 200
-
-[[redirects]]
-  from = "/price/:range"
-  to = "/seo/price/:range"
-  status = 200
-
-# SEO files
-[[redirects]]
-  from = "/sitemap.xml"
-  to = "/.netlify/functions/generate-sitemap?type=sitemap"
-  status = 200
-
-[[redirects]]
-  from = "/robots.txt"
-  to = "/.netlify/functions/generate-sitemap?type=robots"
-  status = 200
-
-[[redirects]]
-  from = "/sitemap_index.xml"
-  to = "/.netlify/functions/generate-sitemap?type=sitemap-index"
-  status = 200
-
-# SPA fallback
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
 
 [functions]
   directory = "netlify/functions"
