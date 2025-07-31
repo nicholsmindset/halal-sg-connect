@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+
+# SEO pages
+Allow: /category/
+Allow: /features/
+Allow: /price/
+
+# Business listings
+Allow: /listing/
+Allow: /listings
+
+# Important pages
+Allow: /auth
+Allow: /dashboard
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Disallow private user areas
+Disallow: /dashboard/listings/edit/
+Disallow: /dashboard/settings
+
+# Sitemap
+Sitemap: https://halal-sg-connect.netlify.app/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

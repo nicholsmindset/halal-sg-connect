@@ -1,0 +1,229 @@
+import { type Business } from "@/types/business";
+
+export const mockCategories = [
+  { id: '1', name: 'Restaurants', icon: '🍽️', count: 125 },
+  { id: '2', name: 'Cafes & Bakeries', icon: '☕', count: 89 },
+  { id: '3', name: 'Groceries & Markets', icon: '🛒', count: 67 },
+  { id: '4', name: 'Butcheries', icon: '🥩', count: 45 },
+  { id: '5', name: 'Services', icon: '🔧', count: 78 },
+  { id: '6', name: 'Beauty & Wellness', icon: '💄', count: 34 }
+];
+
+export const mockListings: Business[] = [
+  {
+    id: '1',
+    name: 'Warong Nasi Pariaman',
+    slug: 'warong-nasi-pariaman',
+    description: 'Authentic Indonesian cuisine with traditional recipes passed down through generations. Famous for our rendang and nasi padang.',
+    category: 'Restaurants',
+    subcategory: 'Indonesian',
+    district: 'Geylang',
+    address: '728 Geylang Road, Singapore 389641',
+    phone: '+65 6747 0008',
+    email: 'info@warongnasi.sg',
+    website: 'https://warongnasi.sg',
+    images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
+    videos: [],
+    isHalalCertified: true,
+    priceRange: '$$',
+    rating: 4.5,
+    reviewCount: 234,
+    isPremium: true,
+    subscriptionTier: 'premium',
+    features: ['family-friendly', 'takeaway', 'dine-in', 'air-conditioned'],
+    tags: ['indonesian', 'rendang', 'nasi-padang', 'traditional', 'spicy'],
+    views: 1250,
+    clicks: 89,
+    lastUpdated: '2024-01-15T10:30:00Z',
+    socialMedia: {
+      facebook: 'https://facebook.com/warongnasi',
+      instagram: 'https://instagram.com/warongnasi'
+    },
+    openingHours: {
+      monday: { open: '10:00', close: '22:00' },
+      tuesday: { open: '10:00', close: '22:00' },
+      wednesday: { open: '10:00', close: '22:00' },
+      thursday: { open: '10:00', close: '22:00' },
+      friday: { open: '10:00', close: '22:00' },
+      saturday: { open: '10:00', close: '22:00' },
+      sunday: { open: '10:00', close: '22:00' }
+    },
+    aiGenerated: {
+      description: false,
+      tags: true,
+      categorization: true
+    },
+    analytics: {
+      weeklyViews: 89,
+      monthlyViews: 345,
+      conversionRate: 0.12,
+      averageRating: 4.5
+    },
+    events: [
+      {
+        id: 'e1',
+        title: 'Ramadan Special Menu',
+        description: 'Special Iftar packages available throughout Ramadan',
+        date: '2024-03-15',
+        type: 'iftar'
+      }
+    ]
+  },
+  {
+    id: '2',
+    name: 'Al-Ameen Restaurant',
+    slug: 'al-ameen-restaurant',
+    description: 'Traditional Middle Eastern and Indian Muslim cuisine. Specializing in biryanis, kebabs, and authentic curries.',
+    category: 'Restaurants',
+    subcategory: 'Middle Eastern',
+    district: 'Little India',
+    address: '11 Kerbau Road, Singapore 219160',
+    phone: '+65 6299 0097',
+    email: 'contact@alameen.sg',
+    images: ['/placeholder.svg', '/placeholder.svg'],
+    isHalalCertified: true,
+    priceRange: '$$',
+    rating: 4.3,
+    reviewCount: 189,
+    isPremium: false,
+    subscriptionTier: 'free',
+    features: ['family-friendly', 'delivery', 'catering'],
+    tags: ['middle-eastern', 'biryani', 'kebab', 'curry', 'indian-muslim'],
+    views: 876,
+    clicks: 45,
+    lastUpdated: '2024-01-12T15:45:00Z',
+    socialMedia: {
+      instagram: 'https://instagram.com/alameen_sg'
+    },
+    openingHours: {
+      monday: { open: '11:00', close: '23:00' },
+      tuesday: { open: '11:00', close: '23:00' },
+      wednesday: { open: '11:00', close: '23:00' },
+      thursday: { open: '11:00', close: '23:00' },
+      friday: { open: '11:00', close: '23:00' },
+      saturday: { open: '11:00', close: '23:00' },
+      sunday: { open: '11:00', close: '23:00' }
+    },
+    analytics: {
+      weeklyViews: 65,
+      monthlyViews: 245,
+      conversionRate: 0.08,
+      averageRating: 4.3
+    }
+  },
+  {
+    id: '3',
+    name: 'The Halal Guys Singapore',
+    slug: 'the-halal-guys',
+    description: 'New York-style halal food featuring platters, gyros, and falafel. Fresh ingredients and bold flavors.',
+    category: 'Restaurants',
+    subcategory: 'American',
+    district: 'Orchard',
+    address: '313 Orchard Road, #B4-36/37, Singapore 238895',
+    phone: '+65 6509 9035',
+    email: 'singapore@thehalalguys.com',
+    website: 'https://thehalalguys.com.sg',
+    images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
+    isHalalCertified: true,
+    priceRange: '$$',
+    rating: 4.4,
+    reviewCount: 456,
+    isPremium: true,
+    subscriptionTier: 'premium_plus',
+    features: ['quick-bite', 'takeaway', 'late-night', 'casual-dining'],
+    tags: ['american', 'gyro', 'falafel', 'platters', 'new-york-style'],
+    views: 2340,
+    clicks: 198,
+    lastUpdated: '2024-01-18T09:15:00Z',
+    socialMedia: {
+      facebook: 'https://facebook.com/thehalalguyssg',
+      instagram: 'https://instagram.com/thehalalguyssg',
+      tiktok: 'https://tiktok.com/@thehalalguyssg'
+    },
+    openingHours: {
+      monday: { open: '11:00', close: '22:00' },
+      tuesday: { open: '11:00', close: '22:00' },
+      wednesday: { open: '11:00', close: '22:00' },
+      thursday: { open: '11:00', close: '22:00' },
+      friday: { open: '11:00', close: '22:00' },
+      saturday: { open: '11:00', close: '22:00' },
+      sunday: { open: '11:00', close: '22:00' }
+    },
+    analytics: {
+      weeklyViews: 156,
+      monthlyViews: 678,
+      conversionRate: 0.15,
+      averageRating: 4.4
+    },
+    multiLocation: {
+      isChain: true,
+      locations: [
+        {
+          id: 'tgh-orchard',
+          name: 'The Halal Guys Orchard',
+          address: '313 Orchard Road, #B4-36/37, Singapore 238895',
+          phone: '+65 6509 9035'
+        }
+      ]
+    }
+  },
+  {
+    id: '4',
+    name: 'Syed Halal Butchery',
+    slug: 'syed-halal-butchery',
+    description: 'Fresh halal meat supplier with premium quality beef, lamb, and chicken. Serving the community for over 20 years.',
+    category: 'Butcheries',
+    subcategory: 'Meat & Poultry',
+    district: 'Tampines',
+    address: '201E Tampines Street 23, #01-113, Singapore 527201',
+    phone: '+65 6785 4321',
+    email: 'info@syedhalal.sg',
+    images: ['/placeholder.svg'],
+    isHalalCertified: true,
+    priceRange: '$$$',
+    rating: 4.7,
+    reviewCount: 98,
+    isPremium: false,
+    subscriptionTier: 'free',
+    features: ['wholesale', 'fresh-daily', 'premium-cuts', 'bulk-orders'],
+    tags: ['butchery', 'fresh-meat', 'halal-certified', 'wholesale', 'premium'],
+    views: 567,
+    clicks: 34,
+    lastUpdated: '2024-01-10T14:20:00Z',
+    openingHours: {
+      monday: { open: '07:00', close: '19:00' },
+      tuesday: { open: '07:00', close: '19:00' },
+      wednesday: { open: '07:00', close: '19:00' },
+      thursday: { open: '07:00', close: '19:00' },
+      friday: { open: '07:00', close: '20:00' },
+      saturday: { open: '07:00', close: '20:00' },
+      sunday: { open: '08:00', close: '18:00' }
+    },
+    analytics: {
+      weeklyViews: 23,
+      monthlyViews: 89,
+      conversionRate: 0.06,
+      averageRating: 4.7
+    }
+  }
+];
+
+export const mockDistricts = [
+  'All Districts',
+  'Central',
+  'Orchard',
+  'Marina Bay',
+  'Chinatown',
+  'Little India',
+  'Bugis',
+  'Geylang',
+  'East Coast',
+  'Tampines',
+  'Bedok',
+  'Jurong',
+  'Woodlands',
+  'Yishun',
+  'Ang Mo Kio',
+  'Bishan',
+  'Toa Payoh'
+];
