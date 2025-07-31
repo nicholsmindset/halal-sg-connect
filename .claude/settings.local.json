@@ -17,7 +17,9 @@
       "Bash(git commit:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(rm:*)",
+      "WebFetch(domain:vocal-puffpuff-8d486c.netlify.app)"
     ],
     "deny": []
   }

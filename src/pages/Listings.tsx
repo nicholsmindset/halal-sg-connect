@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import SearchFilters from "@/components/SearchFilters";
 import ListingCard from "@/components/ListingCard";
 import { mockListings } from "@/lib/mockData";
@@ -21,6 +22,8 @@ const Listings = () => {
           ))}
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };

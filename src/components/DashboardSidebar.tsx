@@ -20,7 +20,7 @@ const DashboardSidebar = () => {
           Dashboard
         </Button>
         <Button 
-          variant={isActive("/dashboard/listings") ? "default" : "ghost"} 
+          variant={isActive("/dashboard") ? "default" : "ghost"} 
           className="w-full justify-start"
           onClick={() => navigate("/dashboard")}
         >

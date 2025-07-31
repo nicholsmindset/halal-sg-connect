@@ -62,6 +62,11 @@ const Header = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
+                <Link to="/pricing" className="text-foreground hover:text-primary font-medium px-4 py-2">
+                  Pricing
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
                 <Link to="/dashboard" className="text-foreground hover:text-primary font-medium px-4 py-2">
                   For Vendors
                 </Link>

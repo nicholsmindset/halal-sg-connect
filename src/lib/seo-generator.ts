@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { SEOPage, SEOPageContent, District, Category } from '@/types/import';
 import { Business } from '@/types/business';
+import { generateDistrictContent, generatePropertyDistrictContent, generateCombinationContent, DistrictData, PropertyDistrictData } from './district-content-generator';
 
 export class SEOPageGenerator {
   // Generate SEO page content based on filters
@@ -51,6 +52,15 @@ export class SEOPageGenerator {
 
     if (filters.district) {
       query = query.eq('district', filters.district);
+    }
+
+    // New district-specific filters
+    if (filters.planning_area) {
+      query = query.eq('planning_area', filters.planning_area.replace('-', ' '));
+    }
+
+    if (filters.property_district_code) {
+      query = query.eq('property_district_code', filters.property_district_code);
     }
 
     if (filters.halal_certified) {
@@ -137,6 +147,15 @@ export class SEOPageGenerator {
       location: `Explore ${businessCount} halal businesses in ${filters.district}. Whether you're looking for dining, shopping, or services, discover trusted halal-certified establishments in this vibrant Singapore district.`,
       
       combination: `Find ${businessCount} halal ${filters.category} in ${filters.district}. Enjoy authentic cuisine and quality service from verified halal establishments in one of Singapore's most popular areas.`,
+      
+      // New district-specific templates
+      district: `Discover ${businessCount} halal restaurants and businesses in ${filters.planning_area?.replace('-', ' ')}. This Singapore planning area offers diverse halal dining options, from family-friendly neighborhood favorites to specialized cuisine establishments, all with verified halal certification.`,
+      
+      district_category: `Find ${businessCount} halal ${filters.category} in ${filters.planning_area?.replace('-', ' ')}. Explore authentic ${filters.category} establishments in this vibrant Singapore district, featuring verified halal certification and excellent customer reviews.`,
+      
+      property_zone: `Explore ${businessCount} halal businesses in Singapore's ${filters.property_district_code} property district. From premium dining to neighborhood favorites, discover halal-certified establishments that serve this dynamic area's diverse community.`,
+      
+      property_zone_category: `Discover ${businessCount} halal ${filters.category} in ${filters.property_district_code} property district. Experience quality ${filters.category} with verified halal certification in one of Singapore's key postal districts.`,
       
       feature: `Browse ${businessCount} halal businesses offering ${filters.feature}. Discover establishments that cater to your specific needs while maintaining the highest halal standards.`,
       

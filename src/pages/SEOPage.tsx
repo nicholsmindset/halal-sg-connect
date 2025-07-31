@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -72,6 +73,18 @@ export default function SEOPage() {
         } else if (pathParts[0] === 'price') {
           pageType = 'price';
           filters = { price_range: pathParts[1] };
+        } else if (pathParts[0] === 'district') {
+          // New district-specific routing: /district/tampines or /district/tampines/restaurants
+          pageType = pathParts.length === 3 ? 'district_category' : 'district';
+          filters = pathParts.length === 3 
+            ? { planning_area: pathParts[1], category: pathParts[2] }
+            : { planning_area: pathParts[1] };
+        } else if (pathParts[0] === 'property-zone') {
+          // New property zone routing: /property-zone/d01 or /property-zone/d01/restaurants
+          pageType = pathParts.length === 3 ? 'property_zone_category' : 'property_zone';
+          filters = pathParts.length === 3
+            ? { property_district_code: pathParts[1].toUpperCase(), category: pathParts[2] }
+            : { property_district_code: pathParts[1].toUpperCase() };
         } else if (pathParts.length === 1) {
           pageType = 'location';
           filters = { district: pathParts[0].replace('-', ' ') };
@@ -127,6 +140,15 @@ export default function SEOPage() {
 
       if (filters.district) {
         query = query.ilike('district', `%${filters.district}%`);
+      }
+
+      // New district-specific filters
+      if (filters.planning_area) {
+        query = query.eq('planning_area', filters.planning_area.replace('-', ' '));
+      }
+
+      if (filters.property_district_code) {
+        query = query.eq('property_district_code', filters.property_district_code);
       }
 
       if (filters.halal_certified) {
@@ -222,6 +244,52 @@ export default function SEOPage() {
                 Home
               </Button>
               <ChevronRight className="w-4 h-4" />
+              
+              {/* Enhanced breadcrumbs for district and property zone pages */}
+              {seoPage.page_type === 'district' && (
+                <>
+                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/districts')}>
+                    Districts
+                  </Button>
+                  <ChevronRight className="w-4 h-4" />
+                </>
+              )}
+              
+              {seoPage.page_type === 'district_category' && (
+                <>
+                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/districts')}>
+                    Districts
+                  </Button>
+                  <ChevronRight className="w-4 h-4" />
+                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate(`/district/${slugPath?.split('/')[1]}`)}>
+                    {slugPath?.split('/')[1]?.replace('-', ' ')}
+                  </Button>
+                  <ChevronRight className="w-4 h-4" />
+                </>
+              )}
+              
+              {seoPage.page_type === 'property_zone' && (
+                <>
+                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/property-zones')}>
+                    Property Zones
+                  </Button>
+                  <ChevronRight className="w-4 h-4" />
+                </>
+              )}
+              
+              {seoPage.page_type === 'property_zone_category' && (
+                <>
+                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/property-zones')}>
+                    Property Zones
+                  </Button>
+                  <ChevronRight className="w-4 h-4" />
+                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate(`/property-zone/${slugPath?.split('/')[1]}`)}>
+                    {slugPath?.split('/')[1]?.toUpperCase()}
+                  </Button>
+                  <ChevronRight className="w-4 h-4" />
+                </>
+              )}
+              
               <span className="text-foreground">{seoPage.h1_title}</span>
             </nav>
           </div>
@@ -417,6 +485,8 @@ export default function SEOPage() {
             </Card>
           )}
         </div>
+        
+        <Footer />
       </div>
     </>
   );

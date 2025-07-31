@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import ListingGallery from "@/components/ListingGallery";
 import ListingInfo from "@/components/ListingInfo";
 import { mockListings } from "@/lib/mockData";
@@ -17,6 +18,8 @@ const ListingDetails = () => {
         <ListingGallery images={listing.images} />
         <ListingInfo listing={listing} />
       </div>
+      
+      <Footer />
     </div>
   );
 };

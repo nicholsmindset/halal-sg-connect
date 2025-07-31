@@ -33,6 +33,10 @@ const EditListing = lazy(() => import("./pages/EditListing"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
 const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
 const SEOPage = lazy(() => import("./pages/SEOPage"));
+const Districts = lazy(() => import("./pages/Districts"));
+const PropertyZones = lazy(() => import("./pages/PropertyZones"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -96,11 +100,19 @@ const App = () => (
                 <Route path="/admin/system" element={<AdminSystem />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
                 
+                {/* Static Pages */}
+                <Route path="/districts" element={<Districts />} />
+                <Route path="/property-zones" element={<PropertyZones />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/contact" element={<Contact />} />
+                
                 {/* SEO Routes - Dynamic programmatic pages */}
                 <Route path="/seo/*" element={<SEOPage />} />
                 <Route path="/category/*" element={<SEOPage />} />
                 <Route path="/features/*" element={<SEOPage />} />
                 <Route path="/price/*" element={<SEOPage />} />
+                <Route path="/district/*" element={<SEOPage />} />
+                <Route path="/property-zone/*" element={<SEOPage />} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
