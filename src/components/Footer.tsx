@@ -226,11 +226,29 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Districts by Region */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          {/* Popular Districts Quick Access */}
+          <div className="mb-8 p-4 bg-muted/30 rounded-lg">
+            <h5 className="font-medium text-foreground text-sm mb-3 text-center">
+              🌟 Most Popular Districts
+            </h5>
+            <div className="flex flex-wrap justify-center gap-2">
+              {Object.values(districtsByRegion).flat().filter(d => d.popular).map((district) => (
+                <Link
+                  key={district.slug}
+                  to={`/district/${district.slug}`}
+                  className="px-3 py-1 bg-primary/10 hover:bg-primary/20 text-primary text-xs rounded-full transition-colors font-medium"
+                >
+                  {district.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Districts by Region - Enhanced Responsive Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {Object.entries(districtsByRegion).map(([region, districts]) => (
               <div key={region} className="space-y-3">
-                <h5 className="font-medium text-foreground text-sm border-b pb-1">
+                <h5 className="font-medium text-foreground text-sm border-b border-primary/20 pb-1 mb-2">
                   {region}
                 </h5>
                 <ul className="space-y-1">
@@ -238,14 +256,16 @@ export default function Footer() {
                     <li key={district.slug}>
                       <Link
                         to={`/district/${district.slug}`}
-                        className={`text-xs transition-colors ${
+                        className={`text-xs transition-colors block py-0.5 ${
                           district.popular 
                             ? 'text-primary hover:text-primary/80 font-medium' 
                             : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
-                        {district.name}
-                        {district.popular && <span className="ml-1">★</span>}
+                        <span className="flex items-center gap-1">
+                          {district.name}
+                          {district.popular && <span className="text-yellow-500 text-xs">★</span>}
+                        </span>
                       </Link>
                     </li>
                   ))}
@@ -258,10 +278,10 @@ export default function Footer() {
         <Separator className="my-8" />
 
         {/* Popular Property Districts */}
-        <div className="mb-8">
+        <div className="mb-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg border border-blue-100 dark:border-blue-800">
           <div className="text-center mb-4">
-            <h4 className="text-sm font-medium text-foreground mb-2">
-              Popular Property Districts
+            <h4 className="text-sm font-medium text-foreground mb-2 flex items-center justify-center gap-2">
+              🏢 Popular Property Districts
             </h4>
           </div>
           
@@ -270,7 +290,7 @@ export default function Footer() {
               <Link
                 key={district.code}
                 to={`/property-zone/${district.slug}`}
-                className="text-xs bg-muted/50 hover:bg-muted px-2 py-1 rounded transition-colors"
+                className="text-xs bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full transition-colors font-medium"
               >
                 {district.code} {district.name}
               </Link>

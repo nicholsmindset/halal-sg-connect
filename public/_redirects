@@ -10,6 +10,8 @@
 /category/* /seo/category/:splat 200
 /features/* /seo/features/:splat 200  
 /price/* /seo/price/:splat 200
+/district/* /seo/district/:splat 200
+/property-zone/* /seo/property-zone/:splat 200
 
 # SPA fallback - MUST be last
 /* /index.html 200

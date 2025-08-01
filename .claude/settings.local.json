@@ -19,7 +19,11 @@
       "Bash(git push:*)",
       "Bash(curl:*)",
       "Bash(rm:*)",
-      "WebFetch(domain:vocal-puffpuff-8d486c.netlify.app)"
+      "WebFetch(domain:vocal-puffpuff-8d486c.netlify.app)",
+      "Bash(python:*)",
+      "Bash(pip3 install:*)",
+      "Bash(playwright install:*)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   }
