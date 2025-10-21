@@ -10,6 +10,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 // Import error handler to initialize global handlers
 import '@/lib/errorHandler';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 // Lazy load components for code splitting
 const Index = lazy(() => import('./pages/Index'));
@@ -41,6 +42,11 @@ const BestOfIndex = lazy(() => import('./pages/BestOfIndex'));
 const BestOfPage = lazy(() => import('./pages/BestOfPage'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Categories = lazy(() => import('./pages/Categories'));
+const About = lazy(() => import('./pages/About'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
+const Sitemap = lazy(() => import('./pages/Sitemap'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const queryClient = new QueryClient({
@@ -84,46 +90,150 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/listings" element={<Listings />} />
                 <Route path="/listing/:slug" element={<ListingDetails />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/auth" element={<Auth />} />
+
+                {/* Dashboard Routes - Protected */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/dashboard/listings/new"
-                  element={<CreateListing />}
+                  element={
+                    <ProtectedRoute>
+                      <CreateListing />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="/dashboard/listings/edit/:id"
-                  element={<EditListing />}
+                  element={
+                    <ProtectedRoute>
+                      <EditListing />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="/dashboard/analytics"
-                  element={<DashboardAnalytics />}
+                  element={
+                    <ProtectedRoute>
+                      <DashboardAnalytics />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="/dashboard/settings"
-                  element={<DashboardSettings />}
+                  element={
+                    <ProtectedRoute>
+                      <DashboardSettings />
+                    </ProtectedRoute>
+                  }
                 />
-                <Route path="/auth" element={<Auth />} />
 
-                {/* Admin Routes */}
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-                <Route path="/admin/businesses" element={<AdminBusinesses />} />
-                <Route path="/admin/import" element={<AdminImport />} />
+                {/* Admin Routes - Protected with Admin Role */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <Admin />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminUsers />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/businesses"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminBusinesses />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/import"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminImport />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/admin/subscriptions"
-                  element={<AdminSubscriptions />}
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminSubscriptions />
+                    </ProtectedRoute>
+                  }
                 />
-                <Route path="/admin/analytics" element={<AdminAnalytics />} />
-                <Route path="/admin/moderation" element={<AdminModeration />} />
-                <Route path="/admin/revenue" element={<AdminRevenue />} />
-                <Route path="/admin/premium" element={<AdminPremium />} />
-                <Route path="/admin/system" element={<AdminSystem />} />
-                <Route path="/admin/settings" element={<AdminSettings />} />
+                <Route
+                  path="/admin/analytics"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminAnalytics />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/moderation"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminModeration />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/revenue"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminRevenue />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/premium"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminPremium />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/system"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminSystem />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/settings"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminSettings />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* Static Pages */}
                 <Route path="/districts" element={<Districts />} />
                 <Route path="/property-zones" element={<PropertyZones />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/sitemap" element={<Sitemap />} />
 
                 {/* Best Of Pages - Curated Lists */}
                 <Route path="/best" element={<BestOfIndex />} />

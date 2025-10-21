@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, Menu, User } from 'lucide-react';
+import { Search, Menu, User, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
   NavigationMenu,
@@ -10,8 +11,17 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 const Header = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="container mx-auto px-4">
@@ -108,9 +118,88 @@ const Header = () => {
             </Button>
 
             {/* Mobile Menu */}
-            <Button variant="ghost" size="sm" className="md:hidden">
-              <Menu className="h-4 w-4" />
-            </Button>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="md:hidden">
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle>Menu</SheetTitle>
+                </SheetHeader>
+                <nav className="mt-6 flex flex-col space-y-4">
+                  <Link
+                    to="/listings"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    Directory
+                  </Link>
+                  <Link
+                    to="/categories"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    Categories
+                  </Link>
+                  <Link
+                    to="/districts"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    Districts
+                  </Link>
+                  <Link
+                    to="/property-zones"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    Property Zones
+                  </Link>
+                  <Link
+                    to="/best"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    Best Of Lists
+                  </Link>
+                  <Link
+                    to="/pricing"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    Pricing
+                  </Link>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    For Vendors
+                  </Link>
+                  <Link
+                    to="/about"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to="/contact"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    Contact
+                  </Link>
+                  <div className="border-t pt-4">
+                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                      <Button className="w-full">Login / Sign Up</Button>
+                    </Link>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
 
