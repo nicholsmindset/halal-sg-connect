@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,19 +20,19 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Plus, Eye, Edit, Trash2, Copy, MoreVertical } from "lucide-react";
+} from '@/components/ui/alert-dialog';
+import { Plus, Eye, Edit, Trash2, Copy, MoreVertical } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { mockListings } from "@/lib/mockData";
-import { type Business } from "@/types/business";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+} from '@/components/ui/dropdown-menu';
+import { mockListings } from '@/lib/mockData';
+import { type Business } from '@/types/business';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const ListingManager = () => {
   const navigate = useNavigate();
@@ -40,8 +40,12 @@ const ListingManager = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [listingToDelete, setListingToDelete] = useState<string | null>(null);
 
-  const activeListings = listings.filter(listing => listing.subscriptionTier !== 'free' || listing.isPremium);
-  const draftListings = listings.filter(listing => listing.subscriptionTier === 'free' && !listing.isPremium);
+  const activeListings = listings.filter(
+    listing => listing.subscriptionTier !== 'free' || listing.isPremium
+  );
+  const draftListings = listings.filter(
+    listing => listing.subscriptionTier === 'free' && !listing.isPremium
+  );
 
   const handleEditListing = (id: string) => {
     navigate(`/dashboard/listings/edit/${id}`);
@@ -52,7 +56,7 @@ const ListingManager = () => {
       // Find the listing to duplicate
       const listing = listings.find(l => l.id === id);
       if (!listing) {
-        toast.error("Listing not found");
+        toast.error('Listing not found');
         return;
       }
 
@@ -72,29 +76,29 @@ const ListingManager = () => {
           slug: `${listing.slug}-copy`,
         };
         setListings(prev => [...prev, duplicatedListing]);
-        toast.success("Listing duplicated successfully!");
+        toast.success('Listing duplicated successfully!');
         return;
       }
 
       // Duplicate in Supabase
-      const { error: insertError } = await supabase
-        .from('businesses')
-        .insert([{
+      const { error: insertError } = await supabase.from('businesses').insert([
+        {
           ...originalListing,
           id: undefined, // Let database generate new ID
           name: `${originalListing.name} (Copy)`,
           slug: `${originalListing.slug}-copy-${Date.now()}`,
           created_at: undefined,
           updated_at: undefined,
-        }]);
+        },
+      ]);
 
       if (insertError) throw insertError;
 
-      toast.success("Listing duplicated successfully!");
+      toast.success('Listing duplicated successfully!');
       // Refresh listings here if using real data
     } catch (error) {
-      console.error("Error duplicating listing:", error);
-      toast.error("Failed to duplicate listing. Please try again.");
+      console.error('Error duplicating listing:', error);
+      toast.error('Failed to duplicate listing. Please try again.');
     }
   };
 
@@ -121,10 +125,10 @@ const ListingManager = () => {
         setListings(prev => prev.filter(l => l.id !== listingToDelete));
       }
 
-      toast.success("Listing deleted successfully!");
+      toast.success('Listing deleted successfully!');
     } catch (error) {
-      console.error("Error deleting listing:", error);
-      toast.error("Failed to delete listing. Please try again.");
+      console.error('Error deleting listing:', error);
+      toast.error('Failed to delete listing. Please try again.');
     } finally {
       setDeleteDialogOpen(false);
       setListingToDelete(null);
@@ -145,20 +149,22 @@ const ListingManager = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {listings.map((listing) => (
+        {listings.map(listing => (
           <TableRow key={listing.id}>
             <TableCell className="font-medium">
               <div>
                 <div className="font-semibold">{listing.name}</div>
-                <div className="text-sm text-muted-foreground">{listing.district}</div>
+                <div className="text-sm text-muted-foreground">
+                  {listing.district}
+                </div>
               </div>
             </TableCell>
             <TableCell>
               <Badge variant="secondary">{listing.category}</Badge>
             </TableCell>
             <TableCell>
-              <Badge variant={listing.isPremium ? "default" : "outline"}>
-                {listing.isPremium ? "Premium" : "Free"}
+              <Badge variant={listing.isPremium ? 'default' : 'outline'}>
+                {listing.isPremium ? 'Premium' : 'Free'}
               </Badge>
             </TableCell>
             <TableCell>
@@ -183,15 +189,19 @@ const ListingManager = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleEditListing(listing.id)}>
+                  <DropdownMenuItem
+                    onClick={() => handleEditListing(listing.id)}
+                  >
                     <Edit className="mr-2 h-4 w-4" />
                     Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleDuplicateListing(listing.id)}>
+                  <DropdownMenuItem
+                    onClick={() => handleDuplicateListing(listing.id)}
+                  >
                     <Copy className="mr-2 h-4 w-4" />
                     Duplicate
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onClick={() => handleDeleteListing(listing.id)}
                     className="text-destructive"
                   >
@@ -212,26 +222,30 @@ const ListingManager = () => {
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Your Listings</CardTitle>
         <Button onClick={() => navigate('/dashboard/listings/new')}>
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Add New Listing
         </Button>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="active" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="active">Active ({activeListings.length})</TabsTrigger>
-            <TabsTrigger value="drafts">Drafts ({draftListings.length})</TabsTrigger>
+            <TabsTrigger value="active">
+              Active ({activeListings.length})
+            </TabsTrigger>
+            <TabsTrigger value="drafts">
+              Drafts ({draftListings.length})
+            </TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="active" className="space-y-4">
             {activeListings.length > 0 ? (
               renderListingTable(activeListings)
             ) : (
-              <div className="text-center py-8">
+              <div className="py-8 text-center">
                 <p className="text-muted-foreground">No active listings yet.</p>
-                <Button 
-                  className="mt-4" 
+                <Button
+                  className="mt-4"
                   onClick={() => navigate('/dashboard/listings/new')}
                 >
                   Create Your First Listing
@@ -239,19 +253,19 @@ const ListingManager = () => {
               </div>
             )}
           </TabsContent>
-          
+
           <TabsContent value="drafts" className="space-y-4">
             {draftListings.length > 0 ? (
               renderListingTable(draftListings)
             ) : (
-              <div className="text-center py-8">
+              <div className="py-8 text-center">
                 <p className="text-muted-foreground">No draft listings.</p>
               </div>
             )}
           </TabsContent>
-          
+
           <TabsContent value="analytics" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <Card>
                 <CardHeader>
                   <CardTitle className="text-sm">Total Views</CardTitle>
@@ -278,7 +292,12 @@ const ListingManager = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {(listings.reduce((sum, listing) => sum + listing.rating, 0) / listings.length).toFixed(1)}
+                    {(
+                      listings.reduce(
+                        (sum, listing) => sum + listing.rating,
+                        0
+                      ) / listings.length
+                    ).toFixed(1)}
                   </div>
                 </CardContent>
               </Card>
@@ -292,13 +311,16 @@ const ListingManager = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the listing
-              from the database.
+              This action cannot be undone. This will permanently delete the
+              listing from the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

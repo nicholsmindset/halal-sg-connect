@@ -7,7 +7,7 @@ export const handler: Handler = async (event, context) => {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   };
 
   if (event.httpMethod === 'OPTIONS') {
@@ -18,18 +18,18 @@ export const handler: Handler = async (event, context) => {
     return {
       statusCode: 405,
       headers,
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ error: 'Method not allowed' }),
     };
   }
 
   try {
     const jobId = event.path.split('/').pop();
-    
+
     if (!jobId) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Job ID is required' })
+        body: JSON.stringify({ error: 'Job ID is required' }),
       };
     }
 
@@ -44,18 +44,25 @@ export const handler: Handler = async (event, context) => {
       return {
         statusCode: 404,
         headers,
-        body: JSON.stringify({ error: 'Import job not found' })
+        body: JSON.stringify({ error: 'Import job not found' }),
       };
     }
 
     // Calculate progress percentage
-    const progressPercentage = importJob.total_records > 0 
-      ? Math.round((importJob.processed_records / importJob.total_records) * 100)
-      : 0;
+    const progressPercentage =
+      importJob.total_records > 0
+        ? Math.round(
+            (importJob.processed_records / importJob.total_records) * 100
+          )
+        : 0;
 
     // Estimate completion time
     let estimatedCompletion = null;
-    if (importJob.status === 'processing' && importJob.started_at && progressPercentage > 0) {
+    if (
+      importJob.status === 'processing' &&
+      importJob.started_at &&
+      progressPercentage > 0
+    ) {
       const startTime = new Date(importJob.started_at).getTime();
       const currentTime = new Date().getTime();
       const elapsedTime = currentTime - startTime;
@@ -73,21 +80,20 @@ export const handler: Handler = async (event, context) => {
       successful_imports: importJob.successful_imports,
       failed_imports: importJob.failed_imports,
       errors: importJob.error_log || [],
-      estimated_completion: estimatedCompletion
+      estimated_completion: estimatedCompletion,
     };
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(progress)
+      body: JSON.stringify(progress),
     };
-
   } catch (error: any) {
     console.error('Import progress error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message || 'Internal server error' })
+      body: JSON.stringify({ error: error.message || 'Internal server error' }),
     };
   }
 };

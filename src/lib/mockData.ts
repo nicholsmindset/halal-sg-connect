@@ -1,4 +1,4 @@
-import { type Business } from "@/types/business";
+import { type Business } from '@/types/business';
 
 export const mockCategories = [
   { id: '1', name: 'Restaurants', icon: '🍽️', count: 125 },
@@ -6,7 +6,7 @@ export const mockCategories = [
   { id: '3', name: 'Groceries & Markets', icon: '🛒', count: 67 },
   { id: '4', name: 'Butcheries', icon: '🥩', count: 45 },
   { id: '5', name: 'Services', icon: '🔧', count: 78 },
-  { id: '6', name: 'Beauty & Wellness', icon: '💄', count: 34 }
+  { id: '6', name: 'Beauty & Wellness', icon: '💄', count: 34 },
 ];
 
 export const mockListings: Business[] = [
@@ -14,7 +14,8 @@ export const mockListings: Business[] = [
     id: '1',
     name: 'Warong Nasi Pariaman',
     slug: 'warong-nasi-pariaman',
-    description: 'Authentic Indonesian cuisine with traditional recipes passed down through generations. Famous for our rendang and nasi padang.',
+    description:
+      'Authentic Indonesian cuisine with traditional recipes passed down through generations. Famous for our rendang and nasi padang.',
     category: 'Restaurants',
     subcategory: 'Indonesian',
     district: 'Geylang',
@@ -37,7 +38,7 @@ export const mockListings: Business[] = [
     lastUpdated: '2024-01-15T10:30:00Z',
     socialMedia: {
       facebook: 'https://facebook.com/warongnasi',
-      instagram: 'https://instagram.com/warongnasi'
+      instagram: 'https://instagram.com/warongnasi',
     },
     openingHours: {
       monday: { open: '10:00', close: '22:00' },
@@ -46,18 +47,18 @@ export const mockListings: Business[] = [
       thursday: { open: '10:00', close: '22:00' },
       friday: { open: '10:00', close: '22:00' },
       saturday: { open: '10:00', close: '22:00' },
-      sunday: { open: '10:00', close: '22:00' }
+      sunday: { open: '10:00', close: '22:00' },
     },
     aiGenerated: {
       description: false,
       tags: true,
-      categorization: true
+      categorization: true,
     },
     analytics: {
       weeklyViews: 89,
       monthlyViews: 345,
       conversionRate: 0.12,
-      averageRating: 4.5
+      averageRating: 4.5,
     },
     events: [
       {
@@ -65,15 +66,16 @@ export const mockListings: Business[] = [
         title: 'Ramadan Special Menu',
         description: 'Special Iftar packages available throughout Ramadan',
         date: '2024-03-15',
-        type: 'iftar'
-      }
-    ]
+        type: 'iftar',
+      },
+    ],
   },
   {
     id: '2',
     name: 'Al-Ameen Restaurant',
     slug: 'al-ameen-restaurant',
-    description: 'Traditional Middle Eastern and Indian Muslim cuisine. Specializing in biryanis, kebabs, and authentic curries.',
+    description:
+      'Traditional Middle Eastern and Indian Muslim cuisine. Specializing in biryanis, kebabs, and authentic curries.',
     category: 'Restaurants',
     subcategory: 'Middle Eastern',
     district: 'Little India',
@@ -93,7 +95,7 @@ export const mockListings: Business[] = [
     clicks: 45,
     lastUpdated: '2024-01-12T15:45:00Z',
     socialMedia: {
-      instagram: 'https://instagram.com/alameen_sg'
+      instagram: 'https://instagram.com/alameen_sg',
     },
     openingHours: {
       monday: { open: '11:00', close: '23:00' },
@@ -102,20 +104,21 @@ export const mockListings: Business[] = [
       thursday: { open: '11:00', close: '23:00' },
       friday: { open: '11:00', close: '23:00' },
       saturday: { open: '11:00', close: '23:00' },
-      sunday: { open: '11:00', close: '23:00' }
+      sunday: { open: '11:00', close: '23:00' },
     },
     analytics: {
       weeklyViews: 65,
       monthlyViews: 245,
       conversionRate: 0.08,
-      averageRating: 4.3
-    }
+      averageRating: 4.3,
+    },
   },
   {
     id: '3',
     name: 'The Halal Guys Singapore',
     slug: 'the-halal-guys',
-    description: 'New York-style halal food featuring platters, gyros, and falafel. Fresh ingredients and bold flavors.',
+    description:
+      'New York-style halal food featuring platters, gyros, and falafel. Fresh ingredients and bold flavors.',
     category: 'Restaurants',
     subcategory: 'American',
     district: 'Orchard',
@@ -138,7 +141,7 @@ export const mockListings: Business[] = [
     socialMedia: {
       facebook: 'https://facebook.com/thehalalguyssg',
       instagram: 'https://instagram.com/thehalalguyssg',
-      tiktok: 'https://tiktok.com/@thehalalguyssg'
+      tiktok: 'https://tiktok.com/@thehalalguyssg',
     },
     openingHours: {
       monday: { open: '11:00', close: '22:00' },
@@ -147,13 +150,13 @@ export const mockListings: Business[] = [
       thursday: { open: '11:00', close: '22:00' },
       friday: { open: '11:00', close: '22:00' },
       saturday: { open: '11:00', close: '22:00' },
-      sunday: { open: '11:00', close: '22:00' }
+      sunday: { open: '11:00', close: '22:00' },
     },
     analytics: {
       weeklyViews: 156,
       monthlyViews: 678,
       conversionRate: 0.15,
-      averageRating: 4.4
+      averageRating: 4.4,
     },
     multiLocation: {
       isChain: true,
@@ -162,16 +165,17 @@ export const mockListings: Business[] = [
           id: 'tgh-orchard',
           name: 'The Halal Guys Orchard',
           address: '313 Orchard Road, #B4-36/37, Singapore 238895',
-          phone: '+65 6509 9035'
-        }
-      ]
-    }
+          phone: '+65 6509 9035',
+        },
+      ],
+    },
   },
   {
     id: '4',
     name: 'Syed Halal Butchery',
     slug: 'syed-halal-butchery',
-    description: 'Fresh halal meat supplier with premium quality beef, lamb, and chicken. Serving the community for over 20 years.',
+    description:
+      'Fresh halal meat supplier with premium quality beef, lamb, and chicken. Serving the community for over 20 years.',
     category: 'Butcheries',
     subcategory: 'Meat & Poultry',
     district: 'Tampines',
@@ -197,15 +201,15 @@ export const mockListings: Business[] = [
       thursday: { open: '07:00', close: '19:00' },
       friday: { open: '07:00', close: '20:00' },
       saturday: { open: '07:00', close: '20:00' },
-      sunday: { open: '08:00', close: '18:00' }
+      sunday: { open: '08:00', close: '18:00' },
     },
     analytics: {
       weeklyViews: 23,
       monthlyViews: 89,
       conversionRate: 0.06,
-      averageRating: 4.7
-    }
-  }
+      averageRating: 4.7,
+    },
+  },
 ];
 
 export const mockDistricts = [
@@ -225,5 +229,5 @@ export const mockDistricts = [
   'Yishun',
   'Ang Mo Kio',
   'Bishan',
-  'Toa Payoh'
+  'Toa Payoh',
 ];

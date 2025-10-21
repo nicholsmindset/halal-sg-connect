@@ -3,9 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MoreHorizontal, Search, Filter, Download, Crown, AlertTriangle } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Search,
+  Filter,
+  Download,
+  Crown,
+  AlertTriangle,
+} from 'lucide-react';
 import AdminLayout from '@/components/AdminLayout';
 
 interface User {
@@ -35,7 +49,7 @@ const AdminUsers = () => {
       joinDate: '2024-01-15',
       lastActive: '2024-01-20',
       status: 'active',
-      businessCount: 2
+      businessCount: 2,
     },
     {
       id: '2',
@@ -46,7 +60,7 @@ const AdminUsers = () => {
       joinDate: '2024-01-18',
       lastActive: '2024-01-20',
       status: 'active',
-      businessCount: 0
+      businessCount: 0,
     },
     {
       id: '3',
@@ -57,7 +71,7 @@ const AdminUsers = () => {
       joinDate: '2024-01-10',
       lastActive: '2024-01-19',
       status: 'active',
-      businessCount: 5
+      businessCount: 5,
     },
     {
       id: '4',
@@ -68,8 +82,8 @@ const AdminUsers = () => {
       joinDate: '2024-01-12',
       lastActive: '2024-01-20',
       status: 'pending',
-      businessCount: 0
-    }
+      businessCount: 0,
+    },
   ];
 
   const getSubscriptionBadge = (tier: string) => {
@@ -77,24 +91,32 @@ const AdminUsers = () => {
       free: 'secondary',
       premium: 'default',
       premium_plus: 'destructive',
-      enterprise: 'outline'
+      enterprise: 'outline',
     } as const;
-    
-    return <Badge variant={variants[tier as keyof typeof variants]}>{tier.replace('_', ' ')}</Badge>;
+
+    return (
+      <Badge variant={variants[tier as keyof typeof variants]}>
+        {tier.replace('_', ' ')}
+      </Badge>
+    );
   };
 
   const getStatusBadge = (status: string) => {
     const variants = {
       active: 'default',
       suspended: 'destructive',
-      pending: 'secondary'
+      pending: 'secondary',
     } as const;
-    
-    return <Badge variant={variants[status as keyof typeof variants]}>{status}</Badge>;
+
+    return (
+      <Badge variant={variants[status as keyof typeof variants]}>
+        {status}
+      </Badge>
+    );
   };
 
   const getRoleBadge = (role: string) => {
-    const icon = role === 'vendor' ? <Crown className="h-3 w-3 mr-1" /> : null;
+    const icon = role === 'vendor' ? <Crown className="mr-1 h-3 w-3" /> : null;
     return (
       <Badge variant="outline" className="flex items-center">
         {icon}
@@ -104,10 +126,13 @@ const AdminUsers = () => {
   };
 
   return (
-    <AdminLayout title="User Management" description="Manage users, vendors, and subscriptions">
+    <AdminLayout
+      title="User Management"
+      description="Manage users, vendors, and subscriptions"
+    >
       <div className="space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <Card>
             <CardContent className="p-6">
               <div className="text-2xl font-bold">1,234</div>
@@ -123,7 +148,9 @@ const AdminUsers = () => {
           <Card>
             <CardContent className="p-6">
               <div className="text-2xl font-bold">156</div>
-              <p className="text-sm text-muted-foreground">Premium Subscribers</p>
+              <p className="text-sm text-muted-foreground">
+                Premium Subscribers
+              </p>
             </CardContent>
           </Card>
           <Card>
@@ -144,11 +171,11 @@ const AdminUsers = () => {
               <CardTitle>User Management</CardTitle>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm">
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="mr-2 h-4 w-4" />
                   Export
                 </Button>
                 <Button variant="outline" size="sm">
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="mr-2 h-4 w-4" />
                   Filter
                 </Button>
               </div>
@@ -162,7 +189,7 @@ const AdminUsers = () => {
                 <Input
                   placeholder="Search users by name or email..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -190,18 +217,24 @@ const AdminUsers = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {users.map((user) => (
+                      {users.map(user => (
                         <TableRow key={user.id}>
                           <TableCell>
                             <div>
                               <div className="font-medium">{user.name}</div>
-                              <div className="text-sm text-muted-foreground">{user.email}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {user.email}
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>{getRoleBadge(user.role)}</TableCell>
-                          <TableCell>{getSubscriptionBadge(user.subscriptionTier)}</TableCell>
+                          <TableCell>
+                            {getSubscriptionBadge(user.subscriptionTier)}
+                          </TableCell>
                           <TableCell>{user.businessCount}</TableCell>
-                          <TableCell>{new Date(user.joinDate).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            {new Date(user.joinDate).toLocaleDateString()}
+                          </TableCell>
                           <TableCell>{getStatusBadge(user.status)}</TableCell>
                           <TableCell>
                             <Button variant="ghost" size="sm">

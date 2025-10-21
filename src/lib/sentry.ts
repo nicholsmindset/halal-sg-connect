@@ -61,11 +61,18 @@ export const logError = (error: Error, context?: Record<string, unknown>) => {
   });
 };
 
-export const logMessage = (message: string, level: Sentry.SeverityLevel = 'info') => {
+export const logMessage = (
+  message: string,
+  level: Sentry.SeverityLevel = 'info'
+) => {
   Sentry.captureMessage(message, level);
 };
 
-export const setUserContext = (user: { id: string; email?: string; username?: string }) => {
+export const setUserContext = (user: {
+  id: string;
+  email?: string;
+  username?: string;
+}) => {
   Sentry.setUser(user);
 };
 

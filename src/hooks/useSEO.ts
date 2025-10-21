@@ -24,9 +24,11 @@ export const useSEO = (metadata: SEOMetadata) => {
 
     // Update meta tags
     const updateMetaTag = (name: string, content: string, property = false) => {
-      const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
+      const selector = property
+        ? `meta[property="${name}"]`
+        : `meta[name="${name}"]`;
       let tag = document.querySelector(selector) as HTMLMetaElement;
-      
+
       if (!tag) {
         tag = document.createElement('meta');
         if (property) {
@@ -36,7 +38,7 @@ export const useSEO = (metadata: SEOMetadata) => {
         }
         document.head.appendChild(tag);
       }
-      
+
       tag.setAttribute('content', content);
     };
 
@@ -66,14 +68,16 @@ export const useSEO = (metadata: SEOMetadata) => {
 
     // Canonical URL
     const updateCanonical = (href: string) => {
-      let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-      
+      let canonical = document.querySelector(
+        'link[rel="canonical"]'
+      ) as HTMLLinkElement;
+
       if (!canonical) {
         canonical = document.createElement('link');
         canonical.setAttribute('rel', 'canonical');
         document.head.appendChild(canonical);
       }
-      
+
       canonical.setAttribute('href', href);
     };
 
@@ -96,7 +100,9 @@ export const useSEO = (metadata: SEOMetadata) => {
     if (metadata.schema) {
       const updateSchema = (schema: Record<string, any>) => {
         // Remove existing schema
-        const existingSchema = document.querySelector('script[type="application/ld+json"]');
+        const existingSchema = document.querySelector(
+          'script[type="application/ld+json"]'
+        );
         if (existingSchema) {
           existingSchema.remove();
         }
@@ -122,62 +128,102 @@ export const useSEO = (metadata: SEOMetadata) => {
 export const SEOConfigs = {
   home: {
     title: 'Halal SG Connect - Find Halal Businesses in Singapore',
-    description: 'Discover authentic halal restaurants, cafes, and businesses in Singapore. Browse verified halal-certified establishments with reviews, ratings, and detailed information.',
-    keywords: ['halal', 'singapore', 'restaurants', 'cafes', 'MUIS certified', 'muslim food', 'directory'],
+    description:
+      'Discover authentic halal restaurants, cafes, and businesses in Singapore. Browse verified halal-certified establishments with reviews, ratings, and detailed information.',
+    keywords: [
+      'halal',
+      'singapore',
+      'restaurants',
+      'cafes',
+      'MUIS certified',
+      'muslim food',
+      'directory',
+    ],
     ogType: 'website',
     schema: {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Halal SG Connect',
       url: 'https://halal-sg-connect.netlify.app',
-      description: 'Singapore\'s comprehensive halal business directory',
+      description: "Singapore's comprehensive halal business directory",
       potentialAction: {
         '@type': 'SearchAction',
-        target: 'https://halal-sg-connect.netlify.app/listings?q={search_term_string}',
-        'query-input': 'required name=search_term_string'
-      }
-    }
+        target:
+          'https://halal-sg-connect.netlify.app/listings?q={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    },
   },
 
   listings: {
     title: 'Halal Business Listings - Singapore Directory | Halal SG Connect',
-    description: 'Browse hundreds of verified halal businesses in Singapore. Find restaurants, cafes, shops, and services with MUIS certification, customer reviews, and contact details.',
-    keywords: ['halal listings', 'singapore businesses', 'halal directory', 'MUIS certified', 'halal restaurants'],
-    ogType: 'website'
+    description:
+      'Browse hundreds of verified halal businesses in Singapore. Find restaurants, cafes, shops, and services with MUIS certification, customer reviews, and contact details.',
+    keywords: [
+      'halal listings',
+      'singapore businesses',
+      'halal directory',
+      'MUIS certified',
+      'halal restaurants',
+    ],
+    ogType: 'website',
   },
 
   business: (businessName: string, description: string) => ({
     title: `${businessName} - Halal Business in Singapore | Halal SG Connect`,
-    description: description || `Discover ${businessName}, a verified halal business in Singapore. Get contact details, reviews, ratings, and more information.`,
-    keywords: ['halal', businessName.toLowerCase(), 'singapore', 'MUIS certified', 'reviews'],
-    ogType: 'place'
+    description:
+      description ||
+      `Discover ${businessName}, a verified halal business in Singapore. Get contact details, reviews, ratings, and more information.`,
+    keywords: [
+      'halal',
+      businessName.toLowerCase(),
+      'singapore',
+      'MUIS certified',
+      'reviews',
+    ],
+    ogType: 'place',
   }),
 
   auth: {
     title: 'Login & Register - Halal SG Connect',
-    description: 'Sign in to your Halal SG Connect account or create a new account to list your halal business, write reviews, and access premium features.',
+    description:
+      'Sign in to your Halal SG Connect account or create a new account to list your halal business, write reviews, and access premium features.',
     keywords: ['login', 'register', 'account', 'halal business owner'],
-    noindex: true // Don't index auth pages
+    noindex: true, // Don't index auth pages
   },
 
   dashboard: {
     title: 'Dashboard - Manage Your Halal Business | Halal SG Connect',
-    description: 'Manage your halal business listing, view analytics, respond to reviews, and access business tools on Halal SG Connect.',
+    description:
+      'Manage your halal business listing, view analytics, respond to reviews, and access business tools on Halal SG Connect.',
     keywords: ['dashboard', 'business management', 'halal business owner'],
-    noindex: true // Don't index private dashboard
+    noindex: true, // Don't index private dashboard
   },
 
   category: (categoryName: string, businessCount: number) => ({
     title: `Best Halal ${categoryName} in Singapore | ${businessCount}+ Verified Options`,
     description: `Discover ${businessCount}+ halal-certified ${categoryName.toLowerCase()} in Singapore. Find authentic cuisine, read reviews, and get contact details for MUIS-certified establishments.`,
-    keywords: ['halal', categoryName.toLowerCase(), 'singapore', 'MUIS certified', 'restaurants', 'directory'],
-    ogType: 'website'
+    keywords: [
+      'halal',
+      categoryName.toLowerCase(),
+      'singapore',
+      'MUIS certified',
+      'restaurants',
+      'directory',
+    ],
+    ogType: 'website',
   }),
 
   location: (locationName: string, businessCount: number) => ({
     title: `${businessCount}+ Halal Businesses in ${locationName} | Singapore Directory`,
     description: `Find ${businessCount}+ halal businesses in ${locationName}, Singapore. Restaurants, cafes, shops, and services with verified halal certification.`,
-    keywords: ['halal', locationName.toLowerCase(), 'singapore', 'businesses', 'directory'],
-    ogType: 'website'
-  })
+    keywords: [
+      'halal',
+      locationName.toLowerCase(),
+      'singapore',
+      'businesses',
+      'directory',
+    ],
+    ogType: 'website',
+  }),
 };

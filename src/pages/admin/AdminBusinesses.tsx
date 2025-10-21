@@ -2,9 +2,23 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MoreHorizontal, CheckCircle, XCircle, Eye, Building2, AlertTriangle } from 'lucide-react';
+import {
+  MoreHorizontal,
+  CheckCircle,
+  XCircle,
+  Eye,
+  Building2,
+  AlertTriangle,
+} from 'lucide-react';
 import AdminLayout from '@/components/AdminLayout';
 import { Business } from '@/types/business';
 
@@ -39,9 +53,9 @@ const AdminBusinesses = () => {
         thursday: { open: '10:00', close: '22:00' },
         friday: { open: '10:00', close: '22:00' },
         saturday: { open: '10:00', close: '22:00' },
-        sunday: { open: '10:00', close: '22:00' }
-      }
-    }
+        sunday: { open: '10:00', close: '22:00' },
+      },
+    },
   ]);
 
   const handleApprove = (businessId: string) => {
@@ -53,10 +67,13 @@ const AdminBusinesses = () => {
   };
 
   return (
-    <AdminLayout title="Business Management" description="Manage and moderate business listings">
+    <AdminLayout
+      title="Business Management"
+      description="Manage and moderate business listings"
+    >
       <div className="space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-2">
@@ -93,7 +110,9 @@ const AdminBusinesses = () => {
           <TabsList>
             <TabsTrigger value="pending">
               Pending Approval
-              <Badge variant="destructive" className="ml-2">12</Badge>
+              <Badge variant="destructive" className="ml-2">
+                12
+              </Badge>
             </TabsTrigger>
             <TabsTrigger value="active">Active Listings</TabsTrigger>
             <TabsTrigger value="premium">Premium Listings</TabsTrigger>
@@ -118,18 +137,20 @@ const AdminBusinesses = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {pendingBusinesses.map((business) => (
+                    {pendingBusinesses.map(business => (
                       <TableRow key={business.id}>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <img 
-                              src={business.images[0]} 
+                            <img
+                              src={business.images[0]}
                               alt={business.name}
-                              className="w-12 h-12 rounded-lg object-cover"
+                              className="h-12 w-12 rounded-lg object-cover"
                             />
                             <div>
                               <div className="font-medium">{business.name}</div>
-                              <div className="text-sm text-muted-foreground">{business.email}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {business.email}
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -145,28 +166,28 @@ const AdminBusinesses = () => {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
                               onClick={() => handleApprove(business.id)}
                             >
-                              <Eye className="h-4 w-4 mr-1" />
+                              <Eye className="mr-1 h-4 w-4" />
                               Review
                             </Button>
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="default"
                               onClick={() => handleApprove(business.id)}
                             >
-                              <CheckCircle className="h-4 w-4 mr-1" />
+                              <CheckCircle className="mr-1 h-4 w-4" />
                               Approve
                             </Button>
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="destructive"
                               onClick={() => handleReject(business.id)}
                             >
-                              <XCircle className="h-4 w-4 mr-1" />
+                              <XCircle className="mr-1 h-4 w-4" />
                               Reject
                             </Button>
                           </div>
@@ -185,7 +206,9 @@ const AdminBusinesses = () => {
                 <CardTitle>Active Business Listings</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">All approved and active business listings will appear here.</p>
+                <p className="text-muted-foreground">
+                  All approved and active business listings will appear here.
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -196,7 +219,9 @@ const AdminBusinesses = () => {
                 <CardTitle>Premium Business Listings</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Premium subscription businesses with enhanced features.</p>
+                <p className="text-muted-foreground">
+                  Premium subscription businesses with enhanced features.
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -207,7 +232,9 @@ const AdminBusinesses = () => {
                 <CardTitle>Flagged Content</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Content that has been reported or flagged for review.</p>
+                <p className="text-muted-foreground">
+                  Content that has been reported or flagged for review.
+                </p>
               </CardContent>
             </Card>
           </TabsContent>

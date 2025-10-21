@@ -29,11 +29,13 @@ VITE_ENABLE_PREMIUM_FEATURES=true
 ## ⚡ URGENT: Still Need From You
 
 ### 1. **Service Role Key**
+
 - Go to Supabase dashboard: Settings → API
 - Copy the **service_role** key (different from anon key)
 - It should start with `eyJ...`
 
 ### 2. **Database Migration**
+
 - Go to Supabase dashboard: SQL Editor
 - Copy entire contents of `supabase/migrations/000_production_setup.sql`
 - Paste and click "Run"

@@ -23,39 +23,54 @@ export interface ImportJob {
 // Business Import Schema for Validation
 export const businessImportSchema = z.object({
   // Core Business Info
-  name: z.string().min(2, 'Business name must be at least 2 characters').max(200),
+  name: z
+    .string()
+    .min(2, 'Business name must be at least 2 characters')
+    .max(200),
   description: z.string().optional(),
   category: z.string().min(1, 'Category is required'),
   subcategory: z.string().optional(),
-  
+
   // Location Info
   address: z.string().min(5, 'Address must be at least 5 characters'),
-  postal_code: z.string().regex(/^\d{6}$/, 'Invalid Singapore postal code').optional(),
+  postal_code: z
+    .string()
+    .regex(/^\d{6}$/, 'Invalid Singapore postal code')
+    .optional(),
   district: z.string().min(1, 'District is required'),
-  coordinates: z.object({
-    lat: z.number().min(1.0).max(1.5), // Singapore bounds
-    lng: z.number().min(103.0).max(104.5)
-  }).optional(),
-  
+  coordinates: z
+    .object({
+      lat: z.number().min(1.0).max(1.5), // Singapore bounds
+      lng: z.number().min(103.0).max(104.5),
+    })
+    .optional(),
+
   // Contact Info
-  phone: z.string().regex(/^[+]?[0-9\s\-()]{8,15}$/, 'Invalid phone number format').optional(),
+  phone: z
+    .string()
+    .regex(/^[+]?[0-9\s\-()]{8,15}$/, 'Invalid phone number format')
+    .optional(),
   email: z.string().email('Invalid email format').optional(),
   website: z.string().url('Invalid website URL').optional(),
-  
+
   // Halal Certification
   halal_certified: z.boolean().default(false),
   certification_body: z.string().optional(),
   certification_number: z.string().optional(),
-  
+
   // Business Details
   price_range: z.enum(['$', '$$', '$$$', '$$$$']).optional(),
   price_level: z.number().int().min(1).max(4).optional(),
-  opening_hours: z.record(z.object({
-    open: z.string().regex(/^\d{2}:\d{2}$/, 'Time format should be HH:MM'),
-    close: z.string().regex(/^\d{2}:\d{2}$/, 'Time format should be HH:MM'),
-    closed: z.boolean().optional()
-  })).optional(),
-  
+  opening_hours: z
+    .record(
+      z.object({
+        open: z.string().regex(/^\d{2}:\d{2}$/, 'Time format should be HH:MM'),
+        close: z.string().regex(/^\d{2}:\d{2}$/, 'Time format should be HH:MM'),
+        closed: z.boolean().optional(),
+      })
+    )
+    .optional(),
+
   // Features and Tags
   features: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
@@ -64,22 +79,22 @@ export const businessImportSchema = z.object({
   special_diets: z.array(z.string()).default([]),
   payment_methods: z.array(z.string()).default([]),
   delivery_platforms: z.array(z.string()).default([]),
-  
+
   // Media
   images: z.array(z.string().url()).default([]),
-  
+
   // Social Media
   facebook_id: z.string().optional(),
   instagram_handle: z.string().optional(),
   google_place_id: z.string().optional(),
-  
+
   // Import Metadata
   source: z.string().default('csv'),
   external_id: z.string().optional(),
-  
+
   // Business Rating (if available from source)
   rating: z.number().min(0).max(5).optional(),
-  review_count: z.number().int().min(0).optional()
+  review_count: z.number().int().min(0).optional(),
 });
 
 export type BusinessImportData = z.infer<typeof businessImportSchema>;
@@ -87,40 +102,62 @@ export type BusinessImportData = z.infer<typeof businessImportSchema>;
 // CSV Header Mapping for flexible imports
 export const csvHeaderMapping = {
   // Core fields - multiple possible headers
-  name: ['name', 'business_name', 'company_name', 'restaurant_name', 'shop_name'],
+  name: [
+    'name',
+    'business_name',
+    'company_name',
+    'restaurant_name',
+    'shop_name',
+  ],
   description: ['description', 'about', 'details', 'info'],
   category: ['category', 'type', 'business_type', 'industry'],
   subcategory: ['subcategory', 'sub_category', 'cuisine', 'specialty'],
-  
+
   // Location
   address: ['address', 'location', 'full_address', 'street_address'],
   postal_code: ['postal_code', 'postcode', 'zip', 'postal'],
   district: ['district', 'area', 'neighbourhood', 'region', 'zone'],
-  
+
   // Contact
   phone: ['phone', 'telephone', 'mobile', 'contact', 'phone_number'],
   email: ['email', 'email_address', 'contact_email'],
   website: ['website', 'url', 'web', 'homepage', 'site'],
-  
+
   // Halal
-  halal_certified: ['halal_certified', 'halal', 'is_halal', 'certified', 'halal_cert'],
-  certification_body: ['certification_body', 'certifier', 'cert_body', 'halal_body'],
-  certification_number: ['certification_number', 'cert_number', 'halal_number', 'cert_id'],
-  
+  halal_certified: [
+    'halal_certified',
+    'halal',
+    'is_halal',
+    'certified',
+    'halal_cert',
+  ],
+  certification_body: [
+    'certification_body',
+    'certifier',
+    'cert_body',
+    'halal_body',
+  ],
+  certification_number: [
+    'certification_number',
+    'cert_number',
+    'halal_number',
+    'cert_id',
+  ],
+
   // Business details
   price_range: ['price_range', 'price', 'budget', 'cost'],
   rating: ['rating', 'stars', 'score'],
   review_count: ['review_count', 'reviews', 'review_number', 'total_reviews'],
-  
+
   // Features
   features: ['features', 'amenities', 'facilities', 'services'],
   tags: ['tags', 'keywords', 'labels'],
   cuisine_types: ['cuisine_types', 'cuisine', 'food_type', 'cooking_style'],
-  
+
   // Social
   facebook_id: ['facebook_id', 'facebook', 'fb_id', 'fb'],
   instagram_handle: ['instagram_handle', 'instagram', 'ig_handle', 'ig'],
-  google_place_id: ['google_place_id', 'place_id', 'google_id']
+  google_place_id: ['google_place_id', 'place_id', 'google_id'],
 };
 
 // Import Statistics
@@ -138,7 +175,13 @@ export interface BusinessDuplicate {
   business_id_1: string;
   business_id_2: string;
   similarity_score: number;
-  match_type: 'exact_name' | 'fuzzy_name' | 'address' | 'phone' | 'coordinates' | 'combined';
+  match_type:
+    | 'exact_name'
+    | 'fuzzy_name'
+    | 'address'
+    | 'phone'
+    | 'coordinates'
+    | 'combined';
   confidence_level: 'low' | 'medium' | 'high' | 'exact';
   status: 'pending' | 'confirmed_duplicate' | 'not_duplicate' | 'merged';
   reviewed_by?: string;
@@ -152,7 +195,13 @@ export interface BusinessDuplicate {
 export interface SEOPage {
   id: string;
   slug: string;
-  page_type: 'category' | 'location' | 'combination' | 'feature' | 'price' | 'cuisine';
+  page_type:
+    | 'category'
+    | 'location'
+    | 'combination'
+    | 'feature'
+    | 'price'
+    | 'cuisine';
   title: string;
   meta_description?: string;
   h1_title?: string;

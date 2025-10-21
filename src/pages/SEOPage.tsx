@@ -8,17 +8,17 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import ListingCard from '@/components/ListingCard';
-import { 
-  MapPin, 
-  Star, 
-  Users, 
-  TrendingUp, 
+import {
+  MapPin,
+  Star,
+  Users,
+  TrendingUp,
   Filter,
   ChevronRight,
   Search,
   Clock,
   Phone,
-  Globe
+  Globe,
 } from 'lucide-react';
 import { SEOPage as SEOPageType, SEOPageContent } from '@/types/import';
 import { Business } from '@/types/business';
@@ -76,28 +76,38 @@ export default function SEOPage() {
         } else if (pathParts[0] === 'district') {
           // New district-specific routing: /district/tampines or /district/tampines/restaurants
           pageType = pathParts.length === 3 ? 'district_category' : 'district';
-          filters = pathParts.length === 3 
-            ? { planning_area: pathParts[1], category: pathParts[2] }
-            : { planning_area: pathParts[1] };
+          filters =
+            pathParts.length === 3
+              ? { planning_area: pathParts[1], category: pathParts[2] }
+              : { planning_area: pathParts[1] };
         } else if (pathParts[0] === 'property-zone') {
           // New property zone routing: /property-zone/d01 or /property-zone/d01/restaurants
-          pageType = pathParts.length === 3 ? 'property_zone_category' : 'property_zone';
-          filters = pathParts.length === 3
-            ? { property_district_code: pathParts[1].toUpperCase(), category: pathParts[2] }
-            : { property_district_code: pathParts[1].toUpperCase() };
+          pageType =
+            pathParts.length === 3 ? 'property_zone_category' : 'property_zone';
+          filters =
+            pathParts.length === 3
+              ? {
+                  property_district_code: pathParts[1].toUpperCase(),
+                  category: pathParts[2],
+                }
+              : { property_district_code: pathParts[1].toUpperCase() };
         } else if (pathParts.length === 1) {
           pageType = 'location';
           filters = { district: pathParts[0].replace('-', ' ') };
         } else if (pathParts.length === 2) {
           pageType = 'combination';
-          filters = { 
-            district: pathParts[0].replace('-', ' '), 
-            category: pathParts[1] 
+          filters = {
+            district: pathParts[0].replace('-', ' '),
+            category: pathParts[1],
           };
         }
 
         // Generate the page
-        seoPageData = await SEOPageGenerator.generateAndStorePage(slug, pageType, filters);
+        seoPageData = await SEOPageGenerator.generateAndStorePage(
+          slug,
+          pageType,
+          filters
+        );
       }
 
       if (!seoPageData) {
@@ -116,7 +126,6 @@ export default function SEOPage() {
 
       // Load businesses based on filters
       await loadBusinesses(seoPageData.filters);
-
     } catch (err: any) {
       console.error('Error loading SEO page:', err);
       setError(err.message || 'Failed to load page');
@@ -144,11 +153,17 @@ export default function SEOPage() {
 
       // New district-specific filters
       if (filters.planning_area) {
-        query = query.eq('planning_area', filters.planning_area.replace('-', ' '));
+        query = query.eq(
+          'planning_area',
+          filters.planning_area.replace('-', ' ')
+        );
       }
 
       if (filters.property_district_code) {
-        query = query.eq('property_district_code', filters.property_district_code);
+        query = query.eq(
+          'property_district_code',
+          filters.property_district_code
+        );
       }
 
       if (filters.halal_certified) {
@@ -164,7 +179,7 @@ export default function SEOPage() {
       }
 
       const { data, error } = await query.limit(50);
-      
+
       if (error) {
         console.error('Error loading businesses:', error);
         return;
@@ -182,15 +197,15 @@ export default function SEOPage() {
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="space-y-4">
-            <div className="h-8 bg-muted rounded animate-pulse" />
-            <div className="h-4 bg-muted rounded w-2/3 animate-pulse" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="h-8 animate-pulse rounded bg-muted" />
+            <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[...Array(6)].map((_, i) => (
                 <Card key={i} className="animate-pulse">
-                  <div className="h-48 bg-muted rounded-t" />
-                  <CardContent className="p-4 space-y-2">
-                    <div className="h-4 bg-muted rounded" />
-                    <div className="h-3 bg-muted rounded w-2/3" />
+                  <div className="h-48 rounded-t bg-muted" />
+                  <CardContent className="space-y-2 p-4">
+                    <div className="h-4 rounded bg-muted" />
+                    <div className="h-3 w-2/3 rounded bg-muted" />
                   </CardContent>
                 </Card>
               ))}
@@ -206,8 +221,10 @@ export default function SEOPage() {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Page Not Found</h1>
-          <p className="text-muted-foreground mb-4">{error || 'The page you\'re looking for doesn\'t exist.'}</p>
+          <h1 className="mb-4 text-2xl font-bold">Page Not Found</h1>
+          <p className="mb-4 text-muted-foreground">
+            {error || "The page you're looking for doesn't exist."}
+          </p>
           <Button onClick={() => navigate('/')}>Go Home</Button>
         </div>
       </div>
@@ -235,61 +252,93 @@ export default function SEOPage() {
 
       <div className="min-h-screen bg-background">
         <Header />
-        
+
         {/* Breadcrumbs */}
         <div className="border-b bg-muted/30">
           <div className="container mx-auto px-4 py-3">
             <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/')}>
+              <Button
+                variant="link"
+                className="h-auto p-0"
+                onClick={() => navigate('/')}
+              >
                 Home
               </Button>
-              <ChevronRight className="w-4 h-4" />
-              
+              <ChevronRight className="h-4 w-4" />
+
               {/* Enhanced breadcrumbs for district and property zone pages */}
               {seoPage.page_type === 'district' && (
                 <>
-                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/districts')}>
+                  <Button
+                    variant="link"
+                    className="h-auto p-0"
+                    onClick={() => navigate('/districts')}
+                  >
                     Districts
                   </Button>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="h-4 w-4" />
                 </>
               )}
-              
+
               {seoPage.page_type === 'district_category' && (
                 <>
-                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/districts')}>
+                  <Button
+                    variant="link"
+                    className="h-auto p-0"
+                    onClick={() => navigate('/districts')}
+                  >
                     Districts
                   </Button>
-                  <ChevronRight className="w-4 h-4" />
-                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate(`/district/${slugPath?.split('/')[1]}`)}>
+                  <ChevronRight className="h-4 w-4" />
+                  <Button
+                    variant="link"
+                    className="h-auto p-0"
+                    onClick={() =>
+                      navigate(`/district/${slugPath?.split('/')[1]}`)
+                    }
+                  >
                     {slugPath?.split('/')[1]?.replace('-', ' ')}
                   </Button>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="h-4 w-4" />
                 </>
               )}
-              
+
               {seoPage.page_type === 'property_zone' && (
                 <>
-                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/property-zones')}>
+                  <Button
+                    variant="link"
+                    className="h-auto p-0"
+                    onClick={() => navigate('/property-zones')}
+                  >
                     Property Zones
                   </Button>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="h-4 w-4" />
                 </>
               )}
-              
+
               {seoPage.page_type === 'property_zone_category' && (
                 <>
-                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/property-zones')}>
+                  <Button
+                    variant="link"
+                    className="h-auto p-0"
+                    onClick={() => navigate('/property-zones')}
+                  >
                     Property Zones
                   </Button>
-                  <ChevronRight className="w-4 h-4" />
-                  <Button variant="link" className="p-0 h-auto" onClick={() => navigate(`/property-zone/${slugPath?.split('/')[1]}`)}>
+                  <ChevronRight className="h-4 w-4" />
+                  <Button
+                    variant="link"
+                    className="h-auto p-0"
+                    onClick={() =>
+                      navigate(`/property-zone/${slugPath?.split('/')[1]}`)
+                    }
+                  >
                     {slugPath?.split('/')[1]?.toUpperCase()}
                   </Button>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="h-4 w-4" />
                 </>
               )}
-              
+
               <span className="text-foreground">{seoPage.h1_title}</span>
             </nav>
           </div>
@@ -298,25 +347,33 @@ export default function SEOPage() {
         <div className="container mx-auto px-4 py-8">
           {/* Header Section */}
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">{seoPage.h1_title}</h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <h1 className="mb-4 text-3xl font-bold md:text-4xl">
+              {seoPage.h1_title}
+            </h1>
+            <p className="text-lg leading-relaxed text-muted-foreground">
               {content.intro_text}
             </p>
           </div>
 
           {/* Statistics Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-primary">{content.business_stats.total_count}</div>
-                <p className="text-sm text-muted-foreground">Total Businesses</p>
+                <div className="text-2xl font-bold text-primary">
+                  {content.business_stats.total_count}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Total Businesses
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center gap-1">
-                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                  <span className="text-2xl font-bold">{content.business_stats.avg_rating}</span>
+                  <Star className="h-4 w-4 fill-current text-yellow-500" />
+                  <span className="text-2xl font-bold">
+                    {content.business_stats.avg_rating}
+                  </span>
                 </div>
                 <p className="text-sm text-muted-foreground">Average Rating</p>
               </CardContent>
@@ -334,7 +391,9 @@ export default function SEOPage() {
                 <div className="text-2xl font-bold text-blue-600">
                   {businesses.filter(b => b.is_premium).length}
                 </div>
-                <p className="text-sm text-muted-foreground">Premium Listings</p>
+                <p className="text-sm text-muted-foreground">
+                  Premium Listings
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -344,7 +403,7 @@ export default function SEOPage() {
             <Card className="mb-8">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
+                  <TrendingUp className="h-5 w-5" />
                   Key Highlights
                 </CardTitle>
               </CardHeader>
@@ -352,7 +411,7 @@ export default function SEOPage() {
                 <ul className="space-y-2">
                   {content.highlights.map((highlight, index) => (
                     <li key={index} className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                      <div className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
                       <span>{highlight}</span>
                     </li>
                   ))}
@@ -362,7 +421,7 @@ export default function SEOPage() {
           )}
 
           {/* Popular Categories/Features */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
             {content.business_stats.popular_cuisines.length > 0 && (
               <Card>
                 <CardHeader>
@@ -370,11 +429,13 @@ export default function SEOPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {content.business_stats.popular_cuisines.map((cuisine, index) => (
-                      <Badge key={index} variant="secondary">
-                        {cuisine}
-                      </Badge>
-                    ))}
+                    {content.business_stats.popular_cuisines.map(
+                      (cuisine, index) => (
+                        <Badge key={index} variant="secondary">
+                          {cuisine}
+                        </Badge>
+                      )
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -387,11 +448,13 @@ export default function SEOPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {content.business_stats.top_features.map((feature, index) => (
-                      <Badge key={index} variant="outline">
-                        {feature}
-                      </Badge>
-                    ))}
+                    {content.business_stats.top_features.map(
+                      (feature, index) => (
+                        <Badge key={index} variant="outline">
+                          {feature}
+                        </Badge>
+                      )
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -403,7 +466,7 @@ export default function SEOPage() {
             <Card className="mb-8">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
+                  <MapPin className="h-5 w-5" />
                   Area Information
                 </CardTitle>
               </CardHeader>
@@ -415,24 +478,24 @@ export default function SEOPage() {
 
           {/* Business Listings */}
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold">Featured Businesses</h2>
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4" />
+                <Filter className="h-4 w-4" />
                 <span className="text-sm text-muted-foreground">
                   Showing {businesses.length} results
                 </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {businesses.slice(0, 12).map((business) => (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {businesses.slice(0, 12).map(business => (
                 <ListingCard key={business.id} listing={business} />
               ))}
             </div>
 
             {businesses.length > 12 && (
-              <div className="text-center mt-6">
+              <div className="mt-6 text-center">
                 <Button variant="outline" onClick={() => navigate('/listings')}>
                   View All {content.business_stats.total_count} Businesses
                 </Button>
@@ -449,9 +512,13 @@ export default function SEOPage() {
               <CardContent className="space-y-6">
                 {content.faqs.map((faq, index) => (
                   <div key={index}>
-                    <h3 className="font-semibold mb-2">{faq.question}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
-                    {index < content.faqs.length - 1 && <Separator className="mt-4" />}
+                    <h3 className="mb-2 font-semibold">{faq.question}</h3>
+                    <p className="leading-relaxed text-muted-foreground">
+                      {faq.answer}
+                    </p>
+                    {index < content.faqs.length - 1 && (
+                      <Separator className="mt-4" />
+                    )}
                   </div>
                 ))}
               </CardContent>
@@ -463,7 +530,7 @@ export default function SEOPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Search className="w-5 h-5" />
+                  <Search className="h-5 w-5" />
                   Related Searches
                 </CardTitle>
               </CardHeader>
@@ -474,8 +541,10 @@ export default function SEOPage() {
                       key={index}
                       variant="ghost"
                       size="sm"
-                      className="text-primary hover:text-primary-foreground hover:bg-primary"
-                      onClick={() => navigate(`/search?q=${encodeURIComponent(search)}`)}
+                      className="text-primary hover:bg-primary hover:text-primary-foreground"
+                      onClick={() =>
+                        navigate(`/search?q=${encodeURIComponent(search)}`)
+                      }
                     >
                       {search}
                     </Button>
@@ -485,7 +554,7 @@ export default function SEOPage() {
             </Card>
           )}
         </div>
-        
+
         <Footer />
       </div>
     </>

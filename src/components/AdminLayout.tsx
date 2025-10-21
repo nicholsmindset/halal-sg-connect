@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import Header from "@/components/Header";
-import AdminSidebar from "@/components/AdminSidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import Header from '@/components/Header';
+import AdminSidebar from '@/components/AdminSidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -23,9 +23,11 @@ const AdminLayout = ({ children, title, description }: AdminLayoutProps) => {
             <div className="p-6">
               <div className="mb-8">
                 <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-                {description && <p className="text-muted-foreground">{description}</p>}
+                {description && (
+                  <p className="text-muted-foreground">{description}</p>
+                )}
               </div>
-              
+
               {children}
             </div>
           </main>

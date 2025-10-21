@@ -3,6 +3,7 @@
 ## 📦 **GitHub CLI Installation**
 
 ### **Option 1: Homebrew (Recommended for macOS)**
+
 ```bash
 # Install Homebrew first if you don't have it
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -12,11 +13,13 @@ brew install gh
 ```
 
 ### **Option 2: Direct Download**
+
 1. Go to: https://github.com/cli/cli/releases
 2. Download the latest macOS release
 3. Install the `.pkg` file
 
 ### **Option 3: Manual Install**
+
 ```bash
 # Download and install
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -28,13 +31,14 @@ sudo apt install gh
 ## 🔐 **GitHub CLI Authentication**
 
 After installation:
+
 ```bash
 # Authenticate with GitHub
 gh auth login
 
 # Follow the prompts:
 # 1. Choose "GitHub.com"
-# 2. Choose "HTTPS" 
+# 2. Choose "HTTPS"
 # 3. Choose "Yes" to authenticate Git with your GitHub credentials
 # 4. Choose "Login with a web browser"
 # 5. Follow browser authentication
@@ -148,6 +152,7 @@ sonar-scanner \
 ## **Quick Start (5 minutes)**
 
 1. **Install GitHub CLI**:
+
    ```bash
    brew install gh
    gh auth login
@@ -178,7 +183,7 @@ sonar-scanner \
 ## **Advanced Setup (15 minutes)**
 
 1. **Add CodeRabbit to your repo** for PR reviews
-2. **Install Sourcery** for Python-like improvements  
+2. **Install Sourcery** for Python-like improvements
 3. **Setup SonarCloud** for continuous quality monitoring
 4. **Add GitHub Copilot** if you have access
 

@@ -41,6 +41,7 @@ This guide covers deploying Halal SG Connect to production using Netlify and Sup
 ### 4. Get API Keys
 
 Navigate to Settings → API:
+
 - **Project URL**: Copy this (format: `https://xxx.supabase.co`)
 - **anon/public key**: Copy this (starts with `eyJ...`)
 - **service_role key**: Copy this (starts with `eyJ...`) - **Keep secret!**
@@ -124,6 +125,7 @@ GOOGLE_ANALYTICS_ID=GA-XXXXXXXXX
 ### 2. Add to Netlify
 
 Add environment variable:
+
 ```env
 VITE_SENTRY_DSN=https://[key]@[org].ingest.sentry.io/[project-id]
 ```
@@ -131,6 +133,7 @@ VITE_SENTRY_DSN=https://[key]@[org].ingest.sentry.io/[project-id]
 ## ✅ Post-Deployment Checklist
 
 ### Immediate Actions
+
 - [ ] Test user registration flow
 - [ ] Test business listing creation
 - [ ] Test image uploads
@@ -139,18 +142,21 @@ VITE_SENTRY_DSN=https://[key]@[org].ingest.sentry.io/[project-id]
 - [ ] Test all navigation links
 
 ### Database Setup
+
 - [ ] Import initial business data (if any)
 - [ ] Create admin user account
 - [ ] Set up categories and districts
 - [ ] Configure email templates
 
 ### Performance
+
 - [ ] Run Lighthouse audit (target: 90+)
 - [ ] Check Core Web Vitals
 - [ ] Test on slow 3G connection
 - [ ] Verify bundle sizes
 
 ### Monitoring
+
 - [ ] Sentry error tracking working
 - [ ] Analytics configured
 - [ ] Set up uptime monitoring
@@ -162,6 +168,7 @@ VITE_SENTRY_DSN=https://[key]@[org].ingest.sentry.io/[project-id]
 
 **Issue**: Build fails with dependency errors
 **Solution**:
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
@@ -172,6 +179,7 @@ npm run build
 
 **Issue**: Variables undefined in production
 **Solution**:
+
 - Verify variables start with `VITE_` for client-side
 - Redeploy site after adding variables
 - Check build logs for errors
@@ -180,6 +188,7 @@ npm run build
 
 **Issue**: "Failed to connect to database"
 **Solution**:
+
 - Verify `VITE_SUPABASE_URL` is correct
 - Check `VITE_SUPABASE_ANON_KEY` is valid
 - Ensure RLS policies allow access
@@ -188,6 +197,7 @@ npm run build
 
 **Issue**: Images not uploading to Supabase Storage
 **Solution**:
+
 - Verify `business-assets` bucket exists
 - Check bucket is set to public
 - Verify storage policies allow uploads
@@ -195,6 +205,7 @@ npm run build
 ## 📞 Support
 
 If you encounter issues:
+
 1. Check [Netlify docs](https://docs.netlify.com/)
 2. Check [Supabase docs](https://supabase.com/docs)
 3. Review build logs in Netlify
@@ -203,6 +214,7 @@ If you encounter issues:
 ## 🔄 CI/CD Pipeline
 
 The project uses GitHub Actions for CI/CD:
+
 - Automatic builds on push to main
 - Run tests before deployment
 - Automatic deploy to Netlify
@@ -210,6 +222,7 @@ The project uses GitHub Actions for CI/CD:
 ## 📈 Monitoring & Analytics
 
 ### Key Metrics to Track
+
 - User registrations
 - Business listings created
 - Search queries
@@ -218,6 +231,7 @@ The project uses GitHub Actions for CI/CD:
 - API response times
 
 ### Tools
+
 - **Sentry**: Error tracking
 - **Google Analytics**: User analytics
 - **Netlify Analytics**: Traffic & performance

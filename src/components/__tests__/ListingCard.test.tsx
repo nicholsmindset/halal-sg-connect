@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@/test/utils'
-import ListingCard from '../ListingCard'
-import { type Business } from '@/types/business'
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@/test/utils';
+import ListingCard from '../ListingCard';
+import { type Business } from '@/types/business';
 
 const mockListing: Business = {
   id: '1',
@@ -37,35 +37,35 @@ const mockListing: Business = {
     saturday: { open: '10:00', close: '22:00' },
     sunday: { open: '10:00', close: '22:00' },
   },
-}
+};
 
 describe('ListingCard', () => {
   it('renders listing information correctly', () => {
-    render(<ListingCard listing={mockListing} />)
+    render(<ListingCard listing={mockListing} />);
 
-    expect(screen.getByText('Test Restaurant')).toBeInTheDocument()
-    expect(screen.getByText('A great test restaurant')).toBeInTheDocument()
-    expect(screen.getByText('Orchard')).toBeInTheDocument()
-    expect(screen.getByText('4.5')).toBeInTheDocument()
-    expect(screen.getByText('(100 reviews)')).toBeInTheDocument()
-  })
+    expect(screen.getByText('Test Restaurant')).toBeInTheDocument();
+    expect(screen.getByText('A great test restaurant')).toBeInTheDocument();
+    expect(screen.getByText('Orchard')).toBeInTheDocument();
+    expect(screen.getByText('4.5')).toBeInTheDocument();
+    expect(screen.getByText('(100 reviews)')).toBeInTheDocument();
+  });
 
   it('shows premium badge for premium listings', () => {
-    const premiumListing = { ...mockListing, isPremium: true }
-    render(<ListingCard listing={premiumListing} />)
+    const premiumListing = { ...mockListing, isPremium: true };
+    render(<ListingCard listing={premiumListing} />);
 
-    expect(screen.getByText('Premium')).toBeInTheDocument()
-  })
+    expect(screen.getByText('Premium')).toBeInTheDocument();
+  });
 
   it('does not show premium badge for free listings', () => {
-    render(<ListingCard listing={mockListing} />)
+    render(<ListingCard listing={mockListing} />);
 
-    expect(screen.queryByText('Premium')).not.toBeInTheDocument()
-  })
+    expect(screen.queryByText('Premium')).not.toBeInTheDocument();
+  });
 
   it('displays halal certified badge', () => {
-    render(<ListingCard listing={mockListing} />)
+    render(<ListingCard listing={mockListing} />);
 
-    expect(screen.getByText('Halal Certified')).toBeInTheDocument()
-  })
-})
+    expect(screen.getByText('Halal Certified')).toBeInTheDocument();
+  });
+});

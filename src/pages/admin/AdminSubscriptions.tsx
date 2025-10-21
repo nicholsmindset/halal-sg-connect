@@ -4,10 +4,13 @@ import { CreditCard, TrendingUp, Users, DollarSign } from 'lucide-react';
 
 const AdminSubscriptions = () => {
   return (
-    <AdminLayout title="Subscription Management" description="Monitor and manage user subscriptions">
+    <AdminLayout
+      title="Subscription Management"
+      description="Monitor and manage user subscriptions"
+    >
       <div className="space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-2">
@@ -41,7 +44,9 @@ const AdminSubscriptions = () => {
                 <DollarSign className="h-4 w-4 text-orange-500" />
                 <div className="text-2xl font-bold">$187</div>
               </div>
-              <p className="text-sm text-muted-foreground">Avg. Revenue per User</p>
+              <p className="text-sm text-muted-foreground">
+                Avg. Revenue per User
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -51,7 +56,9 @@ const AdminSubscriptions = () => {
             <CardTitle>Subscription Analytics</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">Subscription management features coming soon...</p>
+            <p className="text-muted-foreground">
+              Subscription management features coming soon...
+            </p>
           </CardContent>
         </Card>
       </div>

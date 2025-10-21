@@ -1,11 +1,11 @@
-import Header from "@/components/Header";
-import DashboardSidebar from "@/components/DashboardSidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
+import Header from '@/components/Header';
+import DashboardSidebar from '@/components/DashboardSidebar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
 
 const DashboardSettings = () => {
   return (
@@ -16,9 +16,11 @@ const DashboardSettings = () => {
         <main className="flex-1 p-6">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-            <p className="text-muted-foreground">Manage your account and preferences</p>
+            <p className="text-muted-foreground">
+              Manage your account and preferences
+            </p>
           </div>
-          
+
           <div className="max-w-2xl space-y-6">
             <Card>
               <CardHeader>
@@ -32,7 +34,11 @@ const DashboardSettings = () => {
                   </div>
                   <div>
                     <Label htmlFor="contactEmail">Contact Email</Label>
-                    <Input id="contactEmail" type="email" placeholder="contact@business.com" />
+                    <Input
+                      id="contactEmail"
+                      type="email"
+                      placeholder="contact@business.com"
+                    />
                   </div>
                 </div>
                 <div>

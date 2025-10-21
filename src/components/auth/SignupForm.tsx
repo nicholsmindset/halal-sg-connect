@@ -1,22 +1,28 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Mail, Lock, Eye, EyeOff, Building } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { User, Mail, Lock, Eye, EyeOff, Building } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    userType: "",
-    businessName: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    userType: '',
+    businessName: '',
     agreeToTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -27,13 +33,13 @@ const SignupForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
       toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Passwords do not match',
+        variant: 'destructive',
       });
       setIsLoading(false);
       return;
@@ -41,9 +47,9 @@ const SignupForm = () => {
 
     if (!formData.agreeToTerms) {
       toast({
-        title: "Error",
-        description: "Please agree to the terms and conditions",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Please agree to the terms and conditions',
+        variant: 'destructive',
       });
       setIsLoading(false);
       return;
@@ -53,8 +59,8 @@ const SignupForm = () => {
     setTimeout(() => {
       setIsLoading(false);
       toast({
-        title: "Signup functionality",
-        description: "Connect to Supabase to enable user registration",
+        title: 'Signup functionality',
+        description: 'Connect to Supabase to enable user registration',
       });
     }, 1000);
   };
@@ -69,12 +75,12 @@ const SignupForm = () => {
         <div className="space-y-2">
           <Label htmlFor="firstName">First Name</Label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input
               id="firstName"
               placeholder="First name"
               value={formData.firstName}
-              onChange={(e) => updateFormData("firstName", e.target.value)}
+              onChange={e => updateFormData('firstName', e.target.value)}
               className="pl-10"
               required
             />
@@ -86,7 +92,7 @@ const SignupForm = () => {
             id="lastName"
             placeholder="Last name"
             value={formData.lastName}
-            onChange={(e) => updateFormData("lastName", e.target.value)}
+            onChange={e => updateFormData('lastName', e.target.value)}
             required
           />
         </div>
@@ -95,13 +101,13 @@ const SignupForm = () => {
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <div className="relative">
-          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
             id="email"
             type="email"
             placeholder="Enter your email"
             value={formData.email}
-            onChange={(e) => updateFormData("email", e.target.value)}
+            onChange={e => updateFormData('email', e.target.value)}
             className="pl-10"
             required
           />
@@ -110,7 +116,10 @@ const SignupForm = () => {
 
       <div className="space-y-2">
         <Label htmlFor="userType">Account Type</Label>
-        <Select value={formData.userType} onValueChange={(value) => updateFormData("userType", value)}>
+        <Select
+          value={formData.userType}
+          onValueChange={value => updateFormData('userType', value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select account type" />
           </SelectTrigger>
@@ -121,16 +130,16 @@ const SignupForm = () => {
         </Select>
       </div>
 
-      {formData.userType === "vendor" && (
+      {formData.userType === 'vendor' && (
         <div className="space-y-2">
           <Label htmlFor="businessName">Business Name</Label>
           <div className="relative">
-            <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input
               id="businessName"
               placeholder="Enter your business name"
               value={formData.businessName}
-              onChange={(e) => updateFormData("businessName", e.target.value)}
+              onChange={e => updateFormData('businessName', e.target.value)}
               className="pl-10"
               required
             />
@@ -141,13 +150,13 @@ const SignupForm = () => {
       <div className="space-y-2">
         <Label htmlFor="password">Password</Label>
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
             id="password"
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             placeholder="Create a password"
             value={formData.password}
-            onChange={(e) => updateFormData("password", e.target.value)}
+            onChange={e => updateFormData('password', e.target.value)}
             className="pl-10 pr-10"
             required
           />
@@ -155,10 +164,14 @@ const SignupForm = () => {
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+            className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 transform p-0"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>
@@ -166,13 +179,13 @@ const SignupForm = () => {
       <div className="space-y-2">
         <Label htmlFor="confirmPassword">Confirm Password</Label>
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
             id="confirmPassword"
-            type={showConfirmPassword ? "text" : "password"}
+            type={showConfirmPassword ? 'text' : 'password'}
             placeholder="Confirm your password"
             value={formData.confirmPassword}
-            onChange={(e) => updateFormData("confirmPassword", e.target.value)}
+            onChange={e => updateFormData('confirmPassword', e.target.value)}
             className="pl-10 pr-10"
             required
           />
@@ -180,10 +193,14 @@ const SignupForm = () => {
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+            className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 transform p-0"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           >
-            {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showConfirmPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>
@@ -192,22 +209,24 @@ const SignupForm = () => {
         <Checkbox
           id="terms"
           checked={formData.agreeToTerms}
-          onCheckedChange={(checked) => updateFormData("agreeToTerms", checked as boolean)}
+          onCheckedChange={checked =>
+            updateFormData('agreeToTerms', checked as boolean)
+          }
         />
         <Label htmlFor="terms" className="text-sm">
-          I agree to the{" "}
-          <Button variant="link" className="p-0 h-auto text-sm">
+          I agree to the{' '}
+          <Button variant="link" className="h-auto p-0 text-sm">
             Terms of Service
-          </Button>{" "}
-          and{" "}
-          <Button variant="link" className="p-0 h-auto text-sm">
+          </Button>{' '}
+          and{' '}
+          <Button variant="link" className="h-auto p-0 text-sm">
             Privacy Policy
           </Button>
         </Label>
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Creating account..." : "Create Account"}
+        {isLoading ? 'Creating account...' : 'Create Account'}
       </Button>
 
       <div className="relative">
@@ -215,13 +234,15 @@ const SignupForm = () => {
           <Separator />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <Button variant="outline" type="button">
-          <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
+          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
               fill="currentColor"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -242,7 +263,7 @@ const SignupForm = () => {
           Google
         </Button>
         <Button variant="outline" type="button">
-          <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
           Facebook

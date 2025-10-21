@@ -2,17 +2,17 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { 
-  MapPin, 
-  Building2, 
-  Utensils, 
+import {
+  MapPin,
+  Building2,
+  Utensils,
   Search,
   Phone,
   Mail,
   ExternalLink,
   Facebook,
   Instagram,
-  Twitter
+  Twitter,
 } from 'lucide-react';
 
 export default function Footer() {
@@ -39,7 +39,7 @@ export default function Footer() {
       { name: 'Bukit Merah', slug: 'bukit-merah' },
       { name: 'Geylang', slug: 'geylang' },
       { name: 'Kallang', slug: 'kallang' },
-      { name: 'Marine Parade', slug: 'marine-parade' }
+      { name: 'Marine Parade', slug: 'marine-parade' },
     ],
     'East Region': [
       { name: 'Tampines', slug: 'tampines', popular: true },
@@ -47,7 +47,7 @@ export default function Footer() {
       { name: 'Pasir Ris', slug: 'pasir-ris', popular: true },
       { name: 'Changi Airport', slug: 'changi', popular: true },
       { name: 'Paya Lebar', slug: 'paya-lebar' },
-      { name: 'Changi Village', slug: 'changi-bay' }
+      { name: 'Changi Village', slug: 'changi-bay' },
     ],
     'West Region': [
       { name: 'Jurong East', slug: 'jurong-east', popular: true },
@@ -60,7 +60,7 @@ export default function Footer() {
       { name: 'Pioneer', slug: 'pioneer' },
       { name: 'Tengah Smart Town', slug: 'tengah' },
       { name: 'Tuas', slug: 'tuas' },
-      { name: 'West Coast', slug: 'west-coast' }
+      { name: 'West Coast', slug: 'west-coast' },
     ],
     'North Region': [
       { name: 'Woodlands', slug: 'woodlands', popular: true },
@@ -69,7 +69,7 @@ export default function Footer() {
       { name: 'Mandai Zoo Area', slug: 'mandai' },
       { name: 'Seletar', slug: 'seletar' },
       { name: 'Lim Chu Kang', slug: 'lim-chu-kang' },
-      { name: 'Sungei Kadut', slug: 'sungei-kadut' }
+      { name: 'Sungei Kadut', slug: 'sungei-kadut' },
     ],
     'Northeast Region': [
       { name: 'Hougang', slug: 'hougang', popular: true },
@@ -77,8 +77,8 @@ export default function Footer() {
       { name: 'Sengkang', slug: 'sengkang', popular: true },
       { name: 'Ang Mo Kio', slug: 'ang-mo-kio', popular: true },
       { name: 'Bishan', slug: 'bishan', popular: true },
-      { name: 'Serangoon', slug: 'serangoon' }
-    ]
+      { name: 'Serangoon', slug: 'serangoon' },
+    ],
   };
 
   // Popular property districts for business focus
@@ -92,49 +92,49 @@ export default function Footer() {
     { code: 'D19', name: 'Hougang / Punggol / Sengkang', slug: 'd19' },
     { code: 'D20', name: 'Ang Mo Kio / Bishan', slug: 'd20' },
     { code: 'D22', name: 'Jurong East / West', slug: 'd22' },
-    { code: 'D25', name: 'Woodlands', slug: 'd25' }
+    { code: 'D25', name: 'Woodlands', slug: 'd25' },
   ];
 
   // Popular categories for cross-linking
   const popularCategories = [
     'restaurants',
-    'cafes', 
+    'cafes',
     'fast-food',
     'desserts',
     'catering',
     'groceries',
     'bakeries',
-    'food-courts'
+    'food-courts',
   ];
 
   return (
-    <footer className="bg-muted/30 border-t">
+    <footer className="border-t bg-muted/30">
       <div className="container mx-auto px-4 py-12">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          
+        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-bold text-foreground mb-3">
+              <h3 className="mb-3 text-lg font-bold text-foreground">
                 Halal SG Connect
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Singapore's most comprehensive halal business directory. Discover authentic halal dining, 
-                shopping, and services across all districts with verified certification and community reviews.
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Singapore's most comprehensive halal business directory.
+                Discover authentic halal dining, shopping, and services across
+                all districts with verified certification and community reviews.
               </p>
             </div>
-            
+
             {/* Social Links */}
             <div className="flex space-x-3">
               <Button variant="ghost" size="sm" className="p-2">
-                <Facebook className="w-4 h-4" />
+                <Facebook className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="sm" className="p-2">
-                <Instagram className="w-4 h-4" />
+                <Instagram className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="sm" className="p-2">
-                <Twitter className="w-4 h-4" />
+                <Twitter className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -144,32 +144,50 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/listings" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  to="/listings"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   Browse All Businesses
                 </Link>
               </li>
               <li>
-                <Link to="/categories" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  to="/categories"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   Categories
                 </Link>
               </li>
               <li>
-                <Link to="/districts" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  to="/districts"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   All Districts
                 </Link>
               </li>
               <li>
-                <Link to="/property-zones" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  to="/property-zones"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   Property Zones
                 </Link>
               </li>
               <li>
-                <Link to="/add-business" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  to="/add-business"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   Add Your Business
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  to="/about"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   About Us
                 </Link>
               </li>
@@ -178,13 +196,15 @@ export default function Footer() {
 
           {/* Popular Categories */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">Popular Categories</h4>
+            <h4 className="font-semibold text-foreground">
+              Popular Categories
+            </h4>
             <ul className="space-y-2 text-sm">
-              {popularCategories.slice(0, 8).map((category) => (
+              {popularCategories.slice(0, 8).map(category => (
                 <li key={category}>
-                  <Link 
+                  <Link
                     to={`/category/${category}`}
-                    className="text-muted-foreground hover:text-foreground transition-colors capitalize"
+                    className="capitalize text-muted-foreground transition-colors hover:text-foreground"
                   >
                     Halal {category.replace('-', ' ')}
                   </Link>
@@ -198,15 +218,15 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground">Contact</h4>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2 text-muted-foreground">
-                <Mail className="w-4 h-4" />
+                <Mail className="h-4 w-4" />
                 hello@halalsgconnect.com
               </li>
               <li className="flex items-center gap-2 text-muted-foreground">
-                <Phone className="w-4 h-4" />
+                <Phone className="h-4 w-4" />
                 +65 1234 5678
               </li>
               <li className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="w-4 h-4" />
+                <MapPin className="h-4 w-4" />
                 Singapore
               </li>
             </ul>
@@ -217,54 +237,60 @@ export default function Footer() {
 
         {/* Singapore Districts - Internal Linking Strategy */}
         <div className="mb-8">
-          <div className="text-center mb-6">
-            <h4 className="text-lg font-semibold text-foreground mb-2">
+          <div className="mb-6 text-center">
+            <h4 className="mb-2 text-lg font-semibold text-foreground">
               Halal Businesses by Singapore Districts
             </h4>
             <p className="text-sm text-muted-foreground">
-              Discover authentic halal dining and services in every neighborhood across Singapore
+              Discover authentic halal dining and services in every neighborhood
+              across Singapore
             </p>
           </div>
 
           {/* Popular Districts Quick Access */}
-          <div className="mb-8 p-4 bg-muted/30 rounded-lg">
-            <h5 className="font-medium text-foreground text-sm mb-3 text-center">
+          <div className="mb-8 rounded-lg bg-muted/30 p-4">
+            <h5 className="mb-3 text-center text-sm font-medium text-foreground">
               🌟 Most Popular Districts
             </h5>
             <div className="flex flex-wrap justify-center gap-2">
-              {Object.values(districtsByRegion).flat().filter(d => d.popular).map((district) => (
-                <Link
-                  key={district.slug}
-                  to={`/district/${district.slug}`}
-                  className="px-3 py-1 bg-primary/10 hover:bg-primary/20 text-primary text-xs rounded-full transition-colors font-medium"
-                >
-                  {district.name}
-                </Link>
-              ))}
+              {Object.values(districtsByRegion)
+                .flat()
+                .filter(d => d.popular)
+                .map(district => (
+                  <Link
+                    key={district.slug}
+                    to={`/district/${district.slug}`}
+                    className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+                  >
+                    {district.name}
+                  </Link>
+                ))}
             </div>
           </div>
 
           {/* Districts by Region - Enhanced Responsive Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {Object.entries(districtsByRegion).map(([region, districts]) => (
               <div key={region} className="space-y-3">
-                <h5 className="font-medium text-foreground text-sm border-b border-primary/20 pb-1 mb-2">
+                <h5 className="mb-2 border-b border-primary/20 pb-1 text-sm font-medium text-foreground">
                   {region}
                 </h5>
                 <ul className="space-y-1">
-                  {districts.map((district) => (
+                  {districts.map(district => (
                     <li key={district.slug}>
                       <Link
                         to={`/district/${district.slug}`}
-                        className={`text-xs transition-colors block py-0.5 ${
-                          district.popular 
-                            ? 'text-primary hover:text-primary/80 font-medium' 
+                        className={`block py-0.5 text-xs transition-colors ${
+                          district.popular
+                            ? 'font-medium text-primary hover:text-primary/80'
                             : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
                         <span className="flex items-center gap-1">
                           {district.name}
-                          {district.popular && <span className="text-yellow-500 text-xs">★</span>}
+                          {district.popular && (
+                            <span className="text-xs text-yellow-500">★</span>
+                          )}
                         </span>
                       </Link>
                     </li>
@@ -278,19 +304,19 @@ export default function Footer() {
         <Separator className="my-8" />
 
         {/* Popular Property Districts */}
-        <div className="mb-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg border border-blue-100 dark:border-blue-800">
-          <div className="text-center mb-4">
-            <h4 className="text-sm font-medium text-foreground mb-2 flex items-center justify-center gap-2">
+        <div className="mb-8 rounded-lg border border-blue-100 bg-gradient-to-r from-blue-50 to-purple-50 p-4 dark:border-blue-800 dark:from-blue-950/20 dark:to-purple-950/20">
+          <div className="mb-4 text-center">
+            <h4 className="mb-2 flex items-center justify-center gap-2 text-sm font-medium text-foreground">
               🏢 Popular Property Districts
             </h4>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-2">
-            {popularPropertyDistricts.map((district) => (
+            {popularPropertyDistricts.map(district => (
               <Link
                 key={district.code}
                 to={`/property-zone/${district.slug}`}
-                className="text-xs bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full transition-colors font-medium"
+                className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 transition-colors hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:hover:bg-blue-800"
               >
                 {district.code} {district.name}
               </Link>
@@ -300,24 +326,25 @@ export default function Footer() {
 
         {/* Popular District + Category Combinations */}
         <div className="mb-8">
-          <div className="text-center mb-4">
-            <h4 className="text-sm font-medium text-foreground mb-2">
+          <div className="mb-4 text-center">
+            <h4 className="mb-2 text-sm font-medium text-foreground">
               Popular Location Searches
             </h4>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-1 text-xs">
             {/* Generate popular combinations */}
-            {['tampines', 'orchard', 'jurong-east', 'woodlands', 'hougang'].map((district) => 
-              ['restaurants', 'cafes'].map((category) => (
-                <Link
-                  key={`${district}-${category}`}
-                  to={`/district/${district}/${category}`}
-                  className="text-muted-foreground hover:text-primary transition-colors px-1"
-                >
-                  {district.replace('-', ' ')} {category}
-                </Link>
-              ))
+            {['tampines', 'orchard', 'jurong-east', 'woodlands', 'hougang'].map(
+              district =>
+                ['restaurants', 'cafes'].map(category => (
+                  <Link
+                    key={`${district}-${category}`}
+                    to={`/district/${district}/${category}`}
+                    className="px-1 text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {district.replace('-', ' ')} {category}
+                  </Link>
+                ))
             )}
           </div>
         </div>
@@ -325,22 +352,34 @@ export default function Footer() {
         <Separator className="my-6" />
 
         {/* Bottom Footer */}
-        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+        <div className="flex flex-col items-center justify-between text-sm text-muted-foreground md:flex-row">
           <div className="mb-4 md:mb-0">
             <p>© {currentYear} Halal SG Connect. All rights reserved.</p>
           </div>
-          
-          <div className="flex flex-wrap justify-center md:justify-end gap-4">
-            <Link to="/privacy" className="hover:text-foreground transition-colors">
+
+          <div className="flex flex-wrap justify-center gap-4 md:justify-end">
+            <Link
+              to="/privacy"
+              className="transition-colors hover:text-foreground"
+            >
               Privacy Policy
             </Link>
-            <Link to="/terms" className="hover:text-foreground transition-colors">
+            <Link
+              to="/terms"
+              className="transition-colors hover:text-foreground"
+            >
               Terms of Service
             </Link>
-            <Link to="/sitemap" className="hover:text-foreground transition-colors">
+            <Link
+              to="/sitemap"
+              className="transition-colors hover:text-foreground"
+            >
               Sitemap
             </Link>
-            <Link to="/contact" className="hover:text-foreground transition-colors">
+            <Link
+              to="/contact"
+              className="transition-colors hover:text-foreground"
+            >
               Contact Us
             </Link>
           </div>
@@ -351,29 +390,29 @@ export default function Footer() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "Halal SG Connect",
-              "description": "Singapore's comprehensive halal business directory",
-              "url": "https://halalsgconnect.com",
-              "logo": "https://halalsgconnect.com/logo.png",
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+65-1234-5678",
-                "contactType": "customer service",
-                "email": "hello@halalsgconnect.com"
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Halal SG Connect',
+              description: "Singapore's comprehensive halal business directory",
+              url: 'https://halalsgconnect.com',
+              logo: 'https://halalsgconnect.com/logo.png',
+              contactPoint: {
+                '@type': 'ContactPoint',
+                telephone: '+65-1234-5678',
+                contactType: 'customer service',
+                email: 'hello@halalsgconnect.com',
               },
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "SG",
-                "addressLocality": "Singapore"
+              address: {
+                '@type': 'PostalAddress',
+                addressCountry: 'SG',
+                addressLocality: 'Singapore',
               },
-              "sameAs": [
-                "https://facebook.com/halalsgconnect",
-                "https://instagram.com/halalsgconnect",
-                "https://twitter.com/halalsgconnect"
-              ]
-            })
+              sameAs: [
+                'https://facebook.com/halalsgconnect',
+                'https://instagram.com/halalsgconnect',
+                'https://twitter.com/halalsgconnect',
+              ],
+            }),
           }}
         />
       </div>
