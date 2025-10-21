@@ -475,7 +475,7 @@ export class SEOPageGenerator {
     return baseSchema;
   }
 
-  // Generate related pages
+  // Generate related pages with enhanced internal linking
   private static generateRelatedPages(
     pageType: SEOPage['page_type'],
     filters: Record<string, any>
@@ -483,24 +483,245 @@ export class SEOPageGenerator {
     const relatedPages: string[] = [];
 
     if (pageType === 'category') {
-      // Add location variations
+      // Add popular location variations for this category
+      const popularDistricts = [
+        'orchard',
+        'tampines',
+        'jurong-east',
+        'bedok',
+        'woodlands',
+        'hougang',
+        'punggol'
+      ];
+      popularDistricts.forEach(district => {
+        relatedPages.push(`district/${district}/${filters.category}`);
+      });
+
+      // Add property zone variations
       relatedPages.push(
-        `orchard/${filters.category}`,
-        `chinatown/${filters.category}`,
-        `marina-bay/${filters.category}`
+        `property-zone/d01/${filters.category}`,
+        `property-zone/d07/${filters.category}`,
+        `property-zone/d09/${filters.category}`
       );
     }
 
     if (pageType === 'location') {
-      // Add category variations
+      // Add popular category variations
+      const topCategories = [
+        'restaurants',
+        'cafes',
+        'fast-food',
+        'bakery',
+        'takeaway'
+      ];
+      topCategories.forEach(category => {
+        relatedPages.push(`${filters.district}/${category}`);
+      });
+    }
+
+    if (pageType === 'district' || pageType === 'district_category') {
+      // Add nearby districts
+      const nearbyDistricts = this.getNearbyDistricts(filters.planning_area);
+      nearbyDistricts.forEach(district => {
+        if (filters.category) {
+          relatedPages.push(`district/${district}/${filters.category}`);
+        } else {
+          relatedPages.push(`district/${district}`);
+        }
+      });
+    }
+
+    if (pageType === 'property_zone' || pageType === 'property_zone_category') {
+      // Add similar property zones
+      const similarZones = this.getSimilarPropertyZones(
+        filters.property_district_code
+      );
+      similarZones.forEach(zone => {
+        if (filters.category) {
+          relatedPages.push(
+            `property-zone/${zone.toLowerCase()}/${filters.category}`
+          );
+        } else {
+          relatedPages.push(`property-zone/${zone.toLowerCase()}`);
+        }
+      });
+    }
+
+    if (pageType === 'combination') {
+      // Add feature variations
       relatedPages.push(
-        `${filters.district}/restaurants`,
-        `${filters.district}/cafes`,
-        `${filters.district}/takeaway`
+        `${filters.district}/halal-certified`,
+        `${filters.district}/family-friendly`,
+        `${filters.district}/delivery-available`
+      );
+
+      // Add price variations
+      relatedPages.push(
+        `price/budget`,
+        `price/mid-range`,
+        `price/premium`
       );
     }
 
-    return relatedPages.slice(0, 5);
+    return relatedPages.slice(0, 12); // Increased from 5 to 12
+  }
+
+  // Get nearby districts based on geographic proximity
+  private static getNearbyDistricts(planningArea: string): string[] {
+    const districtClusters: Record<string, string[]> = {
+      // Central Region
+      'orchard': ['river-valley', 'newton', 'novena', 'tanglin'],
+      'marina-bay': ['downtown-core', 'singapore-river', 'outram'],
+      'rochor': ['bugis', 'little-india', 'kallang'],
+      'geylang': ['kallang', 'bedok', 'paya-lebar'],
+
+      // East Region
+      'tampines': ['pasir-ris', 'bedok', 'simei', 'changi'],
+      'bedok': ['tampines', 'geylang', 'marine-parade', 'kembangan'],
+      'pasir-ris': ['tampines', 'punggol', 'changi'],
+      'changi': ['pasir-ris', 'tampines', 'bedok'],
+
+      // West Region
+      'jurong-east': ['jurong-west', 'clementi', 'boon-lay'],
+      'jurong-west': ['jurong-east', 'boon-lay', 'pioneer'],
+      'clementi': ['jurong-east', 'buona-vista', 'west-coast'],
+      'bukit-panjang': ['choa-chu-kang', 'bukit-batok', 'cashew'],
+
+      // North Region
+      'woodlands': ['admiralty', 'marsiling', 'sembawang'],
+      'yishun': ['sembawang', 'ang-mo-kio', 'khatib'],
+      'sembawang': ['woodlands', 'yishun', 'admiralty'],
+
+      // Northeast Region
+      'hougang': ['punggol', 'sengkang', 'serangoon', 'kovan'],
+      'punggol': ['sengkang', 'hougang', 'pasir-ris'],
+      'sengkang': ['punggol', 'hougang', 'serangoon'],
+      'serangoon': ['hougang', 'ang-mo-kio', 'bishan'],
+
+      // Central North
+      'ang-mo-kio': ['bishan', 'yishun', 'serangoon'],
+      'bishan': ['ang-mo-kio', 'toa-payoh', 'thomson'],
+      'toa-payoh': ['bishan', 'novena', 'balestier'],
+    };
+
+    return (
+      districtClusters[planningArea?.toLowerCase()] || []
+    ).slice(0, 6);
+  }
+
+  // Get similar property zones based on district type
+  private static getSimilarPropertyZones(code: string): string[] {
+    const zoneGroups: Record<string, string[]> = {
+      // Business Districts
+      D01: ['D02', 'D06', 'D09'],
+      D02: ['D01', 'D06', 'D03'],
+      D06: ['D01', 'D02', 'D09'],
+
+      // Cultural Districts
+      D07: ['D08', 'D02', 'D09'],
+      D08: ['D07', 'D02', 'D12'],
+
+      // Premium Shopping/Tourist
+      D09: ['D10', 'D11', 'D01'],
+      D10: ['D09', 'D11', 'D21'],
+      D11: ['D09', 'D10', 'D20'],
+
+      // East Residential
+      D16: ['D18', 'D15', 'D14'],
+      D18: ['D16', 'D19', 'D17'],
+      D19: ['D18', 'D20', 'D28'],
+
+      // West Residential
+      D22: ['D23', 'D05', 'D21'],
+      D23: ['D22', 'D21', 'D24'],
+
+      // North Residential
+      D25: ['D27', 'D26', 'D28'],
+      D27: ['D25', 'D28', 'D26'],
+    };
+
+    const upperCode = code?.toUpperCase();
+    return (zoneGroups[upperCode] || []).slice(0, 6);
+  }
+
+  // Generate additional internal links for SEO
+  static generateInternalLinks(
+    pageType: SEOPage['page_type'],
+    filters: Record<string, any>
+  ): {
+    nearbyAreas: Array<{ name: string; slug: string }>;
+    popularCombinations: Array<{ name: string; slug: string }>;
+    trendingSearches: Array<{ name: string; slug: string }>;
+  } {
+    const nearbyAreas: Array<{ name: string; slug: string }> = [];
+    const popularCombinations: Array<{ name: string; slug: string }> = [];
+    const trendingSearches: Array<{ name: string; slug: string }> = [];
+
+    // Nearby areas based on page type
+    if (filters.planning_area) {
+      const nearby = this.getNearbyDistricts(filters.planning_area);
+      nearby.forEach(district => {
+        nearbyAreas.push({
+          name: this.formatDistrictName(district),
+          slug: `district/${district}`
+        });
+      });
+    } else if (filters.property_district_code) {
+      const similar = this.getSimilarPropertyZones(
+        filters.property_district_code
+      );
+      similar.forEach(zone => {
+        nearbyAreas.push({
+          name: zone,
+          slug: `property-zone/${zone.toLowerCase()}`
+        });
+      });
+    }
+
+    // Popular combinations
+    if (pageType === 'category') {
+      const topDistricts = ['tampines', 'orchard', 'jurong-east', 'bedok'];
+      topDistricts.forEach(district => {
+        popularCombinations.push({
+          name: `${this.formatDistrictName(district)} ${filters.category}`,
+          slug: `district/${district}/${filters.category}`
+        });
+      });
+    } else if (filters.planning_area || filters.district) {
+      const topCategories = ['restaurants', 'cafes', 'fast-food', 'bakery'];
+      topCategories.forEach(category => {
+        const area = filters.planning_area || filters.district;
+        popularCombinations.push({
+          name: `${this.formatDistrictName(area)} ${category}`,
+          slug: `district/${area}/${category}`
+        });
+      });
+    }
+
+    // Trending searches
+    const trendingItems = [
+      { name: 'Halal Certified Restaurants', slug: 'features/halal-certified' },
+      { name: 'Family Friendly Dining', slug: 'features/family-friendly' },
+      { name: 'Delivery Available', slug: 'features/delivery-available' },
+      { name: 'Budget Dining', slug: 'price/budget' },
+      { name: 'Premium Restaurants', slug: 'price/premium' },
+      { name: 'Prayer Facilities', slug: 'features/prayer-facilities' }
+    ];
+    trendingSearches.push(...trendingItems.slice(0, 6));
+
+    return {
+      nearbyAreas: nearbyAreas.slice(0, 8),
+      popularCombinations: popularCombinations.slice(0, 8),
+      trendingSearches
+    };
+  }
+
+  // Helper to format district names
+  private static formatDistrictName(slug: string): string {
+    return slug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   // Batch generate SEO pages

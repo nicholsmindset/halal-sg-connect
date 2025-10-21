@@ -525,6 +525,200 @@ export default function SEOPage() {
             </Card>
           )}
 
+          {/* Getting Here - Transport Section */}
+          {(seoPage.page_type === 'district' ||
+            seoPage.page_type === 'property_zone' ||
+            seoPage.page_type === 'location') && (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Getting Here
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <h4 className="mb-2 font-semibold">Public Transport</h4>
+                    <p className="text-sm text-muted-foreground">
+                      This area is well-connected via MRT stations and bus
+                      services. Check Google Maps or the official LTA Singapore
+                      app for the most convenient routes to your destination.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="mb-2 font-semibold">Parking</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Multiple parking facilities available. Most restaurants
+                      offer parking information on their listing pages.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Prayer Facilities Section */}
+          {(seoPage.page_type === 'district' ||
+            seoPage.page_type === 'property_zone' ||
+            seoPage.page_type === 'district_category' ||
+            seoPage.page_type === 'property_zone_category') && (
+            <Card className="mb-8 border-primary/20 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Muslim-Friendly Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div>
+                    <h4 className="mb-3 font-semibold">Nearby Mosques</h4>
+                    <p className="mb-3 text-sm text-muted-foreground">
+                      Several mosques serve this area. Check the individual
+                      business listings for prayer facilities information.
+                    </p>
+                    <div className="space-y-2">
+                      {/* This would be populated with actual mosque data */}
+                      <div className="flex items-start gap-2 rounded-md bg-background p-2">
+                        <MapPin className="mt-1 h-4 w-4 flex-shrink-0 text-primary" />
+                        <div>
+                          <p className="text-sm font-medium">
+                            Find Nearby Mosques
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Use the map view to locate mosques in this area
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="mb-3 font-semibold">Halal Certification</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 rounded-md bg-background p-3">
+                        <div className="rounded-full bg-green-100 p-2">
+                          <svg
+                            className="h-4 w-4 text-green-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">
+                            {
+                              businesses.filter(b => b.halal_certified).length
+                            }{' '}
+                            MUIS-Certified
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Verified halal establishments
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 rounded-md bg-background p-3">
+                        <div className="rounded-full bg-blue-100 p-2">
+                          <Clock className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">
+                            Prayer-Friendly
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Filter by prayer facilities
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Nearby Areas Section - Enhanced Internal Linking */}
+          {seoPage.related_pages && seoPage.related_pages.length > 0 && (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Explore Nearby Areas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                  {seoPage.related_pages.slice(0, 8).map((page, index) => (
+                    <Button
+                      key={index}
+                      asChild
+                      variant="outline"
+                      className="h-auto flex-col items-start justify-start p-3 text-left"
+                    >
+                      <Link to={`/${page}`}>
+                        <ChevronRight className="mb-1 h-4 w-4 text-primary" />
+                        <span className="text-xs font-medium">
+                          {page
+                            .split('/')
+                            .pop()
+                            ?.replace(/-/g, ' ')
+                            .replace(/\b\w/g, l => l.toUpperCase())}
+                        </span>
+                      </Link>
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Trending Searches */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Trending Searches
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/features/halal-certified">
+                    Halal Certified
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/features/family-friendly">
+                    Family Friendly
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/features/delivery-available">
+                    Delivery Available
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/price/budget">Budget Dining</Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/price/premium">Premium Restaurants</Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/features/prayer-facilities">
+                    Prayer Facilities
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Related Searches */}
           {content.related_searches.length > 0 && (
             <Card>

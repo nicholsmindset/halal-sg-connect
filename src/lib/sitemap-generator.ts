@@ -75,6 +75,85 @@ export class SitemapGenerator {
         changefreq: 'weekly',
         priority: 0.7,
       },
+      {
+        loc: `${this.BASE_URL}/districts`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.8,
+      },
+      {
+        loc: `${this.BASE_URL}/property-zones`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.8,
+      },
+      {
+        loc: `${this.BASE_URL}/best`,
+        lastmod: now,
+        changefreq: 'daily',
+        priority: 0.9,
+      },
+      // Best Of curated lists
+      {
+        loc: `${this.BASE_URL}/best/best-halal-restaurants-singapore`,
+        lastmod: now,
+        changefreq: 'daily',
+        priority: 0.9,
+      },
+      {
+        loc: `${this.BASE_URL}/best/top-halal-cafes-orchard`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.8,
+      },
+      {
+        loc: `${this.BASE_URL}/best/family-friendly-halal-dining-tampines`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.8,
+      },
+      {
+        loc: `${this.BASE_URL}/best/budget-halal-food-singapore`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.8,
+      },
+      {
+        loc: `${this.BASE_URL}/best/premium-halal-dining-singapore`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.7,
+      },
+      {
+        loc: `${this.BASE_URL}/best/trending-halal-restaurants`,
+        lastmod: now,
+        changefreq: 'daily',
+        priority: 0.8,
+      },
+      {
+        loc: `${this.BASE_URL}/best/best-halal-food-delivery`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.7,
+      },
+      {
+        loc: `${this.BASE_URL}/best/halal-restaurants-prayer-facilities`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: 0.7,
+      },
+      {
+        loc: `${this.BASE_URL}/pricing`,
+        lastmod: now,
+        changefreq: 'monthly',
+        priority: 0.6,
+      },
+      {
+        loc: `${this.BASE_URL}/contact`,
+        lastmod: now,
+        changefreq: 'monthly',
+        priority: 0.5,
+      },
     ];
   }
 

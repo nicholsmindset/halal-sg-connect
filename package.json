@@ -22,7 +22,11 @@
     "test:e2e:ui": "playwright test --ui",
     "test:all": "npm run type-check && npm run lint:check && npm run test:run && npm run test:e2e",
     "clean": "rm -rf dist node_modules/.vite",
-    "check-all": "npm run type-check && npm run lint:check && npm run format:check && npm run test:run"
+    "check-all": "npm run type-check && npm run lint:check && npm run format:check && npm run test:run",
+    "generate:seo": "tsx scripts/generate-seo-pages.ts",
+    "generate:seo:high": "tsx scripts/generate-seo-pages.ts --priority=high",
+    "generate:seo:districts": "tsx scripts/generate-seo-pages.ts --type=districts",
+    "generate:seo:combinations": "tsx scripts/generate-seo-pages.ts --type=combinations --priority=high"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -101,6 +105,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitest/ui": "^3.2.4",
+    "dotenv": "^16.4.7",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
@@ -113,6 +118,7 @@
     "lovable-tagger": "^1.1.7",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
+    "tsx": "^4.19.2",
     "typescript-eslint": "^8.0.1",
     "vitest": "^3.2.4"
   }

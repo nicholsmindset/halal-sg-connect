@@ -37,6 +37,8 @@ const DashboardSettings = lazy(() => import('./pages/DashboardSettings'));
 const SEOPage = lazy(() => import('./pages/SEOPage'));
 const Districts = lazy(() => import('./pages/Districts'));
 const PropertyZones = lazy(() => import('./pages/PropertyZones'));
+const BestOfIndex = lazy(() => import('./pages/BestOfIndex'));
+const BestOfPage = lazy(() => import('./pages/BestOfPage'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Contact = lazy(() => import('./pages/Contact'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -122,6 +124,10 @@ const App = () => (
                 <Route path="/property-zones" element={<PropertyZones />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/contact" element={<Contact />} />
+
+                {/* Best Of Pages - Curated Lists */}
+                <Route path="/best" element={<BestOfIndex />} />
+                <Route path="/best/:slug" element={<BestOfPage />} />
 
                 {/* SEO Routes - Dynamic programmatic pages */}
                 <Route path="/seo/*" element={<SEOPage />} />
