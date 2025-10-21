@@ -26,7 +26,9 @@
     "generate:seo": "tsx scripts/generate-seo-pages.ts",
     "generate:seo:high": "tsx scripts/generate-seo-pages.ts --priority=high",
     "generate:seo:districts": "tsx scripts/generate-seo-pages.ts --type=districts",
-    "generate:seo:combinations": "tsx scripts/generate-seo-pages.ts --type=combinations --priority=high"
+    "generate:seo:combinations": "tsx scripts/generate-seo-pages.ts --type=combinations --priority=high",
+    "generate:all-pillars": "tsx scripts/generate-all-pillar-pages.ts",
+    "generate:all-pillars:dry-run": "tsx scripts/generate-all-pillar-pages.ts --dry-run"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
