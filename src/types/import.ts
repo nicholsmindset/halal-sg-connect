@@ -38,7 +38,7 @@ export const businessImportSchema = z.object({
   }).optional(),
   
   // Contact Info
-  phone: z.string().regex(/^[\+]?[0-9\s\-\(\)]{8,15}$/, 'Invalid phone number format').optional(),
+  phone: z.string().regex(/^[+]?[0-9\s\-()]{8,15}$/, 'Invalid phone number format').optional(),
   email: z.string().email('Invalid email format').optional(),
   website: z.string().url('Invalid website URL').optional(),
   

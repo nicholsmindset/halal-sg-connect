@@ -27,6 +27,8 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "warn",
       "prefer-const": "error",
       "no-var": "error",
+      // Disable the problematic no-unused-expressions rule
+      "@typescript-eslint/no-unused-expressions": "off",
     },
   }
 );

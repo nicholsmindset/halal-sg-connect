@@ -49,7 +49,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
           <div className="flex items-center space-x-1">
             <Star className="w-4 h-4 fill-warning text-warning" />
             <span className="text-sm font-medium">{listing.rating}</span>
-            <span className="text-xs text-muted-foreground">({listing.reviewCount})</span>
+            <span className="text-xs text-muted-foreground">({listing.reviewCount} reviews)</span>
           </div>
           <div className="flex items-center text-xs text-muted-foreground">
             <span>{'$'.repeat(parseInt(listing.priceRange))}</span>
