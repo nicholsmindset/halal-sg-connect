@@ -1,7 +1,10 @@
 import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
 import { SitemapGenerator } from '../../src/lib/sitemap-generator';
 
-export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+export const handler: Handler = async (
+  event: HandlerEvent,
+  context: HandlerContext
+) => {
   // Only allow GET requests
   if (event.httpMethod !== 'GET') {
     return {
@@ -25,17 +28,17 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
         content = await SitemapGenerator.generateSitemap();
         contentType = 'application/xml';
         break;
-      
+
       case 'robots':
         content = SitemapGenerator.generateRobotsTxt();
         contentType = 'text/plain';
         break;
-      
+
       case 'sitemap-index':
         content = await SitemapGenerator.generateSitemapIndex();
         contentType = 'application/xml';
         break;
-      
+
       default:
         return {
           statusCode: 400,

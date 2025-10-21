@@ -6,17 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Clock, 
-  MessageCircle, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  MessageCircle,
   Headphones,
   Building2,
   Users,
   Zap,
-  Send
+  Send,
 } from 'lucide-react';
 import { useSEO } from '@/hooks/useSEO';
 
@@ -28,7 +28,7 @@ const Contact = () => {
     company: '',
     subject: '',
     message: '',
-    inquiryType: 'general'
+    inquiryType: 'general',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,16 +37,22 @@ const Contact = () => {
   // SEO configuration
   useSEO({
     title: 'Contact Us - Halal SG Connect | Get Support & Sales Information',
-    description: 'Contact our team for support, sales inquiries, or partnership opportunities. Get help with your halal business listing and premium features.',
-    keywords: 'contact halal directory, Singapore business support, halal certification help, premium features support',
-    canonical: '/contact'
+    description:
+      'Contact our team for support, sales inquiries, or partnership opportunities. Get help with your halal business listing and premium features.',
+    keywords:
+      'contact halal directory, Singapore business support, halal certification help, premium features support',
+    canonical: '/contact',
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -56,10 +62,10 @@ const Contact = () => {
 
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     setSubmitted(true);
     setIsSubmitting(false);
-    
+
     // Reset form after success
     setTimeout(() => {
       setSubmitted(false);
@@ -70,7 +76,7 @@ const Contact = () => {
         company: '',
         subject: '',
         message: '',
-        inquiryType: 'general'
+        inquiryType: 'general',
       });
     }, 3000);
   };
@@ -82,7 +88,7 @@ const Contact = () => {
       description: 'Get help via email',
       contact: 'support@halalsg-connect.com',
       hours: '24/7 Response',
-      type: 'email'
+      type: 'email',
     },
     {
       icon: Phone,
@@ -90,7 +96,7 @@ const Contact = () => {
       description: 'Speak with our team',
       contact: '+65 6XXX XXXX',
       hours: 'Mon-Fri 9AM-6PM SGT',
-      type: 'phone'
+      type: 'phone',
     },
     {
       icon: MessageCircle,
@@ -98,7 +104,7 @@ const Contact = () => {
       description: 'Chat with us instantly',
       contact: 'Available on website',
       hours: 'Mon-Fri 9AM-9PM SGT',
-      type: 'chat'
+      type: 'chat',
     },
     {
       icon: MapPin,
@@ -106,8 +112,8 @@ const Contact = () => {
       description: 'Visit our office',
       contact: 'Singapore Business District',
       hours: 'By appointment only',
-      type: 'location'
-    }
+      type: 'location',
+    },
   ];
 
   const inquiryTypes = [
@@ -115,7 +121,7 @@ const Contact = () => {
     { value: 'sales', label: 'Sales & Pricing', icon: Building2 },
     { value: 'support', label: 'Technical Support', icon: Headphones },
     { value: 'partnership', label: 'Partnership', icon: Users },
-    { value: 'enterprise', label: 'Enterprise Solutions', icon: Zap }
+    { value: 'enterprise', label: 'Enterprise Solutions', icon: Zap },
   ];
 
   const teamMembers = [
@@ -123,20 +129,20 @@ const Contact = () => {
       name: 'Ahmad Rahman',
       role: 'Customer Success Manager',
       specialty: 'Business Onboarding & Support',
-      email: 'ahmad@halalsg-connect.com'
+      email: 'ahmad@halalsg-connect.com',
     },
     {
       name: 'Sarah Lim',
       role: 'Sales Director',
       specialty: 'Premium Plans & Enterprise Solutions',
-      email: 'sarah@halalsg-connect.com'
+      email: 'sarah@halalsg-connect.com',
     },
     {
       name: 'Mohamed Ali',
       role: 'Technical Support Lead',
       specialty: 'Platform Issues & Integration',
-      email: 'mohamed@halalsg-connect.com'
-    }
+      email: 'mohamed@halalsg-connect.com',
+    },
   ];
 
   if (submitted) {
@@ -144,13 +150,16 @@ const Contact = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-md mx-auto text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Send className="w-8 h-8 text-green-600" />
+          <div className="mx-auto max-w-md text-center">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+              <Send className="h-8 w-8 text-green-600" />
             </div>
-            <h1 className="text-2xl font-bold mb-4">Message Sent Successfully!</h1>
-            <p className="text-muted-foreground mb-6">
-              Thank you for contacting us. We'll get back to you within 24 hours.
+            <h1 className="mb-4 text-2xl font-bold">
+              Message Sent Successfully!
+            </h1>
+            <p className="mb-6 text-muted-foreground">
+              Thank you for contacting us. We'll get back to you within 24
+              hours.
             </p>
             <Button onClick={() => setSubmitted(false)}>
               Send Another Message
@@ -165,51 +174,61 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="bg-primary/5 py-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">Contact Our Team</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Have questions about our platform? Need help with your business listing? 
-            Want to discuss enterprise solutions? We're here to help.
+          <h1 className="mb-4 text-4xl font-bold">Contact Our Team</h1>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            Have questions about our platform? Need help with your business
+            listing? Want to discuss enterprise solutions? We're here to help.
           </p>
         </div>
       </section>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           {/* Contact Form */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl">Send us a Message</CardTitle>
                 <p className="text-muted-foreground">
-                  Fill out the form below and we'll get back to you as soon as possible.
+                  Fill out the form below and we'll get back to you as soon as
+                  possible.
                 </p>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Inquiry Type */}
                   <div>
-                    <label className="block text-sm font-medium mb-3">What can we help you with?</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {inquiryTypes.map((type) => {
+                    <label className="mb-3 block text-sm font-medium">
+                      What can we help you with?
+                    </label>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {inquiryTypes.map(type => {
                         const IconComponent = type.icon;
                         return (
                           <button
                             key={type.value}
                             type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, inquiryType: type.value }))}
-                            className={`p-3 border rounded-lg text-left transition-colors ${
+                            onClick={() =>
+                              setFormData(prev => ({
+                                ...prev,
+                                inquiryType: type.value,
+                              }))
+                            }
+                            className={`rounded-lg border p-3 text-left transition-colors ${
                               formData.inquiryType === type.value
                                 ? 'border-primary bg-primary/5'
                                 : 'border-border hover:border-primary/50'
                             }`}
                           >
-                            <div className="flex items-center gap-2 mb-1">
-                              <IconComponent className="w-4 h-4" />
-                              <span className="font-medium text-sm">{type.label}</span>
+                            <div className="mb-1 flex items-center gap-2">
+                              <IconComponent className="h-4 w-4" />
+                              <span className="text-sm font-medium">
+                                {type.label}
+                              </span>
                             </div>
                           </button>
                         );
@@ -218,9 +237,12 @@ const Contact = () => {
                   </div>
 
                   {/* Name and Email */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium mb-2">
+                      <label
+                        htmlFor="name"
+                        className="mb-2 block text-sm font-medium"
+                      >
                         Full Name *
                       </label>
                       <Input
@@ -233,7 +255,10 @@ const Contact = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium mb-2">
+                      <label
+                        htmlFor="email"
+                        className="mb-2 block text-sm font-medium"
+                      >
                         Email Address *
                       </label>
                       <Input
@@ -249,9 +274,12 @@ const Contact = () => {
                   </div>
 
                   {/* Phone and Company */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                      <label
+                        htmlFor="phone"
+                        className="mb-2 block text-sm font-medium"
+                      >
                         Phone Number
                       </label>
                       <Input
@@ -263,7 +291,10 @@ const Contact = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="company" className="block text-sm font-medium mb-2">
+                      <label
+                        htmlFor="company"
+                        className="mb-2 block text-sm font-medium"
+                      >
                         Company/Business Name
                       </label>
                       <Input
@@ -278,7 +309,10 @@ const Contact = () => {
 
                   {/* Subject */}
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium mb-2">
+                    <label
+                      htmlFor="subject"
+                      className="mb-2 block text-sm font-medium"
+                    >
                       Subject *
                     </label>
                     <Input
@@ -293,7 +327,10 @@ const Contact = () => {
 
                   {/* Message */}
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2">
+                    <label
+                      htmlFor="message"
+                      className="mb-2 block text-sm font-medium"
+                    >
                       Message *
                     </label>
                     <Textarea
@@ -307,19 +344,19 @@ const Contact = () => {
                     />
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
+                  <Button
+                    type="submit"
+                    className="w-full"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                         Sending Message...
                       </>
                     ) : (
                       <>
-                        <Send className="w-4 h-4 mr-2" />
+                        <Send className="mr-2 h-4 w-4" />
                         Send Message
                       </>
                     )}
@@ -341,14 +378,18 @@ const Contact = () => {
                   const IconComponent = method.icon;
                   return (
                     <div key={index} className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <IconComponent className="w-5 h-5 text-primary" />
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <IconComponent className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <h3 className="font-medium">{method.title}</h3>
-                        <p className="text-sm text-muted-foreground mb-1">{method.description}</p>
+                        <p className="mb-1 text-sm text-muted-foreground">
+                          {method.description}
+                        </p>
                         <p className="text-sm font-medium">{method.contact}</p>
-                        <p className="text-xs text-muted-foreground">{method.hours}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {method.hours}
+                        </p>
                       </div>
                     </div>
                   );
@@ -360,7 +401,7 @@ const Contact = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
+                  <Clock className="h-5 w-5" />
                   Business Hours
                 </CardTitle>
               </CardHeader>
@@ -378,7 +419,7 @@ const Contact = () => {
                     <span>Sunday</span>
                     <span>Closed</span>
                   </div>
-                  <div className="pt-2 border-t">
+                  <div className="border-t pt-2">
                     <Badge variant="secondary" className="text-xs">
                       Singapore Time (SGT)
                     </Badge>
@@ -394,12 +435,17 @@ const Contact = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {teamMembers.map((member, index) => (
-                  <div key={index} className="pb-4 last:pb-0 border-b last:border-b-0">
+                  <div
+                    key={index}
+                    className="border-b pb-4 last:border-b-0 last:pb-0"
+                  >
                     <h3 className="font-medium">{member.name}</h3>
                     <p className="text-sm text-primary">{member.role}</p>
-                    <p className="text-xs text-muted-foreground mb-1">{member.specialty}</p>
-                    <a 
-                      href={`mailto:${member.email}`} 
+                    <p className="mb-1 text-xs text-muted-foreground">
+                      {member.specialty}
+                    </p>
+                    <a
+                      href={`mailto:${member.email}`}
                       className="text-xs text-blue-600 hover:underline"
                     >
                       {member.email}
@@ -413,47 +459,59 @@ const Contact = () => {
 
         {/* FAQ Section */}
         <section className="mt-16">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-4">Common Questions</h2>
+          <div className="mb-8 text-center">
+            <h2 className="mb-4 text-2xl font-bold">Common Questions</h2>
             <p className="text-muted-foreground">
               Quick answers to frequently asked questions
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">How quickly will I get a response?</h3>
+                <h3 className="mb-2 font-semibold">
+                  How quickly will I get a response?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  We respond to all inquiries within 24 hours during business days. 
-                  Urgent technical issues are prioritized and handled within 4 hours.
+                  We respond to all inquiries within 24 hours during business
+                  days. Urgent technical issues are prioritized and handled
+                  within 4 hours.
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Do you offer phone consultations?</h3>
+                <h3 className="mb-2 font-semibold">
+                  Do you offer phone consultations?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Yes! We offer free 30-minute consultations for businesses interested 
-                  in Premium or Enterprise plans. Schedule via our contact form.
+                  Yes! We offer free 30-minute consultations for businesses
+                  interested in Premium or Enterprise plans. Schedule via our
+                  contact form.
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Can you help with business setup?</h3>
+                <h3 className="mb-2 font-semibold">
+                  Can you help with business setup?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Absolutely. Our team can assist with business listing optimization, 
-                  photo guidelines, and best practices for maximum visibility.
+                  Absolutely. Our team can assist with business listing
+                  optimization, photo guidelines, and best practices for maximum
+                  visibility.
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">What about technical integration?</h3>
+                <h3 className="mb-2 font-semibold">
+                  What about technical integration?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Enterprise customers receive dedicated technical support for API 
-                  integrations, custom implementations, and advanced features.
+                  Enterprise customers receive dedicated technical support for
+                  API integrations, custom implementations, and advanced
+                  features.
                 </p>
               </CardContent>
             </Card>

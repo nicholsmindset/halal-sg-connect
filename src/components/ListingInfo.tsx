@@ -1,21 +1,21 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { 
-  Star, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Globe, 
-  Clock, 
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import {
+  Star,
+  MapPin,
+  Phone,
+  Mail,
+  Globe,
+  Clock,
   Shield,
   Facebook,
   Instagram,
   MessageCircle,
-  Twitter
-} from "lucide-react";
-import { type Business } from "@/types/business";
+  Twitter,
+} from 'lucide-react';
+import { type Business } from '@/types/business';
 
 interface ListingInfoProps {
   listing: Business;
@@ -30,35 +30,39 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Main Content */}
-      <div className="lg:col-span-2 space-y-6">
+      <div className="space-y-6 lg:col-span-2">
         {/* Header */}
         <div>
-          <div className="flex items-start justify-between mb-4">
+          <div className="mb-4 flex items-start justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">{listing.name}</h1>
-              <div className="flex items-center space-x-4 mb-3">
+              <h1 className="mb-2 text-3xl font-bold text-foreground">
+                {listing.name}
+              </h1>
+              <div className="mb-3 flex items-center space-x-4">
                 <div className="flex items-center space-x-1">
-                  <Star className="w-5 h-5 fill-warning text-warning" />
+                  <Star className="h-5 w-5 fill-warning text-warning" />
                   <span className="font-semibold">{listing.rating}</span>
-                  <span className="text-muted-foreground">({listing.reviewCount} reviews)</span>
+                  <span className="text-muted-foreground">
+                    ({listing.reviewCount} reviews)
+                  </span>
                 </div>
                 <Badge variant="outline">{listing.category}</Badge>
                 {listing.isHalalCertified && (
                   <Badge className="bg-success text-success-foreground">
-                    <Shield className="w-3 h-3 mr-1" />
+                    <Shield className="mr-1 h-3 w-3" />
                     Halal Certified
                   </Badge>
                 )}
               </div>
               <div className="flex items-center text-muted-foreground">
-                <MapPin className="w-4 h-4 mr-2" />
+                <MapPin className="mr-2 h-4 w-4" />
                 <span>{listing.address}</span>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-primary mb-1">
+              <div className="mb-1 text-2xl font-bold text-primary">
                 {'$'.repeat(parseInt(listing.priceRange))}
               </div>
               <span className="text-sm text-muted-foreground">Price Range</span>
@@ -72,7 +76,9 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
             <CardTitle>About {listing.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground leading-relaxed">{listing.description}</p>
+            <p className="leading-relaxed text-muted-foreground">
+              {listing.description}
+            </p>
           </CardContent>
         </Card>
 
@@ -80,7 +86,7 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Clock className="w-5 h-5 mr-2" />
+              <Clock className="mr-2 h-5 w-5" />
               Opening Hours
             </CardTitle>
           </CardHeader>
@@ -88,7 +94,7 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
             <div className="space-y-2">
               {Object.entries(listing.openingHours).map(([day, hours]) => (
                 <div key={day} className="flex justify-between">
-                  <span className="capitalize font-medium">{day}</span>
+                  <span className="font-medium capitalize">{day}</span>
                   <span className="text-muted-foreground">
                     {hours.closed ? 'Closed' : `${hours.open} - ${hours.close}`}
                   </span>
@@ -104,10 +110,12 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
             <CardTitle>Location</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+            <div className="flex aspect-video items-center justify-center rounded-lg bg-muted">
               <div className="text-center">
-                <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground">Interactive map will be available with Google Maps integration</p>
+                <MapPin className="mx-auto mb-2 h-12 w-12 text-muted-foreground" />
+                <p className="text-muted-foreground">
+                  Interactive map will be available with Google Maps integration
+                </p>
               </div>
             </div>
           </CardContent>
@@ -124,31 +132,37 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
           <CardContent className="space-y-4">
             {listing.phone && (
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-primary" />
+                <Phone className="h-5 w-5 text-primary" />
                 <div>
                   <div className="font-medium">Phone</div>
-                  <a href={`tel:${listing.phone}`} className="text-primary hover:underline">
+                  <a
+                    href={`tel:${listing.phone}`}
+                    className="text-primary hover:underline"
+                  >
                     {listing.phone}
                   </a>
                 </div>
               </div>
             )}
-            
+
             {listing.email && (
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-primary" />
+                <Mail className="h-5 w-5 text-primary" />
                 <div>
                   <div className="font-medium">Email</div>
-                  <a href={`mailto:${listing.email}`} className="text-primary hover:underline">
+                  <a
+                    href={`mailto:${listing.email}`}
+                    className="text-primary hover:underline"
+                  >
                     {listing.email}
                   </a>
                 </div>
               </div>
             )}
-            
+
             {listing.website && (
               <div className="flex items-center space-x-3">
-                <Globe className="w-5 h-5 text-primary" />
+                <Globe className="h-5 w-5 text-primary" />
                 <div>
                   <div className="font-medium">Website</div>
                   <a
@@ -175,12 +189,13 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
               <div className="flex flex-wrap gap-2">
                 {Object.entries(listing.socialMedia).map(([platform, url]) => {
                   if (!url) return null;
-                  const Icon = socialIcons[platform as keyof typeof socialIcons];
+                  const Icon =
+                    socialIcons[platform as keyof typeof socialIcons];
                   if (!Icon) return null;
                   return (
                     <Button key={platform} variant="outline" size="sm" asChild>
                       <a href={url} target="_blank" rel="noopener noreferrer">
-                        <Icon className="w-4 h-4 mr-2" />
+                        <Icon className="mr-2 h-4 w-4" />
                         {platform.charAt(0).toUpperCase() + platform.slice(1)}
                       </a>
                     </Button>
@@ -196,15 +211,15 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
           <CardContent className="p-4">
             <div className="space-y-3">
               <Button className="w-full" size="lg">
-                <Phone className="w-4 h-4 mr-2" />
+                <Phone className="mr-2 h-4 w-4" />
                 Call Now
               </Button>
               <Button variant="outline" className="w-full">
-                <MapPin className="w-4 h-4 mr-2" />
+                <MapPin className="mr-2 h-4 w-4" />
                 Get Directions
               </Button>
               <Button variant="outline" className="w-full">
-                <Star className="w-4 h-4 mr-2" />
+                <Star className="mr-2 h-4 w-4" />
                 Write Review
               </Button>
             </div>
@@ -214,7 +229,7 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
         {/* Ad Slot Placeholder */}
         <Card className="bg-muted/50">
           <CardContent className="p-6 text-center">
-            <div className="text-muted-foreground text-sm">
+            <div className="text-sm text-muted-foreground">
               Advertisement Space
               <br />
               (Google AdSense integration)

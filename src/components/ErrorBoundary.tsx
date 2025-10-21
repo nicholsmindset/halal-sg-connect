@@ -26,7 +26,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     this.setState({
       error,
       errorInfo,
@@ -34,8 +34,13 @@ class ErrorBoundary extends Component<Props, State> {
 
     // Log error to monitoring service (e.g., Sentry)
     if (process.env.NODE_ENV === 'production') {
-      // TODO: Add error monitoring service
-      console.error('Production error:', { error, errorInfo });
+      try {
+        import('@/lib/sentry').then(({ logError }) => {
+          logError(error as Error, { errorInfo });
+        });
+      } catch (err) {
+        console.error('Error logging failed:', err);
+      }
     }
   }
 
@@ -50,22 +55,23 @@ class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="flex min-h-screen items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-destructive" />
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
               <CardTitle className="text-xl">Something went wrong</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground text-center">
-                We're sorry, but something unexpected happened. Please try again.
+              <p className="text-center text-sm text-muted-foreground">
+                We're sorry, but something unexpected happened. Please try
+                again.
               </p>
-              
+
               {process.env.NODE_ENV === 'development' && this.state.error && (
-                <details className="text-xs bg-muted p-3 rounded">
-                  <summary className="cursor-pointer font-medium mb-2">
+                <details className="rounded bg-muted p-3 text-xs">
+                  <summary className="mb-2 cursor-pointer font-medium">
                     Error Details (Development)
                   </summary>
                   <pre className="whitespace-pre-wrap break-words">
@@ -74,10 +80,10 @@ class ErrorBoundary extends Component<Props, State> {
                   </pre>
                 </details>
               )}
-              
-              <div className="flex gap-2 justify-center">
+
+              <div className="flex justify-center gap-2">
                 <Button onClick={this.handleRetry} variant="outline">
-                  <RefreshCw className="w-4 h-4 mr-2" />
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Try Again
                 </Button>
                 <Button onClick={() => window.location.reload()}>

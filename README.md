@@ -48,18 +48,18 @@ Visit [http://localhost:8080](http://localhost:8080) to see the application.
 
 ### Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint with auto-fix |
-| `npm run format` | Format code with Prettier |
-| `npm run type-check` | Run TypeScript type checking |
-| `npm run test` | Run unit tests |
-| `npm run test:e2e` | Run end-to-end tests |
-| `npm run test:coverage` | Run tests with coverage |
-| `npm run check-all` | Run all quality checks |
+| Script                  | Description                  |
+| ----------------------- | ---------------------------- |
+| `npm run dev`           | Start development server     |
+| `npm run build`         | Build for production         |
+| `npm run preview`       | Preview production build     |
+| `npm run lint`          | Run ESLint with auto-fix     |
+| `npm run format`        | Format code with Prettier    |
+| `npm run type-check`    | Run TypeScript type checking |
+| `npm run test`          | Run unit tests               |
+| `npm run test:e2e`      | Run end-to-end tests         |
+| `npm run test:coverage` | Run tests with coverage      |
+| `npm run check-all`     | Run all quality checks       |
 
 ### Environment Variables
 
@@ -149,12 +149,14 @@ npm run preview
 ### Deployment Options
 
 1. **Vercel** (Recommended)
+
    ```bash
    npm run build
    # Deploy to Vercel
    ```
 
 2. **Netlify**
+
    ```bash
    npm run build
    # Deploy dist/ folder
@@ -217,6 +219,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ## 📞 Support
 
 For support and questions:
+
 - Create an [issue](https://github.com/nicholsmindset/halal-sg-connect/issues)
 - Check the [documentation](https://github.com/nicholsmindset/halal-sg-connect/wiki)
 

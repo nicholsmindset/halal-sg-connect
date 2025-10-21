@@ -35,9 +35,14 @@ export class AppErrorHandler {
     }
   }
 
-  private sendToMonitoring(error: AppError): void {
-    // TODO: Implement monitoring service integration (e.g., Sentry)
-    console.log('Would send to monitoring:', error);
+  private async sendToMonitoring(error: AppError): Promise<void> {
+    try {
+      const { logError } = await import('./sentry');
+      logError(new Error(error.message), error.context);
+    } catch {
+      // Sentry not available, log locally
+      console.log('Would send to monitoring:', error);
+    }
   }
 
   getRecentErrors(limit = 10): AppError[] {
@@ -50,7 +55,7 @@ export class AppErrorHandler {
 }
 
 // Global error handler for unhandled promise rejections
-window.addEventListener('unhandledrejection', (event) => {
+window.addEventListener('unhandledrejection', event => {
   console.error('Unhandled promise rejection:', event.reason);
   AppErrorHandler.getInstance().logError(
     new Error(`Unhandled Promise Rejection: ${event.reason}`),
@@ -59,7 +64,7 @@ window.addEventListener('unhandledrejection', (event) => {
 });
 
 // Global error handler for uncaught exceptions
-window.addEventListener('error', (event) => {
+window.addEventListener('error', event => {
   console.error('Uncaught error:', event.error);
   AppErrorHandler.getInstance().logError(event.error, {
     type: 'uncaught',

@@ -1,7 +1,7 @@
-import Header from "@/components/Header";
-import AdminSidebar from "@/components/AdminSidebar";
-import AdminStats from "@/components/AdminStats";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import Header from '@/components/Header';
+import AdminSidebar from '@/components/AdminSidebar';
+import AdminStats from '@/components/AdminStats';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 const Admin = () => {
   return (
@@ -16,10 +16,14 @@ const Admin = () => {
             </div>
             <div className="p-6">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-                <p className="text-muted-foreground">Manage HalalHub SG platform</p>
+                <h1 className="text-3xl font-bold text-foreground">
+                  Admin Dashboard
+                </h1>
+                <p className="text-muted-foreground">
+                  Manage HalalHub SG platform
+                </p>
               </div>
-              
+
               <AdminStats />
             </div>
           </main>

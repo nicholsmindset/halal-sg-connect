@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import ListingForm from "@/components/forms/ListingForm";
+import Header from '@/components/Header';
+import ListingForm from '@/components/forms/ListingForm';
 
 const CreateListing = () => {
   return (

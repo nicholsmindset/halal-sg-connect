@@ -3,31 +3,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  BarChart, 
-  Bar, 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
 } from 'recharts';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Eye, 
-  MousePointer, 
-  Users, 
+import {
+  TrendingUp,
+  TrendingDown,
+  Eye,
+  MousePointer,
+  Users,
   Calendar,
   Download,
   Filter,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 
 interface AnalyticsData {
@@ -52,8 +52,13 @@ interface AnalyticsDashboardProps {
   subscriptionTier: 'free' | 'premium' | 'premium_plus' | 'enterprise';
 }
 
-const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboardProps) => {
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+const AnalyticsDashboard = ({
+  businessId,
+  subscriptionTier,
+}: AnalyticsDashboardProps) => {
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [aiInsights, setAiInsights] = useState<string[]>([]);
@@ -61,7 +66,7 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
   // Generate mock analytics data
   const generateAnalyticsData = async (): Promise<AnalyticsData> => {
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-    
+
     const dates = Array.from({ length: 30 }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - (29 - i));
@@ -72,34 +77,34 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
       views: dates.map(date => ({
         date,
         views: Math.floor(Math.random() * 100 + 20),
-        uniqueViews: Math.floor(Math.random() * 60 + 15)
+        uniqueViews: Math.floor(Math.random() * 60 + 15),
       })),
       clicks: dates.map(date => ({
         date,
         clicks: Math.floor(Math.random() * 25 + 5),
-        ctr: Math.random() * 0.15 + 0.05
+        ctr: Math.random() * 0.15 + 0.05,
       })),
       conversion: [
         { source: 'Organic Search', conversions: 45, percentage: 35 },
         { source: 'Social Media', conversions: 32, percentage: 25 },
         { source: 'Direct', conversions: 28, percentage: 22 },
-        { source: 'Referrals', conversions: 23, percentage: 18 }
+        { source: 'Referrals', conversions: 23, percentage: 18 },
       ],
       demographics: [
         { age: '18-25', count: 15 },
         { age: '26-35', count: 35 },
         { age: '36-45', count: 28 },
-        { age: '46-55', count: 22 }
+        { age: '46-55', count: 22 },
       ],
       timeMetrics: Array.from({ length: 24 }, (_, i) => ({
         hour: `${i}:00`,
-        traffic: Math.floor(Math.random() * 50 + 10)
+        traffic: Math.floor(Math.random() * 50 + 10),
       })),
       referrals: [
         { source: 'Google', count: 45, color: '#4285F4' },
         { source: 'Facebook', count: 32, color: '#1877F2' },
         { source: 'Instagram', count: 25, color: '#E4405F' },
-        { source: 'Others', count: 18, color: '#64748B' }
+        { source: 'Others', count: 18, color: '#64748B' },
       ],
       keyMetrics: {
         totalViews: 2340,
@@ -107,34 +112,44 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
         avgTimeOnPage: '2m 34s',
         conversionRate: 12.5,
         bounceRate: 34.2,
-        weeklyGrowth: 8.3
-      }
+        weeklyGrowth: 8.3,
+      },
     };
   };
 
   const generateAIInsights = (data: AnalyticsData): string[] => {
     const insights = [];
-    
+
     if (data.keyMetrics.weeklyGrowth > 5) {
-      insights.push('📈 Your listing is experiencing strong growth! Views increased by 8.3% this week.');
+      insights.push(
+        '📈 Your listing is experiencing strong growth! Views increased by 8.3% this week.'
+      );
     }
-    
+
     if (data.keyMetrics.conversionRate > 10) {
-      insights.push('🎯 Excellent conversion rate! Your listing effectively converts visitors to customers.');
+      insights.push(
+        '🎯 Excellent conversion rate! Your listing effectively converts visitors to customers.'
+      );
     }
-    
-    const peakHour = data.timeMetrics.reduce((max, current) => 
+
+    const peakHour = data.timeMetrics.reduce((max, current) =>
       current.traffic > max.traffic ? current : max
     );
-    insights.push(`⏰ Peak traffic occurs around ${peakHour.hour}. Consider posting updates during this time.`);
-    
+    insights.push(
+      `⏰ Peak traffic occurs around ${peakHour.hour}. Consider posting updates during this time.`
+    );
+
     const topSource = data.conversion[0];
-    insights.push(`🔍 ${topSource.source} is your top traffic source (${topSource.percentage}%). Focus on optimizing this channel.`);
-    
+    insights.push(
+      `🔍 ${topSource.source} is your top traffic source (${topSource.percentage}%). Focus on optimizing this channel.`
+    );
+
     if (data.keyMetrics.bounceRate < 40) {
-      insights.push('✨ Low bounce rate indicates visitors find your content engaging!');
+      insights.push(
+        '✨ Low bounce rate indicates visitors find your content engaging!'
+      );
     }
-    
+
     return insights;
   };
 
@@ -146,7 +161,7 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
       setAiInsights(generateAIInsights(data));
       setIsLoading(false);
     };
-    
+
     loadAnalytics();
   }, [businessId, timeRange]);
 
@@ -159,18 +174,18 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
   if (isLoading || !analyticsData) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Card key={i}>
               <CardContent className="p-6">
-                <div className="h-20 bg-muted animate-pulse rounded" />
+                <div className="h-20 animate-pulse rounded bg-muted" />
               </CardContent>
             </Card>
           ))}
         </div>
         <Card>
           <CardContent className="p-6">
-            <div className="h-64 bg-muted animate-pulse rounded" />
+            <div className="h-64 animate-pulse rounded bg-muted" />
           </CardContent>
         </Card>
       </div>
@@ -178,10 +193,10 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
   }
 
   const UpgradePrompt = ({ feature }: { feature: string }) => (
-    <Card className="border-dashed border-2 border-muted-foreground/25">
+    <Card className="border-2 border-dashed border-muted-foreground/25">
       <CardContent className="p-8 text-center">
-        <div className="text-muted-foreground mb-4">
-          <TrendingUp className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="mb-4 text-muted-foreground">
+          <TrendingUp className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <h3 className="text-lg font-semibold">Unlock {feature}</h3>
           <p>Upgrade to Premium Plus to access advanced analytics features.</p>
         </div>
@@ -196,15 +211,17 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
-          <p className="text-muted-foreground">Track your business performance</p>
+          <p className="text-muted-foreground">
+            Track your business performance
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
+            <Filter className="mr-2 h-4 w-4" />
             Filter
           </Button>
           <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
         </div>
@@ -224,7 +241,7 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
             <div className="space-y-2">
               {aiInsights.map((insight, index) => (
                 <div key={index} className="flex items-start gap-2 text-sm">
-                  <div className="mt-1 w-2 h-2 bg-primary rounded-full flex-shrink-0" />
+                  <div className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
                   <span>{insight}</span>
                 </div>
               ))}
@@ -234,20 +251,24 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
       )}
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Views</p>
-                <p className="text-2xl font-bold">{analyticsData.keyMetrics.totalViews.toLocaleString()}</p>
+                <p className="text-2xl font-bold">
+                  {analyticsData.keyMetrics.totalViews.toLocaleString()}
+                </p>
               </div>
               <Eye className="h-8 w-8 text-primary" />
             </div>
-            <div className="flex items-center mt-2 text-sm">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-green-500">+{analyticsData.keyMetrics.weeklyGrowth}%</span>
-              <span className="text-muted-foreground ml-1">this week</span>
+            <div className="mt-2 flex items-center text-sm">
+              <TrendingUp className="mr-1 h-4 w-4 text-green-500" />
+              <span className="text-green-500">
+                +{analyticsData.keyMetrics.weeklyGrowth}%
+              </span>
+              <span className="ml-1 text-muted-foreground">this week</span>
             </div>
           </CardContent>
         </Card>
@@ -257,11 +278,13 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Unique Visitors</p>
-                <p className="text-2xl font-bold">{analyticsData.keyMetrics.uniqueVisitors.toLocaleString()}</p>
+                <p className="text-2xl font-bold">
+                  {analyticsData.keyMetrics.uniqueVisitors.toLocaleString()}
+                </p>
               </div>
               <Users className="h-8 w-8 text-primary" />
             </div>
-            <div className="flex items-center mt-2 text-sm">
+            <div className="mt-2 flex items-center text-sm">
               <span className="text-muted-foreground">
                 Avg. Time: {analyticsData.keyMetrics.avgTimeOnPage}
               </span>
@@ -274,11 +297,13 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Conversion Rate</p>
-                <p className="text-2xl font-bold">{analyticsData.keyMetrics.conversionRate}%</p>
+                <p className="text-2xl font-bold">
+                  {analyticsData.keyMetrics.conversionRate}%
+                </p>
               </div>
               <MousePointer className="h-8 w-8 text-primary" />
             </div>
-            <div className="flex items-center mt-2 text-sm">
+            <div className="mt-2 flex items-center text-sm">
               <span className="text-muted-foreground">
                 Bounce Rate: {analyticsData.keyMetrics.bounceRate}%
               </span>
@@ -291,11 +316,13 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Growth Rate</p>
-                <p className="text-2xl font-bold">+{analyticsData.keyMetrics.weeklyGrowth}%</p>
+                <p className="text-2xl font-bold">
+                  +{analyticsData.keyMetrics.weeklyGrowth}%
+                </p>
               </div>
               <TrendingUp className="h-8 w-8 text-green-500" />
             </div>
-            <div className="flex items-center mt-2 text-sm">
+            <div className="mt-2 flex items-center text-sm">
               <span className="text-green-500">Strong performance</span>
             </div>
           </CardContent>
@@ -307,8 +334,12 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
         <TabsList>
           <TabsTrigger value="views">Views & Traffic</TabsTrigger>
           <TabsTrigger value="conversion">Conversion</TabsTrigger>
-          {canAccessFeature('advanced') && <TabsTrigger value="demographics">Demographics</TabsTrigger>}
-          {canAccessFeature('enterprise') && <TabsTrigger value="realtime">Real-time</TabsTrigger>}
+          {canAccessFeature('advanced') && (
+            <TabsTrigger value="demographics">Demographics</TabsTrigger>
+          )}
+          {canAccessFeature('enterprise') && (
+            <TabsTrigger value="realtime">Real-time</TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="views" className="space-y-4">
@@ -324,8 +355,18 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="views" stroke="hsl(var(--primary))" strokeWidth={2} />
-                  <Line type="monotone" dataKey="uniqueViews" stroke="hsl(var(--secondary))" strokeWidth={2} />
+                  <Line
+                    type="monotone"
+                    dataKey="views"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="uniqueViews"
+                    stroke="hsl(var(--secondary))"
+                    strokeWidth={2}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -333,7 +374,7 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
         </TabsContent>
 
         <TabsContent value="conversion" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Traffic Sources</CardTitle>
@@ -346,7 +387,9 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) =>
+                        `${name} ${(percent * 100).toFixed(0)}%`
+                      }
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="count"
@@ -416,10 +459,10 @@ const AnalyticsDashboard = ({ businessId, subscriptionTier }: AnalyticsDashboard
                     <XAxis dataKey="hour" />
                     <YAxis />
                     <Tooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="traffic" 
-                      stroke="hsl(var(--primary))" 
+                    <Line
+                      type="monotone"
+                      dataKey="traffic"
+                      stroke="hsl(var(--primary))"
                       strokeWidth={3}
                       dot={{ fill: 'hsl(var(--primary))' }}
                     />

@@ -1,6 +1,6 @@
-import { useParams } from "react-router-dom";
-import Header from "@/components/Header";
-import ListingForm from "@/components/forms/ListingForm";
+import { useParams } from 'react-router-dom';
+import Header from '@/components/Header';
+import ListingForm from '@/components/forms/ListingForm';
 
 const EditListing = () => {
   const { id } = useParams<{ id: string }>();

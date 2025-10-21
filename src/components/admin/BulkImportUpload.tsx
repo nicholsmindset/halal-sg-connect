@@ -9,21 +9,25 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Upload, 
-  FileText, 
-  AlertTriangle, 
-  CheckCircle, 
-  X, 
+import {
+  Upload,
+  FileText,
+  AlertTriangle,
+  CheckCircle,
+  X,
   Download,
   Eye,
   Settings,
   Play,
   Pause,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
 import { CSVImportParser, ImportValidator } from '@/lib/import-utils';
-import { BusinessImportData, ImportValidationResult, ImportProgress } from '@/types/import';
+import {
+  BusinessImportData,
+  ImportValidationResult,
+  ImportProgress,
+} from '@/types/import';
 import { useToast } from '@/hooks/use-toast';
 
 interface BulkImportUploadProps {
@@ -31,79 +35,99 @@ interface BulkImportUploadProps {
   onImportComplete?: (results: ImportValidationResult[]) => void;
 }
 
-export default function BulkImportUpload({ onImportStart, onImportComplete }: BulkImportUploadProps) {
+export default function BulkImportUpload({
+  onImportStart,
+  onImportComplete,
+}: BulkImportUploadProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [uploadStep, setUploadStep] = useState<'upload' | 'mapping' | 'validation' | 'import' | 'complete'>('upload');
+  const [uploadStep, setUploadStep] = useState<
+    'upload' | 'mapping' | 'validation' | 'import' | 'complete'
+  >('upload');
   const [csvData, setCSVData] = useState<any[]>([]);
   const [csvHeaders, setCSVHeaders] = useState<string[]>([]);
-  const [headerMapping, setHeaderMapping] = useState<Record<string, string>>({});
-  const [validationResults, setValidationResults] = useState<ImportValidationResult[]>([]);
-  const [importProgress, setImportProgress] = useState<ImportProgress | null>(null);
+  const [headerMapping, setHeaderMapping] = useState<Record<string, string>>(
+    {}
+  );
+  const [validationResults, setValidationResults] = useState<
+    ImportValidationResult[]
+  >([]);
+  const [importProgress, setImportProgress] = useState<ImportProgress | null>(
+    null
+  );
   const [importOptions, setImportOptions] = useState({
     skip_duplicates: true,
     auto_geocode: true,
     validate_only: false,
-    batch_size: 100
+    batch_size: 100,
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileUpload = useCallback(async (uploadedFile: File) => {
-    if (!uploadedFile.name.endsWith('.csv')) {
-      toast({
-        title: 'Invalid file type',
-        description: 'Please upload a CSV file',
-        variant: 'destructive'
-      });
-      return;
-    }
+  const handleFileUpload = useCallback(
+    async (uploadedFile: File) => {
+      if (!uploadedFile.name.endsWith('.csv')) {
+        toast({
+          title: 'Invalid file type',
+          description: 'Please upload a CSV file',
+          variant: 'destructive',
+        });
+        return;
+      }
 
-    try {
-      setFile(uploadedFile);
-      const { data, headers } = await CSVImportParser.parseCSV(uploadedFile);
-      
-      setCSVData(data);
-      setCSVHeaders(headers);
-      
-      // Auto-map headers
-      const autoMapping = CSVImportParser.mapCSVHeaders(headers);
-      setHeaderMapping(autoMapping);
-      
-      setUploadStep('mapping');
-      
-      toast({
-        title: 'File uploaded successfully',
-        description: `Parsed ${data.length} records with ${headers.length} columns`
-      });
-    } catch (error: any) {
-      toast({
-        title: 'Upload failed',
-        description: error.message,
-        variant: 'destructive'
-      });
-    }
-  }, [toast]);
+      try {
+        setFile(uploadedFile);
+        const { data, headers } = await CSVImportParser.parseCSV(uploadedFile);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) {
-      handleFileUpload(droppedFile);
-    }
-  }, [handleFileUpload]);
+        setCSVData(data);
+        setCSVHeaders(headers);
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      handleFileUpload(selectedFile);
-    }
-  }, [handleFileUpload]);
+        // Auto-map headers
+        const autoMapping = CSVImportParser.mapCSVHeaders(headers);
+        setHeaderMapping(autoMapping);
+
+        setUploadStep('mapping');
+
+        toast({
+          title: 'File uploaded successfully',
+          description: `Parsed ${data.length} records with ${headers.length} columns`,
+        });
+      } catch (error: any) {
+        toast({
+          title: 'Upload failed',
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    },
+    [toast]
+  );
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) {
+        handleFileUpload(droppedFile);
+      }
+    },
+    [handleFileUpload]
+  );
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files?.[0];
+      if (selectedFile) {
+        handleFileUpload(selectedFile);
+      }
+    },
+    [handleFileUpload]
+  );
 
   const validateData = useCallback(async () => {
     if (!csvData.length) return;
 
-    const transformedData = csvData.map(row => 
+    const transformedData = csvData.map(row =>
       CSVImportParser.transformCSVRow(row, headerMapping)
     );
 
@@ -116,7 +140,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
     toast({
       title: 'Validation complete',
-      description: `${validCount} valid records, ${invalidCount} invalid records`
+      description: `${validCount} valid records, ${invalidCount} invalid records`,
     });
   }, [csvData, headerMapping, toast]);
 
@@ -125,7 +149,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
     try {
       setUploadStep('import');
-      
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('mapping', JSON.stringify(headerMapping));
@@ -133,7 +157,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
       const response = await fetch('/api/import/bulk', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       if (!response.ok) {
@@ -141,46 +165,55 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
       }
 
       const { jobId } = await response.json();
-      
+
       if (onImportStart) {
         onImportStart(jobId);
       }
 
       // Start polling for progress
       pollImportProgress(jobId);
-
     } catch (error: any) {
       toast({
         title: 'Import failed',
         description: error.message,
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
-  }, [file, headerMapping, importOptions, validationResults, onImportStart, toast]);
+  }, [
+    file,
+    headerMapping,
+    importOptions,
+    validationResults,
+    onImportStart,
+    toast,
+  ]);
 
-  const pollImportProgress = useCallback(async (jobId: string) => {
-    const interval = setInterval(async () => {
-      try {
-        const response = await fetch(`/api/import/progress/${jobId}`);
-        const progress: ImportProgress = await response.json();
-        
-        setImportProgress(progress);
+  const pollImportProgress = useCallback(
+    async (jobId: string) => {
+      const interval = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/import/progress/${jobId}`);
+          const progress: ImportProgress = await response.json();
 
-        if (progress.status === 'completed' || progress.status === 'failed') {
-          clearInterval(interval);
-          setUploadStep('complete');
-          
-          if (onImportComplete) {
-            onImportComplete(validationResults);
+          setImportProgress(progress);
+
+          if (progress.status === 'completed' || progress.status === 'failed') {
+            clearInterval(interval);
+            setUploadStep('complete');
+
+            if (onImportComplete) {
+              onImportComplete(validationResults);
+            }
           }
+        } catch (error) {
+          console.error('Failed to fetch import progress:', error);
         }
-      } catch (error) {
-        console.error('Failed to fetch import progress:', error);
-      }
-    }, 2000);
+      }, 2000);
 
-    return () => clearInterval(interval);
-  }, [validationResults, onImportComplete]);
+      return () => clearInterval(interval);
+    },
+    [validationResults, onImportComplete]
+  );
 
   const resetImport = () => {
     setFile(null);
@@ -197,14 +230,30 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
   const downloadTemplate = () => {
     const headers = [
-      'name', 'description', 'category', 'subcategory', 'address', 'postal_code',
-      'district', 'phone', 'email', 'website', 'halal_certified', 'certification_body',
-      'price_range', 'features', 'tags', 'cuisine_types', 'opening_hours'
+      'name',
+      'description',
+      'category',
+      'subcategory',
+      'address',
+      'postal_code',
+      'district',
+      'phone',
+      'email',
+      'website',
+      'halal_certified',
+      'certification_body',
+      'price_range',
+      'features',
+      'tags',
+      'cuisine_types',
+      'opening_hours',
     ];
-    
-    const csvContent = headers.join(',') + '\n' +
+
+    const csvContent =
+      headers.join(',') +
+      '\n' +
       'Sample Restaurant,Authentic halal cuisine,Restaurants,Chinese,123 Orchard Road,238858,Orchard,+6591234567,info@sample.com,https://sample.com,true,MUIS,$$,"dine-in,takeaway","chinese,halal","Chinese,Zi Char","""monday"":{""open"":""10:00"",""close"":""22:00""}"';
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -216,7 +265,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
   const renderUploadStep = () => (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Upload Business Data</h3>
           <p className="text-sm text-muted-foreground">
@@ -224,18 +273,18 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
           </p>
         </div>
         <Button variant="outline" onClick={downloadTemplate}>
-          <Download className="w-4 h-4 mr-2" />
+          <Download className="mr-2 h-4 w-4" />
           Download Template
         </Button>
       </div>
 
       <div
-        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
+        className="cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 text-center transition-colors hover:border-muted-foreground/50"
         onDrop={handleDrop}
-        onDragOver={(e) => e.preventDefault()}
+        onDragOver={e => e.preventDefault()}
         onClick={() => fileInputRef.current?.click()}
       >
-        <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+        <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
         <div className="space-y-2">
           <p className="text-lg font-medium">Drop your CSV file here</p>
           <p className="text-sm text-muted-foreground">
@@ -257,8 +306,9 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
       <Alert>
         <FileText className="h-4 w-4" />
         <AlertDescription>
-          Your CSV should include columns like: name, address, category, phone, email, halal_certified.
-          Download our template for the recommended format.
+          Your CSV should include columns like: name, address, category, phone,
+          email, halal_certified. Download our template for the recommended
+          format.
         </AlertDescription>
       </Alert>
     </div>
@@ -266,32 +316,33 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
   const renderMappingStep = () => (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Map CSV Columns</h3>
           <p className="text-sm text-muted-foreground">
             Map your CSV columns to our business data fields
           </p>
         </div>
-        <Badge variant="secondary">
-          {csvData.length} records found
-        </Badge>
+        <Badge variant="secondary">{csvData.length} records found</Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {csvHeaders.map((header) => (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {csvHeaders.map(header => (
           <div key={header} className="space-y-2">
             <Label htmlFor={header}>
-              {header} <span className="text-muted-foreground">(CSV Column)</span>
+              {header}{' '}
+              <span className="text-muted-foreground">(CSV Column)</span>
             </Label>
             <select
               id={header}
               value={headerMapping[header] || ''}
-              onChange={(e) => setHeaderMapping(prev => ({
-                ...prev,
-                [header]: e.target.value
-              }))}
-              className="w-full p-2 border rounded-md"
+              onChange={e =>
+                setHeaderMapping(prev => ({
+                  ...prev,
+                  [header]: e.target.value,
+                }))
+              }
+              className="w-full rounded-md border p-2"
             >
               <option value="">-- Skip this column --</option>
               <option value="name">Business Name</option>
@@ -318,11 +369,11 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={resetImport}>
-          <X className="w-4 h-4 mr-2" />
+          <X className="mr-2 h-4 w-4" />
           Cancel
         </Button>
         <Button onClick={validateData}>
-          <Eye className="w-4 h-4 mr-2" />
+          <Eye className="mr-2 h-4 w-4" />
           Preview & Validate
         </Button>
       </div>
@@ -335,7 +386,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
 
     return (
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold">Validation Results</h3>
             <p className="text-sm text-muted-foreground">
@@ -346,9 +397,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
             <Badge variant="default" className="bg-green-100 text-green-800">
               {validRecords.length} Valid
             </Badge>
-            <Badge variant="destructive">
-              {invalidRecords.length} Invalid
-            </Badge>
+            <Badge variant="destructive">{invalidRecords.length} Invalid</Badge>
           </div>
         </div>
 
@@ -361,29 +410,40 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
           </TabsList>
 
           <TabsContent value="summary" className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <Card>
                 <CardContent className="p-4">
-                  <div className="text-2xl font-bold text-green-600">{validRecords.length}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {validRecords.length}
+                  </div>
                   <p className="text-sm text-muted-foreground">Valid Records</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <div className="text-2xl font-bold text-red-600">{invalidRecords.length}</div>
-                  <p className="text-sm text-muted-foreground">Invalid Records</p>
+                  <div className="text-2xl font-bold text-red-600">
+                    {invalidRecords.length}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Invalid Records
+                  </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <div className="text-2xl font-bold">{validationResults.length}</div>
+                  <div className="text-2xl font-bold">
+                    {validationResults.length}
+                  </div>
                   <p className="text-sm text-muted-foreground">Total Records</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
                   <div className="text-2xl font-bold">
-                    {Math.round((validRecords.length / validationResults.length) * 100)}%
+                    {Math.round(
+                      (validRecords.length / validationResults.length) * 100
+                    )}
+                    %
                   </div>
                   <p className="text-sm text-muted-foreground">Success Rate</p>
                 </CardContent>
@@ -392,11 +452,11 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
           </TabsContent>
 
           <TabsContent value="valid" className="space-y-4">
-            <div className="max-h-96 overflow-y-auto space-y-2">
+            <div className="max-h-96 space-y-2 overflow-y-auto">
               {validRecords.slice(0, 10).map((result, index) => (
-                <div key={index} className="p-3 border rounded bg-green-50">
+                <div key={index} className="rounded border bg-green-50 p-3">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-green-600" />
                     <span className="font-medium">{result.data?.name}</span>
                     <Badge variant="outline">{result.data?.category}</Badge>
                   </div>
@@ -408,7 +468,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
                 </div>
               ))}
               {validRecords.length > 10 && (
-                <p className="text-sm text-muted-foreground text-center">
+                <p className="text-center text-sm text-muted-foreground">
                   ... and {validRecords.length - 10} more valid records
                 </p>
               )}
@@ -416,11 +476,11 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
           </TabsContent>
 
           <TabsContent value="invalid" className="space-y-4">
-            <div className="max-h-96 overflow-y-auto space-y-2">
+            <div className="max-h-96 space-y-2 overflow-y-auto">
               {invalidRecords.map((result, index) => (
-                <div key={index} className="p-3 border rounded bg-red-50">
+                <div key={index} className="rounded border bg-red-50 p-3">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
                     <span className="font-medium">Row {result.row_number}</span>
                   </div>
                   <div className="mt-2 text-sm text-red-600">
@@ -434,24 +494,32 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
           </TabsContent>
 
           <TabsContent value="options" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="skip_duplicates"
                     checked={importOptions.skip_duplicates}
-                    onCheckedChange={(checked) => 
-                      setImportOptions(prev => ({ ...prev, skip_duplicates: !!checked }))
+                    onCheckedChange={checked =>
+                      setImportOptions(prev => ({
+                        ...prev,
+                        skip_duplicates: !!checked,
+                      }))
                     }
                   />
-                  <Label htmlFor="skip_duplicates">Skip duplicate businesses</Label>
+                  <Label htmlFor="skip_duplicates">
+                    Skip duplicate businesses
+                  </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="auto_geocode"
                     checked={importOptions.auto_geocode}
-                    onCheckedChange={(checked) => 
-                      setImportOptions(prev => ({ ...prev, auto_geocode: !!checked }))
+                    onCheckedChange={checked =>
+                      setImportOptions(prev => ({
+                        ...prev,
+                        auto_geocode: !!checked,
+                      }))
                     }
                   />
                   <Label htmlFor="auto_geocode">Auto-geocode addresses</Label>
@@ -460,11 +528,16 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
                   <Checkbox
                     id="validate_only"
                     checked={importOptions.validate_only}
-                    onCheckedChange={(checked) => 
-                      setImportOptions(prev => ({ ...prev, validate_only: !!checked }))
+                    onCheckedChange={checked =>
+                      setImportOptions(prev => ({
+                        ...prev,
+                        validate_only: !!checked,
+                      }))
                     }
                   />
-                  <Label htmlFor="validate_only">Validation only (don't import)</Label>
+                  <Label htmlFor="validate_only">
+                    Validation only (don't import)
+                  </Label>
                 </div>
               </div>
               <div className="space-y-4">
@@ -474,13 +547,16 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
                     id="batch_size"
                     type="number"
                     value={importOptions.batch_size}
-                    onChange={(e) => 
-                      setImportOptions(prev => ({ ...prev, batch_size: parseInt(e.target.value) || 100 }))
+                    onChange={e =>
+                      setImportOptions(prev => ({
+                        ...prev,
+                        batch_size: parseInt(e.target.value) || 100,
+                      }))
                     }
                     min="10"
                     max="1000"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Number of records to process at once
                   </p>
                 </div>
@@ -493,12 +569,12 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
           <Button variant="outline" onClick={() => setUploadStep('mapping')}>
             Back to Mapping
           </Button>
-          <Button 
-            onClick={startImport} 
+          <Button
+            onClick={startImport}
             disabled={validRecords.length === 0}
             className="bg-green-600 hover:bg-green-700"
           >
-            <Play className="w-4 h-4 mr-2" />
+            <Play className="mr-2 h-4 w-4" />
             Start Import ({validRecords.length} records)
           </Button>
         </div>
@@ -525,28 +601,36 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
             <Progress value={importProgress.progress_percentage} />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div className="grid grid-cols-2 gap-4 text-center md:grid-cols-4">
             <div>
-              <div className="text-2xl font-bold">{importProgress.current_record}</div>
+              <div className="text-2xl font-bold">
+                {importProgress.current_record}
+              </div>
               <p className="text-xs text-muted-foreground">Current</p>
             </div>
             <div>
-              <div className="text-2xl font-bold">{importProgress.total_records}</div>
+              <div className="text-2xl font-bold">
+                {importProgress.total_records}
+              </div>
               <p className="text-xs text-muted-foreground">Total</p>
             </div>
             <div>
-              <div className="text-2xl font-bold text-green-600">{importProgress.successful_imports}</div>
+              <div className="text-2xl font-bold text-green-600">
+                {importProgress.successful_imports}
+              </div>
               <p className="text-xs text-muted-foreground">Success</p>
             </div>
             <div>
-              <div className="text-2xl font-bold text-red-600">{importProgress.failed_imports}</div>
+              <div className="text-2xl font-bold text-red-600">
+                {importProgress.failed_imports}
+              </div>
               <p className="text-xs text-muted-foreground">Failed</p>
             </div>
           </div>
 
           {importProgress.status === 'processing' && (
             <div className="flex items-center justify-center gap-2 text-blue-600">
-              <RefreshCw className="w-4 h-4 animate-spin" />
+              <RefreshCw className="h-4 w-4 animate-spin" />
               <span>Processing records...</span>
             </div>
           )}
@@ -558,7 +642,7 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
   const renderCompleteStep = () => (
     <div className="space-y-6 text-center">
       <div className="flex flex-col items-center">
-        <CheckCircle className="w-16 h-16 text-green-600 mb-4" />
+        <CheckCircle className="mb-4 h-16 w-16 text-green-600" />
         <h3 className="text-xl font-semibold">Import Complete!</h3>
         <p className="text-muted-foreground">
           Your business data has been successfully imported.
@@ -566,16 +650,22 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
       </div>
 
       {importProgress && (
-        <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+        <div className="mx-auto grid max-w-md grid-cols-2 gap-4">
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-green-600">{importProgress.successful_imports}</div>
-              <p className="text-sm text-muted-foreground">Successfully Imported</p>
+              <div className="text-2xl font-bold text-green-600">
+                {importProgress.successful_imports}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Successfully Imported
+              </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-red-600">{importProgress.failed_imports}</div>
+              <div className="text-2xl font-bold text-red-600">
+                {importProgress.failed_imports}
+              </div>
               <p className="text-sm text-muted-foreground">Failed to Import</p>
             </CardContent>
           </Card>
@@ -583,10 +673,11 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
       )}
 
       <div className="flex justify-center gap-4">
-        <Button onClick={resetImport}>
-          Import Another File
-        </Button>
-        <Button variant="outline" onClick={() => window.location.href = '/admin/businesses'}>
+        <Button onClick={resetImport}>Import Another File</Button>
+        <Button
+          variant="outline"
+          onClick={() => (window.location.href = '/admin/businesses')}
+        >
           View Businesses
         </Button>
       </div>
@@ -594,10 +685,10 @@ export default function BulkImportUpload({ onImportStart, onImportComplete }: Bu
   );
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="mx-auto w-full max-w-4xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Upload className="w-5 h-5" />
+          <Upload className="h-5 w-5" />
           Bulk Business Import
         </CardTitle>
       </CardHeader>

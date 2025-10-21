@@ -3,15 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Globe, 
+import {
+  Globe,
   Download,
   RefreshCw,
   CheckCircle,
   FileText,
   Search,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react';
 import { SitemapGenerator } from '@/lib/sitemap-generator';
 import { useToast } from '@/hooks/use-toast';
@@ -30,18 +30,19 @@ export default function SitemapGeneratorComponent() {
   const generateSitemap = async () => {
     try {
       setGenerating(true);
-      
+
       toast({
         title: 'Generating sitemap',
-        description: 'This may take a few minutes...'
+        description: 'This may take a few minutes...',
       });
 
-      const { sitemap, robotsTxt, sitemapIndex } = await SitemapGenerator.generateAndSaveSitemaps();
-      
+      const { sitemap, robotsTxt, sitemapIndex } =
+        await SitemapGenerator.generateAndSaveSitemaps();
+
       // Count URLs in sitemap
       const urlMatches = sitemap.match(/<url>/g);
       const totalUrls = urlMatches ? urlMatches.length : 0;
-      
+
       // Estimate URL distribution (approximate)
       const businessUrlMatches = sitemap.match(/\/listing\//g);
       const seoUrlMatches = sitemap.match(/\/(category|features|price)\//g);
@@ -53,15 +54,15 @@ export default function SitemapGeneratorComponent() {
         totalUrls,
         businessUrls,
         seoUrls,
-        staticUrls
+        staticUrls,
       });
 
       setLastGenerated(new Date());
-      
+
       // Create downloadable files
       const sitemapBlob = new Blob([sitemap], { type: 'application/xml' });
       const robotsBlob = new Blob([robotsTxt], { type: 'text/plain' });
-      
+
       // Auto-download sitemap
       const sitemapUrl = URL.createObjectURL(sitemapBlob);
       const sitemapLink = document.createElement('a');
@@ -69,16 +70,16 @@ export default function SitemapGeneratorComponent() {
       sitemapLink.download = 'sitemap.xml';
       sitemapLink.click();
       URL.revokeObjectURL(sitemapUrl);
-      
+
       toast({
         title: 'Sitemap generated successfully',
-        description: `Generated ${totalUrls} URLs. Files are ready for download.`
+        description: `Generated ${totalUrls} URLs. Files are ready for download.`,
       });
     } catch (error: any) {
       toast({
         title: 'Sitemap generation failed',
         description: error.message,
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setGenerating(false);
@@ -95,27 +96,29 @@ export default function SitemapGeneratorComponent() {
       link.download = 'robots.txt';
       link.click();
       URL.revokeObjectURL(url);
-      
+
       toast({
         title: 'robots.txt downloaded',
-        description: 'File has been downloaded successfully.'
+        description: 'File has been downloaded successfully.',
       });
     } catch (error: any) {
       toast({
         title: 'Download failed',
         description: error.message,
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
 
   const testSitemapEndpoint = async () => {
     try {
-      const response = await fetch('/.netlify/functions/generate-sitemap?type=sitemap');
+      const response = await fetch(
+        '/.netlify/functions/generate-sitemap?type=sitemap'
+      );
       if (response.ok) {
         toast({
           title: 'Sitemap endpoint working',
-          description: 'The sitemap API endpoint is functioning correctly.'
+          description: 'The sitemap API endpoint is functioning correctly.',
         });
       } else {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -124,7 +127,7 @@ export default function SitemapGeneratorComponent() {
       toast({
         title: 'Endpoint test failed',
         description: error.message,
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -140,14 +143,14 @@ export default function SitemapGeneratorComponent() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={testSitemapEndpoint}>
-            <Search className="w-4 h-4 mr-2" />
+            <Search className="mr-2 h-4 w-4" />
             Test Endpoint
           </Button>
           <Button onClick={generateSitemap} disabled={generating}>
             {generating ? (
-              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+              <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <Globe className="w-4 h-4 mr-2" />
+              <Globe className="mr-2 h-4 w-4" />
             )}
             Generate Sitemap
           </Button>
@@ -155,24 +158,21 @@ export default function SitemapGeneratorComponent() {
       </div>
 
       {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
               {lastGenerated ? (
-                <CheckCircle className="w-5 h-5 text-green-600" />
+                <CheckCircle className="h-5 w-5 text-green-600" />
               ) : (
-                <AlertCircle className="w-5 h-5 text-yellow-600" />
+                <AlertCircle className="h-5 w-5 text-yellow-600" />
               )}
               <div>
                 <div className="text-sm font-medium">
                   {lastGenerated ? 'Generated' : 'Not Generated'}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {lastGenerated 
-                    ? lastGenerated.toLocaleString()
-                    : 'Never'
-                  }
+                  {lastGenerated ? lastGenerated.toLocaleString() : 'Never'}
                 </div>
               </div>
             </div>
@@ -211,14 +211,14 @@ export default function SitemapGeneratorComponent() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5" />
+            <FileText className="h-5 w-5" />
             Sitemap Components
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <h3 className="font-semibold mb-3">Included URL Types</h3>
+              <h3 className="mb-3 font-semibold">Included URL Types</h3>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Static Pages</span>
@@ -248,7 +248,7 @@ export default function SitemapGeneratorComponent() {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-3">SEO Configuration</h3>
+              <h3 className="mb-3 font-semibold">SEO Configuration</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
                   <span>Update Frequency</span>
@@ -274,26 +274,26 @@ export default function SitemapGeneratorComponent() {
 
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={downloadRobotsTxt}>
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="mr-2 h-4 w-4" />
               Download robots.txt
             </Button>
             <Button variant="outline" size="sm" asChild>
-              <a 
-                href="/.netlify/functions/generate-sitemap?type=sitemap" 
-                target="_blank" 
+              <a
+                href="/.netlify/functions/generate-sitemap?type=sitemap"
+                target="_blank"
                 rel="noopener noreferrer"
               >
-                <ExternalLink className="w-4 h-4 mr-2" />
+                <ExternalLink className="mr-2 h-4 w-4" />
                 View Live Sitemap
               </a>
             </Button>
             <Button variant="outline" size="sm" asChild>
-              <a 
-                href="/.netlify/functions/generate-sitemap?type=robots" 
-                target="_blank" 
+              <a
+                href="/.netlify/functions/generate-sitemap?type=robots"
+                target="_blank"
                 rel="noopener noreferrer"
               >
-                <ExternalLink className="w-4 h-4 mr-2" />
+                <ExternalLink className="mr-2 h-4 w-4" />
                 View Live robots.txt
               </a>
             </Button>
@@ -310,17 +310,19 @@ export default function SitemapGeneratorComponent() {
           <div className="space-y-2">
             <h4 className="font-semibold">1. Upload to Website Root</h4>
             <p className="text-sm text-muted-foreground">
-              After generating, upload the <code>sitemap.xml</code> and <code>robots.txt</code> files 
-              to your website's root directory (same location as index.html).
+              After generating, upload the <code>sitemap.xml</code> and{' '}
+              <code>robots.txt</code> files to your website's root directory
+              (same location as index.html).
             </p>
           </div>
 
           <div className="space-y-2">
             <h4 className="font-semibold">2. Submit to Search Engines</h4>
             <p className="text-sm text-muted-foreground">
-              Submit your sitemap to Google Search Console and Bing Webmaster Tools:
+              Submit your sitemap to Google Search Console and Bing Webmaster
+              Tools:
             </p>
-            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+            <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
               <li>Google: https://search.google.com/search-console</li>
               <li>Bing: https://www.bing.com/webmasters</li>
             </ul>
@@ -329,9 +331,10 @@ export default function SitemapGeneratorComponent() {
           <div className="space-y-2">
             <h4 className="font-semibold">3. Automatic Updates</h4>
             <p className="text-sm text-muted-foreground">
-              The sitemap endpoint at <code>/.netlify/functions/generate-sitemap</code> provides 
-              real-time sitemap generation. Consider setting up a scheduled job to regenerate 
-              sitemaps regularly.
+              The sitemap endpoint at{' '}
+              <code>/.netlify/functions/generate-sitemap</code> provides
+              real-time sitemap generation. Consider setting up a scheduled job
+              to regenerate sitemaps regularly.
             </p>
           </div>
         </CardContent>

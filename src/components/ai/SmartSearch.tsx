@@ -15,96 +15,117 @@ interface SmartSearchProps {
 const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
   const [query, setQuery] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [suggestedFilters, setSuggestedFilters] = useState<Array<{
-    key: string;
-    value: string;
-    reason: string;
-  }>>([]);
-  const [searchIntent, setSearchIntent] = useState<'dining' | 'delivery' | 'catering' | 'general'>('general');
+  const [suggestedFilters, setSuggestedFilters] = useState<
+    Array<{
+      key: string;
+      value: string;
+      reason: string;
+    }>
+  >([]);
+  const [searchIntent, setSearchIntent] = useState<
+    'dining' | 'delivery' | 'catering' | 'general'
+  >('general');
   const { toast } = useToast();
 
   // AI-powered query analysis
   const analyzeQuery = async (searchText: string) => {
     if (searchText.length < 3) return;
-    
+
     setIsProcessing(true);
-    
+
     // Simulate AI analysis - in real implementation, this would call an edge function
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const suggestions = [];
     const lowerQuery = searchText.toLowerCase();
-    
+
     // Intent detection
     let detectedIntent: typeof searchIntent = 'general';
-    if (lowerQuery.includes('delivery') || lowerQuery.includes('grab') || lowerQuery.includes('foodpanda')) {
+    if (
+      lowerQuery.includes('delivery') ||
+      lowerQuery.includes('grab') ||
+      lowerQuery.includes('foodpanda')
+    ) {
       detectedIntent = 'delivery';
-    } else if (lowerQuery.includes('catering') || lowerQuery.includes('event') || lowerQuery.includes('party')) {
+    } else if (
+      lowerQuery.includes('catering') ||
+      lowerQuery.includes('event') ||
+      lowerQuery.includes('party')
+    ) {
       detectedIntent = 'catering';
-    } else if (lowerQuery.includes('dine') || lowerQuery.includes('restaurant') || lowerQuery.includes('eat')) {
+    } else if (
+      lowerQuery.includes('dine') ||
+      lowerQuery.includes('restaurant') ||
+      lowerQuery.includes('eat')
+    ) {
       detectedIntent = 'dining';
     }
-    
+
     // Price range detection
-    if (lowerQuery.includes('cheap') || lowerQuery.includes('budget') || lowerQuery.includes('under') || lowerQuery.includes('$')) {
+    if (
+      lowerQuery.includes('cheap') ||
+      lowerQuery.includes('budget') ||
+      lowerQuery.includes('under') ||
+      lowerQuery.includes('$')
+    ) {
       suggestions.push({
         key: 'priceRange',
         value: '$',
-        reason: 'Detected budget preference'
+        reason: 'Detected budget preference',
       });
     }
-    
+
     // Cuisine type detection
     if (lowerQuery.includes('indian') || lowerQuery.includes('curry')) {
       suggestions.push({
         key: 'category',
         value: 'Indian',
-        reason: 'Cuisine preference detected'
+        reason: 'Cuisine preference detected',
       });
     }
-    
+
     if (lowerQuery.includes('chinese') || lowerQuery.includes('dim sum')) {
       suggestions.push({
         key: 'category',
         value: 'Chinese',
-        reason: 'Cuisine preference detected'
+        reason: 'Cuisine preference detected',
       });
     }
-    
+
     if (lowerQuery.includes('malay') || lowerQuery.includes('nasi')) {
       suggestions.push({
         key: 'category',
         value: 'Malay',
-        reason: 'Cuisine preference detected'
+        reason: 'Cuisine preference detected',
       });
     }
-    
+
     // Location detection
     if (lowerQuery.includes('near me') || lowerQuery.includes('nearby')) {
       suggestions.push({
         key: 'location',
         value: 'nearby',
-        reason: 'Location preference detected'
+        reason: 'Location preference detected',
       });
     }
-    
+
     // Occasion detection
     if (lowerQuery.includes('family') || lowerQuery.includes('kids')) {
       suggestions.push({
         key: 'features',
         value: 'family-friendly',
-        reason: 'Family dining detected'
+        reason: 'Family dining detected',
       });
     }
-    
+
     if (lowerQuery.includes('date') || lowerQuery.includes('romantic')) {
       suggestions.push({
         key: 'features',
         value: 'date-night',
-        reason: 'Romantic dining detected'
+        reason: 'Romantic dining detected',
       });
     }
-    
+
     setSuggestedFilters(suggestions);
     setSearchIntent(detectedIntent);
     setIsProcessing(false);
@@ -115,13 +136,13 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
       query,
       filters: {},
       intent: searchIntent,
-      suggestedFilters
+      suggestedFilters,
     };
-    
+
     onSearch(searchQuery);
-    
+
     toast({
-      title: "AI Search Activated",
+      title: 'AI Search Activated',
       description: `Found ${Math.floor(Math.random() * 20 + 5)} relevant results`,
     });
   };
@@ -131,8 +152,8 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
     if (file && onVisualSearch) {
       onVisualSearch(file);
       toast({
-        title: "Visual Search Processing",
-        description: "Analyzing image to find similar dishes...",
+        title: 'Visual Search Processing',
+        description: 'Analyzing image to find similar dishes...',
       });
     }
   };
@@ -157,9 +178,9 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
             <Input
               placeholder="Try: 'spicy Indian halal food near me under $20'"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="pl-10 pr-32 h-12 text-base"
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              onChange={e => setQuery(e.target.value)}
+              className="h-12 pl-10 pr-32 text-base"
+              onKeyPress={e => e.key === 'Enter' && handleSearch()}
             />
             <div className="absolute right-2 top-2 flex gap-2">
               <label htmlFor="visual-search" className="cursor-pointer">
@@ -194,7 +215,9 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
           {/* Search Intent */}
           {searchIntent !== 'general' && (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Detected intent:</span>
+              <span className="text-sm text-muted-foreground">
+                Detected intent:
+              </span>
               <Badge variant="secondary" className="capitalize">
                 {searchIntent.replace('_', ' ')}
               </Badge>
@@ -213,17 +236,19 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
                   <Badge
                     key={index}
                     variant="outline"
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="cursor-pointer transition-colors hover:bg-primary hover:text-primary-foreground"
                     onClick={() => {
                       // Apply filter logic here
                       toast({
-                        title: "Filter Applied",
+                        title: 'Filter Applied',
                         description: `${filter.reason}: ${filter.value}`,
                       });
                     }}
                   >
                     {filter.value}
-                    <span className="ml-1 text-xs opacity-70">({filter.reason})</span>
+                    <span className="ml-1 text-xs opacity-70">
+                      ({filter.reason})
+                    </span>
                   </Badge>
                 ))}
               </div>
@@ -231,12 +256,12 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
           )}
 
           {/* Search Button */}
-          <Button 
+          <Button
             onClick={handleSearch}
             className="w-full"
             disabled={!query.trim()}
           >
-            <Search className="h-4 w-4 mr-2" />
+            <Search className="mr-2 h-4 w-4" />
             Search with AI
           </Button>
         </div>

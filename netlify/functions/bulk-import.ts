@@ -1,6 +1,11 @@
 import { Handler } from '@netlify/functions';
 import { supabase } from '../../src/integrations/supabase/client';
-import { CSVImportParser, ImportValidator, GeocodingService, DuplicateDetector } from '../../src/lib/import-utils';
+import {
+  CSVImportParser,
+  ImportValidator,
+  GeocodingService,
+  DuplicateDetector,
+} from '../../src/lib/import-utils';
 import { BusinessImportData, ImportJob } from '../../src/types/import';
 import multiparty from 'multiparty';
 
@@ -11,7 +16,7 @@ export const handler: Handler = async (event, context) => {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   };
 
   if (event.httpMethod === 'OPTIONS') {
@@ -22,7 +27,7 @@ export const handler: Handler = async (event, context) => {
     return {
       statusCode: 405,
       headers,
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ error: 'Method not allowed' }),
     };
   }
 
@@ -44,7 +49,7 @@ export const handler: Handler = async (event, context) => {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'No file provided' })
+        body: JSON.stringify({ error: 'No file provided' }),
       };
     }
 
@@ -57,7 +62,7 @@ export const handler: Handler = async (event, context) => {
         file_type: 'csv',
         import_type: 'csv',
         status: 'pending',
-        imported_by: context.user?.id // Assume user context is available
+        imported_by: context.user?.id, // Assume user context is available
       })
       .select()
       .single();
@@ -66,7 +71,7 @@ export const handler: Handler = async (event, context) => {
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Failed to create import job' })
+        body: JSON.stringify({ error: 'Failed to create import job' }),
       };
     }
 
@@ -76,45 +81,46 @@ export const handler: Handler = async (event, context) => {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         jobId: importJob.id,
         status: 'processing',
-        message: 'Import started successfully'
-      })
+        message: 'Import started successfully',
+      }),
     };
-
   } catch (error: any) {
     console.error('Bulk import error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message || 'Internal server error' })
+      body: JSON.stringify({ error: error.message || 'Internal server error' }),
     };
   }
 };
 
 // Async function to process the import
 async function processImportAsync(
-  jobId: string, 
-  file: any, 
-  mapping: Record<string, string>, 
+  jobId: string,
+  file: any,
+  mapping: Record<string, string>,
   options: any
 ) {
   try {
     // Update job status to processing
     await supabase
       .from('import_jobs')
-      .update({ 
+      .update({
         status: 'processing',
-        started_at: new Date().toISOString()
+        started_at: new Date().toISOString(),
       })
       .eq('id', jobId);
 
     // Parse CSV file
     const fileContent = file.toString('utf8');
     const blob = new Blob([fileContent], { type: 'text/csv' });
-    const csvFile = new File([blob], file.originalFilename || 'import.csv', { type: 'text/csv' });
-    
+    const csvFile = new File([blob], file.originalFilename || 'import.csv', {
+      type: 'text/csv',
+    });
+
     const { data: csvData } = await CSVImportParser.parseCSV(csvFile);
 
     // Update total records count
@@ -135,18 +141,21 @@ async function processImportAsync(
 
     // Process records in batches
     const batchSize = options.batch_size || 100;
-    
+
     for (let i = 0; i < csvData.length; i += batchSize) {
       const batch = csvData.slice(i, i + batchSize);
-      
+
       for (const [index, row] of batch.entries()) {
         const rowNumber = i + index + 1;
-        
+
         try {
           // Transform and validate data
           const transformedData = CSVImportParser.transformCSVRow(row, mapping);
-          const validation = ImportValidator.validateBusinessData(transformedData, rowNumber);
-          
+          const validation = ImportValidator.validateBusinessData(
+            transformedData,
+            rowNumber
+          );
+
           if (!validation.valid) {
             failedImports++;
             errorLog.push(`Row ${rowNumber}: ${validation.errors.join(', ')}`);
@@ -161,10 +170,12 @@ async function processImportAsync(
               businessData,
               existingBusinesses
             );
-            
+
             if (duplicates.length > 0 && duplicates[0].similarity > 0.8) {
               failedImports++;
-              errorLog.push(`Row ${rowNumber}: Potential duplicate of "${duplicates[0].business.name}"`);
+              errorLog.push(
+                `Row ${rowNumber}: Potential duplicate of "${duplicates[0].business.name}"`
+              );
               continue;
             }
           }
@@ -172,9 +183,11 @@ async function processImportAsync(
           // Geocode address if enabled
           let coordinates = businessData.coordinates;
           let district = businessData.district;
-          
+
           if (options.auto_geocode && !coordinates && businessData.address) {
-            const geocodeResult = await GeocodingService.geocodeAddress(businessData.address);
+            const geocodeResult = await GeocodingService.geocodeAddress(
+              businessData.address
+            );
             if (geocodeResult.success) {
               coordinates = geocodeResult.coordinates;
               district = geocodeResult.district || district;
@@ -183,7 +196,7 @@ async function processImportAsync(
 
           // Generate business slug
           const slug = generateBusinessSlug(businessData.name);
-          
+
           // Prepare business insert data
           const businessInsert = {
             name: businessData.name,
@@ -211,7 +224,9 @@ async function processImportAsync(
             delivery_platforms: businessData.delivery_platforms,
             rating: businessData.rating || 0,
             review_count: businessData.review_count || 0,
-            coordinates: coordinates ? `POINT(${coordinates.lng} ${coordinates.lat})` : null,
+            coordinates: coordinates
+              ? `POINT(${coordinates.lng} ${coordinates.lat})`
+              : null,
             business_hours: businessData.opening_hours,
             verification_status: 'pending',
             import_source: businessData.source,
@@ -223,7 +238,7 @@ async function processImportAsync(
             clicks: 0,
             is_premium: false,
             subscription_tier: 'free',
-            last_updated: new Date().toISOString()
+            last_updated: new Date().toISOString(),
           };
 
           // Skip actual insert if validation only
@@ -237,15 +252,18 @@ async function processImportAsync(
 
             if (insertError) {
               failedImports++;
-              errorLog.push(`Row ${rowNumber}: Database insert failed - ${insertError.message}`);
+              errorLog.push(
+                `Row ${rowNumber}: Database insert failed - ${insertError.message}`
+              );
             } else {
               successfulImports++;
             }
           }
-
         } catch (error: any) {
           failedImports++;
-          errorLog.push(`Row ${rowNumber}: Processing error - ${error.message}`);
+          errorLog.push(
+            `Row ${rowNumber}: Processing error - ${error.message}`
+          );
         }
 
         processedRecords++;
@@ -258,7 +276,7 @@ async function processImportAsync(
               processed_records: processedRecords,
               successful_imports: successfulImports,
               failed_imports: failedImports,
-              error_log: errorLog
+              error_log: errorLog,
             })
             .eq('id', jobId);
         }
@@ -274,21 +292,22 @@ async function processImportAsync(
         successful_imports: successfulImports,
         failed_imports: failedImports,
         error_log: errorLog,
-        completed_at: new Date().toISOString()
+        completed_at: new Date().toISOString(),
       })
       .eq('id', jobId);
 
-    console.log(`Import job ${jobId} completed: ${successfulImports} successful, ${failedImports} failed`);
-
+    console.log(
+      `Import job ${jobId} completed: ${successfulImports} successful, ${failedImports} failed`
+    );
   } catch (error: any) {
     console.error(`Import job ${jobId} failed:`, error);
-    
+
     await supabase
       .from('import_jobs')
       .update({
         status: 'failed',
         error_log: [error.message],
-        completed_at: new Date().toISOString()
+        completed_at: new Date().toISOString(),
       })
       .eq('id', jobId);
   }

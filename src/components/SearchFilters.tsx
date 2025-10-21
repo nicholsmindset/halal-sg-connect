@@ -1,30 +1,30 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Search, Filter, X } from "lucide-react";
-import { mockCategories, mockDistricts } from "@/lib/mockData";
+} from '@/components/ui/select';
+import { Search, Filter, X } from 'lucide-react';
+import { mockCategories, mockDistricts } from '@/lib/mockData';
 
 const SearchFilters = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [priceRange, setPriceRange] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [priceRange, setPriceRange] = useState('');
   const [halalOnly, setHalalOnly] = useState(false);
 
   const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedCategory("");
-    setSelectedDistrict("");
-    setPriceRange("");
+    setSearchTerm('');
+    setSelectedCategory('');
+    setSelectedDistrict('');
+    setPriceRange('');
     setHalalOnly(false);
   };
 
@@ -41,23 +41,26 @@ const SearchFilters = () => {
         <div className="space-y-4">
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input
               placeholder="Search businesses, cuisine, or location..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
 
           {/* Filter Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                {mockCategories.map((category) => (
+                {mockCategories.map(category => (
                   <SelectItem key={category.id} value={category.name}>
                     {category.icon} {category.name}
                   </SelectItem>
@@ -65,12 +68,15 @@ const SearchFilters = () => {
               </SelectContent>
             </Select>
 
-            <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
+            <Select
+              value={selectedDistrict}
+              onValueChange={setSelectedDistrict}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="District" />
               </SelectTrigger>
               <SelectContent>
-                {mockDistricts.map((district) => (
+                {mockDistricts.map(district => (
                   <SelectItem key={district} value={district}>
                     {district}
                   </SelectItem>
@@ -92,7 +98,7 @@ const SearchFilters = () => {
 
             <div className="flex items-center space-x-2">
               <Button
-                variant={halalOnly ? "default" : "outline"}
+                variant={halalOnly ? 'default' : 'outline'}
                 onClick={() => setHalalOnly(!halalOnly)}
                 className="flex-1"
               >
@@ -105,17 +111,19 @@ const SearchFilters = () => {
           {/* Active Filters */}
           {activeFiltersCount > 0 && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-muted-foreground">Active filters:</span>
+              <span className="text-sm text-muted-foreground">
+                Active filters:
+              </span>
               {selectedCategory && (
                 <Badge variant="secondary">
                   {selectedCategory}
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-auto p-0 ml-2"
-                    onClick={() => setSelectedCategory("")}
+                    className="ml-2 h-auto p-0"
+                    onClick={() => setSelectedCategory('')}
                   >
-                    <X className="w-3 h-3" />
+                    <X className="h-3 w-3" />
                   </Button>
                 </Badge>
               )}
@@ -125,10 +133,10 @@ const SearchFilters = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-auto p-0 ml-2"
-                    onClick={() => setSelectedDistrict("")}
+                    className="ml-2 h-auto p-0"
+                    onClick={() => setSelectedDistrict('')}
                   >
-                    <X className="w-3 h-3" />
+                    <X className="h-3 w-3" />
                   </Button>
                 </Badge>
               )}
@@ -138,10 +146,10 @@ const SearchFilters = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-auto p-0 ml-2"
-                    onClick={() => setPriceRange("")}
+                    className="ml-2 h-auto p-0"
+                    onClick={() => setPriceRange('')}
                   >
-                    <X className="w-3 h-3" />
+                    <X className="h-3 w-3" />
                   </Button>
                 </Badge>
               )}
@@ -151,10 +159,10 @@ const SearchFilters = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-auto p-0 ml-2"
+                    className="ml-2 h-auto p-0"
                     onClick={() => setHalalOnly(false)}
                   >
-                    <X className="w-3 h-3" />
+                    <X className="h-3 w-3" />
                   </Button>
                 </Badge>
               )}
@@ -164,7 +172,7 @@ const SearchFilters = () => {
                 onClick={clearFilters}
                 className="text-muted-foreground"
               >
-                <X className="w-4 h-4 mr-1" />
+                <X className="mr-1 h-4 w-4" />
                 Clear all
               </Button>
             </div>
@@ -173,7 +181,7 @@ const SearchFilters = () => {
           {/* Search Button */}
           <div className="flex justify-end">
             <Button className="min-w-32">
-              <Filter className="w-4 h-4 mr-2" />
+              <Filter className="mr-2 h-4 w-4" />
               Apply Filters
             </Button>
           </div>
