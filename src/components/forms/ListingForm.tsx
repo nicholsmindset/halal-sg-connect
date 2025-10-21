@@ -30,6 +30,8 @@ import {
 import { mockCategories, mockDistricts } from "@/lib/mockData";
 import { Save, Upload, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const businessSchema = z.object({
   name: z.string().min(2, "Business name must be at least 2 characters"),
@@ -85,6 +87,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<BusinessFormData>({
     resolver: zodResolver(businessSchema),
@@ -119,19 +122,78 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
     },
   });
 
-  const onSubmit = (data: BusinessFormData) => {
-    const formData = {
-      ...data,
-      features: selectedFeatures,
-      tags: selectedTags,
-    };
-    
-    if (onSave) {
-      onSave(formData);
-    } else {
-      console.log("Saving listing:", formData);
-      // TODO: Implement actual save functionality
+  const onSubmit = async (data: BusinessFormData) => {
+    setIsSaving(true);
+    try {
+      const formData = {
+        ...data,
+        features: selectedFeatures,
+        tags: selectedTags,
+      };
+
+      if (onSave) {
+        onSave(formData);
+        setIsSaving(false);
+        return;
+      }
+
+      // Create slug from business name
+      const slug = data.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      // Prepare business data for Supabase
+      const businessData = {
+        name: data.name,
+        slug: listingId ? undefined : slug, // Only set slug for new listings
+        description: data.description,
+        address: data.address,
+        district: data.district,
+        phone: data.phone || null,
+        email: data.email || null,
+        website: data.website || null,
+        price_range: data.priceRange.toLowerCase().includes('$$$') ? 'premium' :
+                     data.priceRange.toLowerCase().includes('$$') ? 'mid-range' : 'budget',
+        halal_certified: data.isHalalCertified,
+        category_slugs: [data.category],
+        features: selectedFeatures,
+        operating_hours: data.openingHours,
+        images: uploadedImages.length > 0 ? uploadedImages : null,
+        is_active: true,
+        is_premium: false,
+      };
+
+      if (listingId) {
+        // Update existing listing
+        const { error } = await supabase
+          .from('businesses')
+          .update(businessData)
+          .eq('id', listingId);
+
+        if (error) throw error;
+        toast.success("Listing updated successfully!");
+      } else {
+        // Create new listing
+        const { error } = await supabase
+          .from('businesses')
+          .insert([businessData]);
+
+        if (error) throw error;
+        toast.success("Listing created successfully!");
+      }
+
+      // Navigate back to dashboard
       navigate("/dashboard");
+    } catch (error) {
+      console.error("Error saving listing:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to save listing. Please try again."
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -151,14 +213,56 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
     );
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files) {
-      // TODO: Implement actual image upload
-      const newImages = Array.from(files).map((file, index) => 
-        `/placeholder.svg?${uploadedImages.length + index}`
-      );
-      setUploadedImages(prev => [...prev, ...newImages]);
+    if (!files || files.length === 0) return;
+
+    try {
+      const uploadedUrls: string[] = [];
+
+      for (const file of Array.from(files)) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          toast.error(`${file.name} is not an image file`);
+          continue;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`${file.name} is too large (max 5MB)`);
+          continue;
+        }
+
+        // Create unique filename
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+        const filePath = `business-images/${fileName}`;
+
+        // Upload to Supabase Storage
+        const { error: uploadError } = await supabase.storage
+          .from('business-assets')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          toast.error(`Failed to upload ${file.name}: ${uploadError.message}`);
+          continue;
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('business-assets')
+          .getPublicUrl(filePath);
+
+        uploadedUrls.push(publicUrl);
+      }
+
+      if (uploadedUrls.length > 0) {
+        setUploadedImages(prev => [...prev, ...uploadedUrls]);
+        toast.success(`${uploadedUrls.length} image(s) uploaded successfully!`);
+      }
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      toast.error("Failed to upload images. Please try again.");
     }
   };
 
@@ -607,9 +711,9 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
               <Button type="button" variant="outline">
                 Save as Draft
               </Button>
-              <Button type="submit">
+              <Button type="submit" disabled={isSaving}>
                 <Save className="w-4 h-4 mr-2" />
-                {listingId ? "Update Listing" : "Create Listing"}
+                {isSaving ? "Saving..." : (listingId ? "Update Listing" : "Create Listing")}
               </Button>
             </div>
           </div>

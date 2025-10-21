@@ -11,6 +11,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Plus, Eye, Edit, Trash2, Copy, MoreVertical } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,10 +31,14 @@ import {
 import { mockListings } from "@/lib/mockData";
 import { type Business } from "@/types/business";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const ListingManager = () => {
   const navigate = useNavigate();
-  const [listings] = useState<Business[]>(mockListings);
+  const [listings, setListings] = useState<Business[]>(mockListings);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [listingToDelete, setListingToDelete] = useState<string | null>(null);
 
   const activeListings = listings.filter(listing => listing.subscriptionTier !== 'free' || listing.isPremium);
   const draftListings = listings.filter(listing => listing.subscriptionTier === 'free' && !listing.isPremium);
@@ -33,14 +47,88 @@ const ListingManager = () => {
     navigate(`/dashboard/listings/edit/${id}`);
   };
 
-  const handleDuplicateListing = (id: string) => {
-    // TODO: Implement duplicate functionality
-    console.log('Duplicate listing:', id);
+  const handleDuplicateListing = async (id: string) => {
+    try {
+      // Find the listing to duplicate
+      const listing = listings.find(l => l.id === id);
+      if (!listing) {
+        toast.error("Listing not found");
+        return;
+      }
+
+      // Fetch from Supabase if using real data
+      const { data: originalListing, error: fetchError } = await supabase
+        .from('businesses')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (fetchError) {
+        // If not in database, duplicate the mock data
+        const duplicatedListing = {
+          ...listing,
+          id: `${listing.id}-copy`,
+          name: `${listing.name} (Copy)`,
+          slug: `${listing.slug}-copy`,
+        };
+        setListings(prev => [...prev, duplicatedListing]);
+        toast.success("Listing duplicated successfully!");
+        return;
+      }
+
+      // Duplicate in Supabase
+      const { error: insertError } = await supabase
+        .from('businesses')
+        .insert([{
+          ...originalListing,
+          id: undefined, // Let database generate new ID
+          name: `${originalListing.name} (Copy)`,
+          slug: `${originalListing.slug}-copy-${Date.now()}`,
+          created_at: undefined,
+          updated_at: undefined,
+        }]);
+
+      if (insertError) throw insertError;
+
+      toast.success("Listing duplicated successfully!");
+      // Refresh listings here if using real data
+    } catch (error) {
+      console.error("Error duplicating listing:", error);
+      toast.error("Failed to duplicate listing. Please try again.");
+    }
   };
 
   const handleDeleteListing = (id: string) => {
-    // TODO: Implement delete functionality
-    console.log('Delete listing:', id);
+    setListingToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!listingToDelete) return;
+
+    try {
+      // Try to delete from Supabase
+      const { error } = await supabase
+        .from('businesses')
+        .delete()
+        .eq('id', listingToDelete);
+
+      if (error) {
+        // If not in database, remove from local state
+        setListings(prev => prev.filter(l => l.id !== listingToDelete));
+      } else {
+        // Refresh listings if using real data
+        setListings(prev => prev.filter(l => l.id !== listingToDelete));
+      }
+
+      toast.success("Listing deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      toast.error("Failed to delete listing. Please try again.");
+    } finally {
+      setDeleteDialogOpen(false);
+      setListingToDelete(null);
+    }
   };
 
   const renderListingTable = (listings: Business[]) => (
@@ -198,6 +286,24 @@ const ListingManager = () => {
           </TabsContent>
         </Tabs>
       </CardContent>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the listing
+              from the database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };
