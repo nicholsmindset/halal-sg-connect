@@ -28,6 +28,44 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Type definitions
+interface GenerationOptions {
+  priority?: 'all' | 'high' | 'critical';
+  type?: 'all' | 'districts' | 'property-zones' | 'categories' | 'combinations';
+  limit?: number;
+}
+
+interface SEOContent {
+  intro_text: string;
+  highlights: string[];
+  local_info?: string;
+  business_stats: {
+    total_count: number;
+    avg_rating: number;
+    price_distribution: Record<string, number>;
+    popular_cuisines: string[];
+    top_features: string[];
+  };
+  faqs: Array<{ question: string; answer: string }>;
+  related_searches: string[];
+}
+
+interface PageContent {
+  title: string;
+  metaDescription: string;
+  h1Title: string;
+  content: SEOContent;
+  businessCount: number;
+  schemaMarkup: Record<string, unknown>;
+  relatedPages: string[];
+}
+
+interface MetadataTemplate {
+  title: string;
+  metaDescription: string;
+  h1Title: string;
+}
+
 // Priority levels for page generation
 const PRIORITIES = {
   CRITICAL: ['d01', 'd07', 'd08', 'd09', 'd18', 'd19', 'd20', 'd22', 'd25'], // Top property districts
@@ -315,7 +353,7 @@ class SEOPageBatchGenerator {
   private async generatePageContent(
     pageType: string,
     filters: Record<string, string>
-  ): Promise<any> {
+  ): Promise<PageContent> {
     // Get business count for this filter
     let query = supabase
       .from('businesses')
@@ -370,8 +408,8 @@ class SEOPageBatchGenerator {
     pageType: string,
     filters: Record<string, string>,
     businessCount: number
-  ) {
-    const templates: Record<string, any> = {
+  ): MetadataTemplate {
+    const templates: Record<string, MetadataTemplate> = {
       district: {
         title: `${businessCount}+ Halal Restaurants in ${this.formatName(filters.planning_area)} | Singapore`,
         metaDescription: `Discover ${businessCount}+ halal restaurants in ${this.formatName(filters.planning_area)}. Verified MUIS-certified establishments with reviews and ratings.`,
@@ -499,7 +537,7 @@ class SEOPageBatchGenerator {
 // CLI execution
 async function main() {
   const args = process.argv.slice(2);
-  const options: any = {
+  const options: Partial<GenerationOptions> = {
     priority: 'all',
     type: 'all'
   };

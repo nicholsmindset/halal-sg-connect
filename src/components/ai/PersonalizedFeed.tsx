@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,7 +40,7 @@ const PersonalizedFeed = ({
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate AI recommendation engine
-  const generateRecommendations = async () => {
+  const generateRecommendations = useCallback(async () => {
     setIsLoading(true);
 
     // Simulate API call delay
@@ -71,7 +71,7 @@ const PersonalizedFeed = ({
 
     setPersonalizedListings(shuffled.slice(0, 8));
     setIsLoading(false);
-  };
+  }, [userPreferences]);
 
   const generateRecommendationReasons = (
     business: Business,
@@ -117,7 +117,7 @@ const PersonalizedFeed = ({
 
   useEffect(() => {
     generateRecommendations();
-  }, [userId, userPreferences]);
+  }, [userId, userPreferences, generateRecommendations]);
 
   if (isLoading) {
     return (

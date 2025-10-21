@@ -185,6 +185,7 @@ export default function BulkImportUpload({
     importOptions,
     validationResults,
     onImportStart,
+    pollImportProgress,
     toast,
   ]);
 

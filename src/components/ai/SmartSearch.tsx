@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Search, Camera, MapPin, Filter, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -28,7 +28,7 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
   const { toast } = useToast();
 
   // AI-powered query analysis
-  const analyzeQuery = async (searchText: string) => {
+  const analyzeQuery = useCallback(async (searchText: string) => {
     if (searchText.length < 3) return;
 
     setIsProcessing(true);
@@ -129,7 +129,7 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
     setSuggestedFilters(suggestions);
     setSearchIntent(detectedIntent);
     setIsProcessing(false);
-  };
+  }, []);
 
   const handleSearch = () => {
     const searchQuery: SearchQuery = {
@@ -166,7 +166,7 @@ const SmartSearch = ({ onSearch, onVisualSearch }: SmartSearchProps) => {
     }, 500);
 
     return () => clearTimeout(debounceTimer);
-  }, [query]);
+  }, [query, analyzeQuery]);
 
   return (
     <Card className="w-full">
