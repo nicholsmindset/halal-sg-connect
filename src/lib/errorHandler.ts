@@ -35,9 +35,14 @@ export class AppErrorHandler {
     }
   }
 
-  private sendToMonitoring(error: AppError): void {
-    // TODO: Implement monitoring service integration (e.g., Sentry)
-    console.log('Would send to monitoring:', error);
+  private async sendToMonitoring(error: AppError): Promise<void> {
+    try {
+      const { logError } = await import('./sentry');
+      logError(new Error(error.message), error.context);
+    } catch {
+      // Sentry not available, log locally
+      console.log('Would send to monitoring:', error);
+    }
   }
 
   getRecentErrors(limit = 10): AppError[] {

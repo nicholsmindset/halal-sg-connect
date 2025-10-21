@@ -34,8 +34,13 @@ class ErrorBoundary extends Component<Props, State> {
 
     // Log error to monitoring service (e.g., Sentry)
     if (process.env.NODE_ENV === 'production') {
-      // TODO: Add error monitoring service
-      console.error('Production error:', { error, errorInfo });
+      try {
+        import('@/lib/sentry').then(({ logError }) => {
+          logError(error as Error, { errorInfo });
+        });
+      } catch (err) {
+        console.error('Error logging failed:', err);
+      }
     }
   }
 
