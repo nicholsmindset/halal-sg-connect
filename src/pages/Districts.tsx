@@ -52,7 +52,7 @@ const Districts = () => {
       },
       {
         name: 'Little India',
-        slug: 'serangoon',
+        slug: 'little-india',
         count: 38,
         popular: true,
         type: 'Cultural Heritage',
@@ -78,6 +78,28 @@ const Districts = () => {
         count: 15,
         type: 'Upscale Residential',
       },
+      { name: 'Tanglin', slug: 'tanglin', count: 12, type: 'Embassy District' },
+      {
+        name: 'River Valley',
+        slug: 'river-valley',
+        count: 16,
+        type: 'Urban Living',
+      },
+      { name: 'Toa Payoh', slug: 'toa-payoh', count: 24, type: 'Mature Estate' },
+      {
+        name: 'Queenstown',
+        slug: 'queenstown',
+        count: 20,
+        type: 'Heritage Estate',
+      },
+      {
+        name: 'Bukit Merah',
+        slug: 'bukit-merah',
+        count: 23,
+        type: 'Central Living',
+      },
+      { name: 'Geylang', slug: 'geylang', count: 45, type: 'Cultural Hub' },
+      { name: 'Kallang', slug: 'kallang', count: 21, type: 'Sports Hub' },
     ],
     'East Region': [
       {
@@ -114,6 +136,12 @@ const Districts = () => {
         slug: 'marine-parade',
         count: 18,
         type: 'Beachfront',
+      },
+      {
+        name: 'Changi Village',
+        slug: 'changi-village',
+        count: 14,
+        type: 'Coastal Village',
       },
     ],
     'West Region': [
@@ -156,6 +184,26 @@ const Districts = () => {
         count: 22,
         type: 'Family Area',
       },
+      {
+        name: 'Bukit Panjang',
+        slug: 'bukit-panjang',
+        count: 18,
+        type: 'Residential',
+      },
+      { name: 'Pioneer', slug: 'pioneer', count: 11, type: 'Industrial' },
+      {
+        name: 'Tengah Smart Town',
+        slug: 'tengah',
+        count: 8,
+        type: 'New Smart Town',
+      },
+      { name: 'Tuas', slug: 'tuas', count: 7, type: 'Industrial Hub' },
+      {
+        name: 'West Coast',
+        slug: 'west-coast',
+        count: 17,
+        type: 'Waterfront',
+      },
     ],
     'North Region': [
       {
@@ -180,6 +228,18 @@ const Districts = () => {
       },
       { name: 'Mandai', slug: 'mandai', count: 8, type: 'Nature & Zoo' },
       { name: 'Seletar', slug: 'seletar', count: 6, type: 'Aerospace Hub' },
+      {
+        name: 'Lim Chu Kang',
+        slug: 'lim-chu-kang',
+        count: 5,
+        type: 'Rural & Farms',
+      },
+      {
+        name: 'Sungei Kadut',
+        slug: 'sungei-kadut',
+        count: 9,
+        type: 'Industrial',
+      },
     ],
     'Northeast Region': [
       {
@@ -216,6 +276,12 @@ const Districts = () => {
         count: 28,
         popular: true,
         type: 'Park Connector Hub',
+      },
+      {
+        name: 'Serangoon',
+        slug: 'serangoon',
+        count: 27,
+        type: 'Residential Hub',
       },
     ],
   };
