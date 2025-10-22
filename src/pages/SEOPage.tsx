@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
@@ -11,25 +11,19 @@ import ListingCard from '@/components/ListingCard';
 import {
   MapPin,
   Star,
-  Users,
   TrendingUp,
   Filter,
   ChevronRight,
   Search,
-  Clock,
-  Phone,
-  Globe,
 } from 'lucide-react';
 import { SEOPage as SEOPageType, SEOPageContent } from '@/types/import';
-import { Business } from '@/types/business';
 import { supabase } from '@/integrations/supabase/client';
-import { SEOPageGenerator } from '@/lib/seo-generator';
 
 export default function SEOPage() {
   const { '*': slugPath } = useParams();
   const navigate = useNavigate();
   const [seoPage, setSeoPage] = useState<SEOPageType | null>(null);
-  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [businesses, setBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,67 +46,28 @@ export default function SEOPage() {
       const pathParts = slug.split('/');
       const pageIdentifier = pathParts.length > 1 ? pathParts[1] : slug;
 
+      if (!pageIdentifier) {
+        setError('Invalid page path');
+        return;
+      }
+
       // First, try to get existing SEO page
-      const { data: existingPage, error: pageError } = await supabase
+      const { data: existingPage } = await supabase
         .from('seo_pages')
         .select('*')
         .eq('slug', pageIdentifier)
         .eq('is_published', true)
         .maybeSingle();
 
-      let seoPageData: SEOPageType | null = existingPage;
+      let seoPageData: any = existingPage;
 
-      // If no existing page, try to generate one
-      if (!existingPage && !pageError) {
-        const pathParts = slug.split('/');
-        let pageType: SEOPageType['page_type'] = 'location';
-        let filters: Record<string, any> = {};
+      // For now, if no existing page found, show 404
+      // TODO: Implement dynamic page generation when needed
 
-        // Determine page type and filters from slug
-        if (pathParts[0] === 'category') {
-          pageType = 'category';
-          filters = { category: pathParts[1] };
-        } else if (pathParts[0] === 'features') {
-          pageType = 'feature';
-          filters = { feature: pathParts[1] };
-        } else if (pathParts[0] === 'price') {
-          pageType = 'price';
-          filters = { price_range: pathParts[1] };
-        } else if (pathParts[0] === 'district') {
-          // New district-specific routing: /district/tampines or /district/tampines/restaurants
-          pageType = pathParts.length === 3 ? 'district_category' : 'district';
-          filters =
-            pathParts.length === 3
-              ? { planning_area: pathParts[1], category: pathParts[2] }
-              : { planning_area: pathParts[1] };
-        } else if (pathParts[0] === 'property-zone') {
-          // New property zone routing: /property-zone/d01 or /property-zone/d01/restaurants
-          pageType =
-            pathParts.length === 3 ? 'property_zone_category' : 'property_zone';
-          filters =
-            pathParts.length === 3
-              ? {
-                  property_district_code: pathParts[1].toUpperCase(),
-                  category: pathParts[2],
-                }
-              : { property_district_code: pathParts[1].toUpperCase() };
-        } else if (pathParts.length === 1) {
-          pageType = 'location';
-          filters = { district: pathParts[0].replace('-', ' ') };
-        } else if (pathParts.length === 2) {
-          pageType = 'combination';
-          filters = {
-            district: pathParts[0].replace('-', ' '),
-            category: pathParts[1],
-          };
-        }
-
-        // Generate the page
-        seoPageData = await SEOPageGenerator.generateAndStorePage(
-          slug,
-          pageType,
-          filters
-        );
+      if (!seoPageData) {
+        setError('Page not found');
+        navigate('/404');
+        return;
       }
 
       if (!seoPageData) {

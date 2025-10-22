@@ -26,9 +26,7 @@ const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 const AdminModeration = lazy(() => import('./pages/admin/AdminModeration'));
 const AdminRevenue = lazy(() => import('./pages/admin/AdminRevenue'));
 const AdminPremium = lazy(() => import('./pages/admin/AdminPremium'));
-const AdminSystem = lazy(() => import('./pages/admin/AdminSystem'));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
-const AdminImport = lazy(() => import('./pages/admin/AdminImport'));
 const Auth = lazy(() => import('./pages/Auth'));
 const CreateListing = lazy(() => import('./pages/CreateListing'));
 const EditListing = lazy(() => import('./pages/EditListing'));
@@ -105,7 +103,6 @@ const App = () => (
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="/admin/businesses" element={<AdminBusinesses />} />
-                <Route path="/admin/import" element={<AdminImport />} />
                 <Route
                   path="/admin/subscriptions"
                   element={<AdminSubscriptions />}
@@ -114,7 +111,6 @@ const App = () => (
                 <Route path="/admin/moderation" element={<AdminModeration />} />
                 <Route path="/admin/revenue" element={<AdminRevenue />} />
                 <Route path="/admin/premium" element={<AdminPremium />} />
-                <Route path="/admin/system" element={<AdminSystem />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
 
                 {/* Static Pages */}
