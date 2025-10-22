@@ -1,22 +1,16 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import {
   MapPin,
-  Building2,
-  Utensils,
-  Search,
   Phone,
   Mail,
-  ExternalLink,
   Facebook,
   Instagram,
   Twitter,
 } from 'lucide-react';
 
 export default function Footer() {
-  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
 
   // District organization by regions for internal linking
