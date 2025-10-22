@@ -4,7 +4,7 @@ import path from 'path';
 
 // Conditionally import lovable-tagger only in development
 const getDevPlugins = async (mode: string) => {
-  const plugins = [react()];
+  const plugins: any[] = [react()];
 
   if (mode === 'development') {
     try {
@@ -50,7 +50,7 @@ export default defineConfig(async ({ mode }) => ({
       },
     },
     target: 'esnext',
-    minify: 'esbuild',
+    minify: 'esbuild' as const,
     sourcemap: mode === 'development',
   },
   optimizeDeps: {

@@ -36,7 +36,6 @@ interface User {
 
 const AdminUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterRole, setFilterRole] = useState('all');
 
   // Mock user data
   const users: User[] = [

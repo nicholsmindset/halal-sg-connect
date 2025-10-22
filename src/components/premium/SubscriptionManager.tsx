@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Crown, Check, Sparkles, TrendingUp, Zap } from 'lucide-react';
+import { Crown, Check, Sparkles, Zap } from 'lucide-react';
 
 interface SubscriptionManagerProps {
   currentTier: 'free' | 'premium' | 'premium_plus' | 'enterprise';
@@ -69,7 +69,7 @@ const SubscriptionManager = ({ currentTier }: SubscriptionManagerProps) => {
     },
   ];
 
-  const handleUpgrade = async (planId: string) => {
+  const handleUpgrade = async () => {
     setIsLoading(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -120,7 +120,7 @@ const SubscriptionManager = ({ currentTier }: SubscriptionManagerProps) => {
                 className="w-full"
                 variant={currentTier === plan.id ? 'outline' : 'default'}
                 disabled={currentTier === plan.id || isLoading}
-                onClick={() => handleUpgrade(plan.id)}
+                onClick={() => handleUpgrade()}
               >
                 {currentTier === plan.id
                   ? 'Current Plan'

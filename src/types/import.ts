@@ -201,7 +201,11 @@ export interface SEOPage {
     | 'combination'
     | 'feature'
     | 'price'
-    | 'cuisine';
+    | 'cuisine'
+    | 'district'
+    | 'district_category'
+    | 'property_zone'
+    | 'property_zone_category';
   title: string;
   meta_description?: string;
   h1_title?: string;

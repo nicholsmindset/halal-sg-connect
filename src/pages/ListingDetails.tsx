@@ -9,7 +9,19 @@ const ListingDetails = () => {
   const { slug } = useParams();
 
   // In real app, this would fetch from Supabase
-  const listing = mockListings.find(l => l.slug === slug) || mockListings[0];
+  const listing = mockListings.find(l => l.slug === slug);
+  
+  if (!listing) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <p>Listing not found</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

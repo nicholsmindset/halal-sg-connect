@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { SearchQuery, AIRecommendation } from '@/types/business';
+import { SearchQuery } from '@/types/business';
 import { useToast } from '@/hooks/use-toast';
 
 interface SmartSearchProps {

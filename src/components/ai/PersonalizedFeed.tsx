@@ -23,9 +23,6 @@ const PersonalizedFeed = ({
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>(
     []
   );
-  const [personalizedListings, setPersonalizedListings] = useState<Business[]>(
-    []
-  );
   const [feedSections, setFeedSections] = useState<{
     trending: Business[];
     nearYou: Business[];
@@ -69,7 +66,6 @@ const PersonalizedFeed = ({
       newOpenings: shuffled.slice(12, 16),
     });
 
-    setPersonalizedListings(shuffled.slice(0, 8));
     setIsLoading(false);
   };
 

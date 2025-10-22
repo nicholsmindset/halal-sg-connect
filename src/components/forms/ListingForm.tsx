@@ -200,7 +200,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
       // Prepare business data for Supabase
       const businessData = {
         name: data.name,
-        slug: listingId ? undefined : slug, // Only set slug for new listings
+        slug: listingId ? '' : slug, // Empty string for updates, slug for new listings
         description: data.description,
         address: data.address,
         district: data.district,
@@ -647,7 +647,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {Object.entries(form.getValues('openingHours')).map(
-                    ([day, hours]) => (
+                    ([day]) => (
                       <div
                         key={day}
                         className="grid grid-cols-4 items-center gap-4"

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -21,8 +21,13 @@ const PropertyZones = () => {
     title: 'Singapore Property Districts D01-D28 - Halal Business Directory',
     description:
       'Explore halal restaurants by Singapore property districts (D01-D28). Find business-focused halal dining from CBD to residential areas across all postal zones.',
-    keywords:
-      'Singapore property districts, D01-D28 halal restaurants, postal district dining, business halal food, residential area restaurants',
+    keywords: [
+      'Singapore property districts',
+      'D01-D28 halal restaurants',
+      'postal district dining',
+      'business halal food',
+      'residential area restaurants',
+    ],
     canonical: '/property-zones',
   });
 

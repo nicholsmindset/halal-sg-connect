@@ -20,11 +20,9 @@ import {
 } from 'recharts';
 import {
   TrendingUp,
-  TrendingDown,
   Eye,
   MousePointer,
   Users,
-  Calendar,
   Download,
   Filter,
   Sparkles,
@@ -60,7 +58,7 @@ const AnalyticsDashboard = ({
     null
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
+  const [timeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [aiInsights, setAiInsights] = useState<string[]>([]);
 
   // Generate mock analytics data
@@ -75,12 +73,12 @@ const AnalyticsDashboard = ({
 
     return {
       views: dates.map(date => ({
-        date,
+        date: date || '',
         views: Math.floor(Math.random() * 100 + 20),
         uniqueViews: Math.floor(Math.random() * 60 + 15),
       })),
       clicks: dates.map(date => ({
-        date,
+        date: date || '',
         clicks: Math.floor(Math.random() * 25 + 5),
         ctr: Math.random() * 0.15 + 0.05,
       })),
@@ -140,9 +138,11 @@ const AnalyticsDashboard = ({
     );
 
     const topSource = data.conversion[0];
-    insights.push(
-      `🔍 ${topSource.source} is your top traffic source (${topSource.percentage}%). Focus on optimizing this channel.`
-    );
+    if (topSource) {
+      insights.push(
+        `🔍 ${topSource.source} is your top traffic source (${topSource.percentage}%). Focus on optimizing this channel.`
+      );
+    }
 
     if (data.keyMetrics.bounceRate < 40) {
       insights.push(

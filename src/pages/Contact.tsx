@@ -39,8 +39,12 @@ const Contact = () => {
     title: 'Contact Us - Halal SG Connect | Get Support & Sales Information',
     description:
       'Contact our team for support, sales inquiries, or partnership opportunities. Get help with your halal business listing and premium features.',
-    keywords:
-      'contact halal directory, Singapore business support, halal certification help, premium features support',
+    keywords: [
+      'contact halal directory',
+      'Singapore business support',
+      'halal certification help',
+      'premium features support',
+    ],
     canonical: '/contact',
   });
 

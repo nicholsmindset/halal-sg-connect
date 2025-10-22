@@ -1,11 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Building2, Users, Star, Utensils } from 'lucide-react';
+import { MapPin, Building2, Star, Utensils } from 'lucide-react';
 import { useSEO } from '@/hooks/useSEO';
 
 const Districts = () => {
@@ -14,8 +13,13 @@ const Districts = () => {
     title: 'Singapore Districts - Complete Halal Business Directory by Area',
     description:
       'Explore halal restaurants and businesses in all Singapore districts. From Central to Northeast regions, find authenticated halal dining in every neighborhood.',
-    keywords:
-      'Singapore districts, halal restaurants by area, neighborhood dining, planning areas, regional halal food',
+    keywords: [
+      'Singapore districts',
+      'halal restaurants by area',
+      'neighborhood dining',
+      'planning areas',
+      'regional halal food',
+    ],
     canonical: '/districts',
   });
 

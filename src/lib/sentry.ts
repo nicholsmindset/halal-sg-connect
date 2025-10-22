@@ -39,7 +39,7 @@ export const initSentry = () => {
     ],
 
     // Filtering sensitive data
-    beforeSend(event, hint) {
+    beforeSend(event) {
       // Filter out sensitive information
       if (event.request) {
         delete event.request.cookies;

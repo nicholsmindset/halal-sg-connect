@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -13,10 +12,8 @@ import {
   Building2,
   Camera,
   BarChart3,
-  Users,
   Globe,
   Megaphone,
-  Shield,
   Headphones,
 } from 'lucide-react';
 import { useSEO } from '@/hooks/useSEO';
@@ -27,8 +24,13 @@ const Pricing = () => {
     title: 'Pricing Plans - Halal SG Connect | Grow Your Halal Business',
     description:
       'Choose the perfect plan to showcase your halal business. From free basic listings to enterprise solutions with AI-powered features and premium placement.',
-    keywords:
-      'halal business pricing, Singapore restaurant marketing, premium listing, business directory plans, halal certification',
+    keywords: [
+      'halal business pricing',
+      'Singapore restaurant marketing',
+      'premium listing',
+      'business directory plans',
+      'halal certification',
+    ],
     canonical: '/pricing',
   });
 
