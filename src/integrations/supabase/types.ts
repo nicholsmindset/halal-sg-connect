@@ -14,10 +14,227 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      businesses: {
+        Row: {
+          address: string | null
+          categories: string[] | null
+          category_slugs: string[] | null
+          created_at: string | null
+          description: string | null
+          district: string | null
+          email: string | null
+          features: string[] | null
+          halal_certified: boolean | null
+          id: string
+          images: string[] | null
+          is_premium: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          phone: string | null
+          planning_area: string | null
+          price_range: string | null
+          property_district_code: string | null
+          rating: number | null
+          review_count: number | null
+          slug: string
+          updated_at: string | null
+          verification_status: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          categories?: string[] | null
+          category_slugs?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          email?: string | null
+          features?: string[] | null
+          halal_certified?: boolean | null
+          id?: string
+          images?: string[] | null
+          is_premium?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          phone?: string | null
+          planning_area?: string | null
+          price_range?: string | null
+          property_district_code?: string | null
+          rating?: number | null
+          review_count?: number | null
+          slug: string
+          updated_at?: string | null
+          verification_status?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          categories?: string[] | null
+          category_slugs?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          email?: string | null
+          features?: string[] | null
+          halal_certified?: boolean | null
+          id?: string
+          images?: string[] | null
+          is_premium?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          phone?: string | null
+          planning_area?: string | null
+          price_range?: string | null
+          property_district_code?: string | null
+          rating?: number | null
+          review_count?: number | null
+          slug?: string
+          updated_at?: string | null
+          verification_status?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      seo_pages: {
+        Row: {
+          canonical_url: string
+          content: Json
+          created_at: string | null
+          filters: Json
+          h1_title: string
+          id: string
+          is_published: boolean | null
+          meta_description: string
+          page_type: string
+          schema_markup: Json | null
+          slug: string
+          title: string
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          canonical_url: string
+          content?: Json
+          created_at?: string | null
+          filters?: Json
+          h1_title: string
+          id?: string
+          is_published?: boolean | null
+          meta_description: string
+          page_type: string
+          schema_markup?: Json | null
+          slug: string
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          canonical_url?: string
+          content?: Json
+          created_at?: string | null
+          filters?: Json
+          h1_title?: string
+          id?: string
+          is_published?: boolean | null
+          meta_description?: string
+          page_type?: string
+          schema_markup?: Json | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      business_search_view: {
+        Row: {
+          address: string | null
+          categories: string[] | null
+          category_slugs: string[] | null
+          created_at: string | null
+          description: string | null
+          district: string | null
+          email: string | null
+          features: string[] | null
+          halal_certified: boolean | null
+          id: string | null
+          images: string[] | null
+          is_premium: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string | null
+          phone: string | null
+          planning_area: string | null
+          price_range: string | null
+          property_district_code: string | null
+          rating: number | null
+          review_count: number | null
+          slug: string | null
+          updated_at: string | null
+          verification_status: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          categories?: string[] | null
+          category_slugs?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          email?: string | null
+          features?: string[] | null
+          halal_certified?: boolean | null
+          id?: string | null
+          images?: string[] | null
+          is_premium?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          phone?: string | null
+          planning_area?: string | null
+          price_range?: string | null
+          property_district_code?: string | null
+          rating?: number | null
+          review_count?: number | null
+          slug?: string | null
+          updated_at?: string | null
+          verification_status?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          categories?: string[] | null
+          category_slugs?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          email?: string | null
+          features?: string[] | null
+          halal_certified?: boolean | null
+          id?: string | null
+          images?: string[] | null
+          is_premium?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          phone?: string | null
+          planning_area?: string | null
+          price_range?: string | null
+          property_district_code?: string | null
+          rating?: number | null
+          review_count?: number | null
+          slug?: string | null
+          updated_at?: string | null
+          verification_status?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
