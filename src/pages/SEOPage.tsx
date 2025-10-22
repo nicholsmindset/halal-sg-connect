@@ -47,13 +47,18 @@ export default function SEOPage() {
       setLoading(true);
       setError(null);
 
+      // Extract the actual page identifier from the slug
+      // For /district/clementi, we want to search for 'clementi'
+      const pathParts = slug.split('/');
+      const pageIdentifier = pathParts.length > 1 ? pathParts[1] : slug;
+
       // First, try to get existing SEO page
       const { data: existingPage, error: pageError } = await supabase
         .from('seo_pages')
         .select('*')
-        .eq('slug', slug)
+        .eq('slug', pageIdentifier)
         .eq('is_published', true)
-        .single();
+        .maybeSingle();
 
       let seoPageData: SEOPageType | null = existingPage;
 
