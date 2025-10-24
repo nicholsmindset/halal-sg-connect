@@ -159,7 +159,6 @@ export type Database = {
           created_at: string | null
           description: string | null
           district: string | null
-          email: string | null
           features: string[] | null
           halal_certified: boolean | null
           id: string | null
@@ -168,7 +167,6 @@ export type Database = {
           latitude: number | null
           longitude: number | null
           name: string | null
-          phone: string | null
           planning_area: string | null
           price_range: string | null
           property_district_code: string | null
@@ -186,7 +184,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           district?: string | null
-          email?: string | null
           features?: string[] | null
           halal_certified?: boolean | null
           id?: string | null
@@ -195,7 +192,6 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name?: string | null
-          phone?: string | null
           planning_area?: string | null
           price_range?: string | null
           property_district_code?: string | null
@@ -213,7 +209,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           district?: string | null
-          email?: string | null
           features?: string[] | null
           halal_certified?: boolean | null
           id?: string | null
@@ -222,7 +217,6 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name?: string | null
-          phone?: string | null
           planning_area?: string | null
           price_range?: string | null
           property_district_code?: string | null
@@ -237,7 +231,10 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      is_business_owner: {
+        Args: { _business_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
