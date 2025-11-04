@@ -7,6 +7,7 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { lazy, Suspense } from 'react';
 import { Card } from '@/components/ui/card';
 import { HelmetProvider } from 'react-helmet-async';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Import error handler to initialize global handlers
 import '@/lib/errorHandler';
@@ -80,38 +81,123 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/listings" element={<Listings />} />
                 <Route path="/listing/:slug" element={<ListingDetails />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+
+                {/* Protected Dashboard Routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/dashboard/listings/new"
-                  element={<CreateListing />}
+                  element={
+                    <ProtectedRoute>
+                      <CreateListing />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="/dashboard/listings/edit/:id"
-                  element={<EditListing />}
+                  element={
+                    <ProtectedRoute>
+                      <EditListing />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="/dashboard/analytics"
-                  element={<DashboardAnalytics />}
+                  element={
+                    <ProtectedRoute>
+                      <DashboardAnalytics />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="/dashboard/settings"
-                  element={<DashboardSettings />}
+                  element={
+                    <ProtectedRoute>
+                      <DashboardSettings />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route path="/auth" element={<Auth />} />
 
-                {/* Admin Routes */}
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-                <Route path="/admin/businesses" element={<AdminBusinesses />} />
+                {/* Protected Admin Routes - Require Admin Role */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <Admin />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminUsers />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/businesses"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminBusinesses />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/admin/subscriptions"
-                  element={<AdminSubscriptions />}
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminSubscriptions />
+                    </ProtectedRoute>
+                  }
                 />
-                <Route path="/admin/analytics" element={<AdminAnalytics />} />
-                <Route path="/admin/moderation" element={<AdminModeration />} />
-                <Route path="/admin/revenue" element={<AdminRevenue />} />
-                <Route path="/admin/premium" element={<AdminPremium />} />
-                <Route path="/admin/settings" element={<AdminSettings />} />
+                <Route
+                  path="/admin/analytics"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminAnalytics />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/moderation"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminModeration />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/revenue"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminRevenue />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/premium"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminPremium />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/settings"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminSettings />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* Static Pages */}
                 <Route path="/districts" element={<Districts />} />
