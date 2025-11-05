@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { User, Mail, Lock, Eye, EyeOff, Building } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const SignupForm = () => {
@@ -28,6 +29,7 @@ const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { signUp, signInWithGoogle } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,18 +57,41 @@ const SignupForm = () => {
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    if (formData.password.length < 6) {
       toast({
-        title: 'Signup functionality',
-        description: 'Connect to Supabase to enable user registration',
+        title: 'Error',
+        description: 'Password must be at least 6 characters long',
+        variant: 'destructive',
       });
-    }, 1000);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      await signUp(formData.email, formData.password, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        userType: formData.userType,
+        businessName: formData.businessName,
+      });
+      // Success toast is handled in AuthContext
+    } catch (error) {
+      // Error handling is done in AuthContext
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const updateFormData = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      // Error handling is done in AuthContext
+    }
   };
 
   return (
@@ -159,6 +184,7 @@ const SignupForm = () => {
             onChange={e => updateFormData('password', e.target.value)}
             className="pl-10 pr-10"
             required
+            minLength={6}
           />
           <Button
             type="button"
@@ -174,6 +200,9 @@ const SignupForm = () => {
             )}
           </Button>
         </div>
+        <p className="text-xs text-muted-foreground">
+          Password must be at least 6 characters long
+        </p>
       </div>
 
       <div className="space-y-2">
@@ -241,7 +270,7 @@ const SignupForm = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Button variant="outline" type="button">
+        <Button variant="outline" type="button" onClick={handleGoogleSignIn}>
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -262,7 +291,7 @@ const SignupForm = () => {
           </svg>
           Google
         </Button>
-        <Button variant="outline" type="button">
+        <Button variant="outline" type="button" disabled>
           <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
