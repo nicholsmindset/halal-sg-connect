@@ -5,9 +5,10 @@ import Footer from '@/components/Footer';
 import ListingGallery from '@/components/ListingGallery';
 import ListingInfo from '@/components/ListingInfo';
 import { ReviewForm, ReviewList } from '@/components/reviews';
+import { ReservationForm } from '@/components/reservations';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, Edit } from 'lucide-react';
+import { Star, Edit, Calendar } from 'lucide-react';
 import { mockListings } from '@/lib/mockData';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
@@ -50,10 +51,10 @@ const ListingDetails = () => {
         <ListingGallery images={listing.images} />
         <ListingInfo listing={listing} />
 
-        {/* Reviews Section */}
+        {/* Reviews & Reservations Section */}
         <div className="mt-12">
           <Tabs defaultValue="reviews" className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsList className="grid w-full max-w-2xl grid-cols-3">
               <TabsTrigger value="reviews">
                 <Star className="h-4 w-4 mr-2" />
                 Reviews
@@ -61,6 +62,10 @@ const ListingDetails = () => {
               <TabsTrigger value="write" disabled={!currentUser}>
                 <Edit className="h-4 w-4 mr-2" />
                 Write Review
+              </TabsTrigger>
+              <TabsTrigger value="reserve">
+                <Calendar className="h-4 w-4 mr-2" />
+                Reserve
               </TabsTrigger>
             </TabsList>
 
@@ -93,6 +98,17 @@ const ListingDetails = () => {
                   </Button>
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="reserve" className="mt-6">
+              <ReservationForm
+                businessId={listing.id}
+                businessName={listing.name}
+                onSuccess={(confirmationCode) => {
+                  // Could redirect to a confirmation page or show success message
+                  console.log('Reservation confirmed:', confirmationCode);
+                }}
+              />
             </TabsContent>
           </Tabs>
         </div>

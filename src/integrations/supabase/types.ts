@@ -326,6 +326,364 @@ export type Database = {
         }
         Relationships: []
       }
+      reservation_settings: {
+        Row: {
+          id: string
+          business_id: string
+          is_enabled: boolean
+          require_approval: boolean
+          advance_booking_days: number
+          min_advance_hours: number
+          max_party_size: number
+          min_party_size: number
+          total_tables: number
+          table_config: Json | null
+          slot_duration_minutes: number
+          slots_per_table: number
+          buffer_time_minutes: number
+          reservation_hours: Json | null
+          deposit_required: boolean
+          deposit_amount: number | null
+          deposit_percentage: number | null
+          cancellation_hours: number
+          no_show_penalty: number | null
+          booking_fee: number
+          platform_fee: number
+          blocked_dates: string[] | null
+          special_hours: Json | null
+          notify_new_reservation: boolean
+          notify_cancellation: boolean
+          notification_email: string | null
+          notification_phone: string | null
+          special_instructions: string | null
+          terms_and_conditions: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_id: string
+          is_enabled?: boolean
+          require_approval?: boolean
+          advance_booking_days?: number
+          min_advance_hours?: number
+          max_party_size?: number
+          min_party_size?: number
+          total_tables?: number
+          table_config?: Json | null
+          slot_duration_minutes?: number
+          slots_per_table?: number
+          buffer_time_minutes?: number
+          reservation_hours?: Json | null
+          deposit_required?: boolean
+          deposit_amount?: number | null
+          deposit_percentage?: number | null
+          cancellation_hours?: number
+          no_show_penalty?: number | null
+          booking_fee?: number
+          platform_fee?: number
+          blocked_dates?: string[] | null
+          special_hours?: Json | null
+          notify_new_reservation?: boolean
+          notify_cancellation?: boolean
+          notification_email?: string | null
+          notification_phone?: string | null
+          special_instructions?: string | null
+          terms_and_conditions?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_id?: string
+          is_enabled?: boolean
+          require_approval?: boolean
+          advance_booking_days?: number
+          min_advance_hours?: number
+          max_party_size?: number
+          min_party_size?: number
+          total_tables?: number
+          table_config?: Json | null
+          slot_duration_minutes?: number
+          slots_per_table?: number
+          buffer_time_minutes?: number
+          reservation_hours?: Json | null
+          deposit_required?: boolean
+          deposit_amount?: number | null
+          deposit_percentage?: number | null
+          cancellation_hours?: number
+          no_show_penalty?: number | null
+          booking_fee?: number
+          platform_fee?: number
+          blocked_dates?: string[] | null
+          special_hours?: Json | null
+          notify_new_reservation?: boolean
+          notify_cancellation?: boolean
+          notification_email?: string | null
+          notification_phone?: string | null
+          special_instructions?: string | null
+          terms_and_conditions?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_settings_business_id_fkey"
+            columns: ["business_id"]
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      reservations: {
+        Row: {
+          id: string
+          business_id: string
+          user_id: string
+          reservation_date: string
+          reservation_time: string
+          party_size: number
+          duration_minutes: number
+          customer_name: string
+          customer_email: string
+          customer_phone: string
+          special_requests: string | null
+          dietary_restrictions: string | null
+          occasion: string | null
+          seating_preference: string | null
+          status: 'pending' | 'confirmed' | 'seated' | 'completed' | 'cancelled' | 'no_show'
+          confirmation_code: string
+          deposit_amount: number
+          deposit_paid: boolean
+          deposit_paid_at: string | null
+          booking_fee: number
+          total_amount: number | null
+          confirmed_by: string | null
+          confirmed_at: string | null
+          cancelled_by: string | null
+          cancelled_at: string | null
+          cancellation_reason: string | null
+          checked_in_at: string | null
+          seated_at: string | null
+          completed_at: string | null
+          reminder_sent_24h: boolean
+          reminder_sent_2h: boolean
+          business_notes: string | null
+          admin_notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_id: string
+          user_id: string
+          reservation_date: string
+          reservation_time: string
+          party_size: number
+          duration_minutes?: number
+          customer_name: string
+          customer_email: string
+          customer_phone: string
+          special_requests?: string | null
+          dietary_restrictions?: string | null
+          occasion?: string | null
+          seating_preference?: string | null
+          status?: 'pending' | 'confirmed' | 'seated' | 'completed' | 'cancelled' | 'no_show'
+          confirmation_code?: string
+          deposit_amount?: number
+          deposit_paid?: boolean
+          deposit_paid_at?: string | null
+          booking_fee?: number
+          total_amount?: number | null
+          confirmed_by?: string | null
+          confirmed_at?: string | null
+          cancelled_by?: string | null
+          cancelled_at?: string | null
+          cancellation_reason?: string | null
+          checked_in_at?: string | null
+          seated_at?: string | null
+          completed_at?: string | null
+          reminder_sent_24h?: boolean
+          reminder_sent_2h?: boolean
+          business_notes?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_id?: string
+          user_id?: string
+          reservation_date?: string
+          reservation_time?: string
+          party_size?: number
+          duration_minutes?: number
+          customer_name?: string
+          customer_email?: string
+          customer_phone?: string
+          special_requests?: string | null
+          dietary_restrictions?: string | null
+          occasion?: string | null
+          seating_preference?: string | null
+          status?: 'pending' | 'confirmed' | 'seated' | 'completed' | 'cancelled' | 'no_show'
+          confirmation_code?: string
+          deposit_amount?: number
+          deposit_paid?: boolean
+          deposit_paid_at?: string | null
+          booking_fee?: number
+          total_amount?: number | null
+          confirmed_by?: string | null
+          confirmed_at?: string | null
+          cancelled_by?: string | null
+          cancelled_at?: string | null
+          cancellation_reason?: string | null
+          checked_in_at?: string | null
+          seated_at?: string | null
+          completed_at?: string | null
+          reminder_sent_24h?: boolean
+          reminder_sent_2h?: boolean
+          business_notes?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_business_id_fkey"
+            columns: ["business_id"]
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservations_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      reservation_time_slots: {
+        Row: {
+          id: string
+          business_id: string
+          slot_date: string
+          slot_time: string
+          available_capacity: number
+          total_capacity: number
+          is_available: boolean
+          price_modifier: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_id: string
+          slot_date: string
+          slot_time: string
+          available_capacity: number
+          total_capacity: number
+          is_available?: boolean
+          price_modifier?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_id?: string
+          slot_date?: string
+          slot_time?: string
+          available_capacity?: number
+          total_capacity?: number
+          is_available?: boolean
+          price_modifier?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_time_slots_business_id_fkey"
+            columns: ["business_id"]
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      reservation_statistics: {
+        Row: {
+          business_id: string
+          total_reservations: number
+          confirmed_reservations: number
+          completed_reservations: number
+          cancelled_reservations: number
+          no_show_count: number
+          confirmation_rate: number
+          completion_rate: number
+          no_show_rate: number
+          cancellation_rate: number
+          avg_party_size: number
+          avg_advance_booking_days: number
+          total_revenue: number
+          total_deposits: number
+          busiest_day_of_week: number | null
+          busiest_time_slot: string | null
+          last_reservation_date: string | null
+          reservations_this_month: number
+          reservations_last_month: number
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          total_reservations?: number
+          confirmed_reservations?: number
+          completed_reservations?: number
+          cancelled_reservations?: number
+          no_show_count?: number
+          confirmation_rate?: number
+          completion_rate?: number
+          no_show_rate?: number
+          cancellation_rate?: number
+          avg_party_size?: number
+          avg_advance_booking_days?: number
+          total_revenue?: number
+          total_deposits?: number
+          busiest_day_of_week?: number | null
+          busiest_time_slot?: string | null
+          last_reservation_date?: string | null
+          reservations_this_month?: number
+          reservations_last_month?: number
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          total_reservations?: number
+          confirmed_reservations?: number
+          completed_reservations?: number
+          cancelled_reservations?: number
+          no_show_count?: number
+          confirmation_rate?: number
+          completion_rate?: number
+          no_show_rate?: number
+          cancellation_rate?: number
+          avg_party_size?: number
+          avg_advance_booking_days?: number
+          total_revenue?: number
+          total_deposits?: number
+          busiest_day_of_week?: number | null
+          busiest_time_slot?: string | null
+          last_reservation_date?: string | null
+          reservations_this_month?: number
+          reservations_last_month?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_statistics_business_id_fkey"
+            columns: ["business_id"]
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       seo_pages: {
         Row: {
           canonical_url: string
