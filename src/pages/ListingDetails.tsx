@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ListingGallery from '@/components/ListingGallery';
@@ -8,12 +8,12 @@ import { ReviewForm, ReviewList } from '@/components/reviews';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, Edit } from 'lucide-react';
-import { mockListings } from '@/lib/mockData';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 
 const ListingDetails = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [showReviewForm, setShowReviewForm] = useState(false);
 
   // Get current user
@@ -25,18 +25,58 @@ const ListingDetails = () => {
     },
   });
 
-  // In real app, this would fetch from Supabase
-  const listing = mockListings.find(l => l.slug === slug);
+  // Fetch listing from Supabase
+  const { data: listing, isLoading, error } = useQuery({
+    queryKey: ['listing', slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('businesses')
+        .select('*')
+        .eq('slug', slug)
+        .single();
 
-  // Check if user is business owner (simplified - in real app, check business_owners table)
-  const isBusinessOwner = false;
-  
-  if (!listing) {
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!slug,
+  });
+
+  // Check if current user is the business owner
+  const isBusinessOwner = listing && currentUser ? listing.owner_id === currentUser.id : false;
+
+  // Loading state
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto px-4 py-8">
-          <p>Listing not found</p>
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading listing...</p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Error or not found state
+  if (error || !listing) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold mb-2">Listing not found</h2>
+            <p className="text-muted-foreground mb-4">
+              The listing you're looking for doesn't exist or has been removed.
+            </p>
+            <Button onClick={() => navigate('/listings')}>
+              Browse All Listings
+            </Button>
+          </div>
         </div>
         <Footer />
       </div>
@@ -88,7 +128,7 @@ const ListingDetails = () => {
                   <p className="text-gray-600 mb-4">
                     You must be logged in to write a review
                   </p>
-                  <Button onClick={() => window.location.href = '/auth'}>
+                  <Button onClick={() => navigate('/auth')}>
                     Sign In
                   </Button>
                 </div>

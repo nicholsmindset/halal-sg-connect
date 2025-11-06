@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -142,6 +142,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<BusinessFormData>({
     resolver: zodResolver(businessSchema),
@@ -176,6 +177,73 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
     },
   });
 
+  // Load existing listing data when editing
+  useEffect(() => {
+    const loadListingData = async () => {
+      if (!listingId) return;
+
+      setIsLoading(true);
+      try {
+        const { data: listing, error } = await supabase
+          .from('businesses')
+          .select('*')
+          .eq('id', listingId)
+          .single();
+
+        if (error) throw error;
+
+        if (listing) {
+          // Populate form with existing data
+          form.reset({
+            name: listing.name,
+            description: listing.description || '',
+            category: listing.categories?.[0] || '',
+            subcategory: '',
+            district: listing.district || '',
+            address: listing.address || '',
+            phone: listing.phone || '',
+            email: listing.email || '',
+            website: listing.website || '',
+            priceRange: listing.price_range || '$$',
+            isHalalCertified: listing.halal_certified || false,
+            features: listing.features || [],
+            tags: [], // Tags not in current schema
+            openingHours: {
+              monday: { open: '09:00', close: '21:00' },
+              tuesday: { open: '09:00', close: '21:00' },
+              wednesday: { open: '09:00', close: '21:00' },
+              thursday: { open: '09:00', close: '21:00' },
+              friday: { open: '09:00', close: '21:00' },
+              saturday: { open: '09:00', close: '21:00' },
+              sunday: { open: '09:00', close: '21:00' },
+            },
+            socialMedia: {
+              instagram: '',
+              facebook: '',
+              tiktok: '',
+            },
+          });
+
+          // Set features and tags state
+          setSelectedFeatures(listing.features || []);
+          setSelectedTags([]);
+
+          // Set uploaded images
+          if (listing.images) {
+            setUploadedImages(listing.images);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading listing:', error);
+        toast.error('Failed to load listing data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadListingData();
+  }, [listingId, form]);
+
   const onSubmit = async (data: BusinessFormData) => {
     setIsSaving(true);
     try {
@@ -208,9 +276,8 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
       }
 
       // Prepare business data for Supabase
-      const businessData = {
+      const businessData: any = {
         name: data.name,
-        slug: listingId ? undefined : slug, // undefined for updates (keeps existing), slug for new listings
         description: data.description,
         address: data.address,
         district: data.district,
@@ -226,7 +293,16 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
         is_premium: false,
         verification_status: 'pending',
         owner_id: user.id,
+        // NOTE: opening_hours and social_media not in database schema yet
+        // TODO: Add database migration to include these fields:
+        // opening_hours: data.openingHours,
+        // social_media: data.socialMedia,
       };
+
+      // Only include slug for new listings, never update existing slug
+      if (!listingId) {
+        businessData.slug = slug;
+      }
 
       if (listingId) {
         // Update existing listing
@@ -333,6 +409,102 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
+
+  const handleSaveAsDraft = async () => {
+    setIsSaving(true);
+    try {
+      // Get form values without validation
+      const data = form.getValues();
+
+      // Create slug from business name
+      const slug = data.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      // Get current user for owner_id
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('You must be logged in to save a draft');
+        setIsSaving(false);
+        return;
+      }
+
+      // Prepare business data with draft status
+      const businessData: any = {
+        name: data.name || 'Untitled Draft',
+        description: data.description || null,
+        address: data.address || null,
+        district: data.district || null,
+        phone: data.phone || null,
+        email: data.email || null,
+        website: data.website || null,
+        price_range: data.priceRange || '$$',
+        halal_certified: data.isHalalCertified || false,
+        categories: data.category ? [data.category] : null,
+        category_slugs: data.category ? [data.category.toLowerCase()] : null,
+        features: selectedFeatures,
+        images: uploadedImages.length > 0 ? uploadedImages : null,
+        is_premium: false,
+        verification_status: 'draft',
+        owner_id: user.id,
+      };
+
+      // Only include slug for new listings
+      if (!listingId) {
+        businessData.slug = `${slug}-${Date.now()}`;
+      }
+
+      if (listingId) {
+        // Update existing listing as draft
+        const { error } = await supabase
+          .from('businesses')
+          .update(businessData)
+          .eq('id', listingId);
+
+        if (error) throw error;
+        toast.success('Draft saved successfully!');
+      } else {
+        // Create new draft listing
+        const { error } = await supabase
+          .from('businesses')
+          .insert([businessData]);
+
+        if (error) throw error;
+        toast.success('Draft saved successfully!');
+      }
+
+      // Navigate back to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to save draft. Please try again.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Show loading state when fetching data for edit mode
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-4xl p-6">
+        <Card>
+          <CardContent className="flex items-center justify-center py-12">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+              <p className="text-muted-foreground">Loading listing data...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-4xl p-6">
@@ -819,7 +991,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
               Cancel
             </Button>
             <div className="space-x-2">
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" onClick={handleSaveAsDraft} disabled={isSaving}>
                 Save as Draft
               </Button>
               <Button type="submit" disabled={isSaving}>
