@@ -197,28 +197,35 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
+      // Get current user for owner_id
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('You must be logged in to create a listing');
+        setIsSaving(false);
+        return;
+      }
+
       // Prepare business data for Supabase
       const businessData = {
         name: data.name,
-        slug: listingId ? '' : slug, // Empty string for updates, slug for new listings
+        slug: listingId ? undefined : slug, // undefined for updates (keeps existing), slug for new listings
         description: data.description,
         address: data.address,
         district: data.district,
         phone: data.phone || null,
         email: data.email || null,
         website: data.website || null,
-        price_range: data.priceRange.toLowerCase().includes('$$$')
-          ? 'premium'
-          : data.priceRange.toLowerCase().includes('$$')
-            ? 'mid-range'
-            : 'budget',
+        price_range: data.priceRange,
         halal_certified: data.isHalalCertified,
-        category_slugs: [data.category],
+        categories: [data.category],
+        category_slugs: [data.category.toLowerCase()],
         features: selectedFeatures,
-        operating_hours: data.openingHours,
         images: uploadedImages.length > 0 ? uploadedImages : null,
-        is_active: true,
         is_premium: false,
+        verification_status: 'pending',
+        owner_id: user.id,
       };
 
       if (listingId) {
