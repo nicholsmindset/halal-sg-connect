@@ -143,6 +143,9 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const MAX_IMAGES = 10;
 
   const form = useForm<BusinessFormData>({
     resolver: zodResolver(businessSchema),
@@ -357,10 +360,27 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
+    // Check if adding these files would exceed the limit
+    const totalAfterUpload = uploadedImages.length + files.length;
+    if (totalAfterUpload > MAX_IMAGES) {
+      toast.error(`Maximum ${MAX_IMAGES} images allowed. You currently have ${uploadedImages.length} image(s).`);
+      return;
+    }
+
+    setIsUploading(true);
     try {
       const uploadedUrls: string[] = [];
+      const filesToUpload = Array.from(files);
 
-      for (const file of Array.from(files)) {
+      for (let i = 0; i < filesToUpload.length; i++) {
+        const file = filesToUpload[i];
+
+        // Check limit again during upload
+        if (uploadedImages.length + uploadedUrls.length >= MAX_IMAGES) {
+          toast.warning(`Reached maximum of ${MAX_IMAGES} images. Remaining files not uploaded.`);
+          break;
+        }
+
         // Validate file type
         if (!file.type.startsWith('image/')) {
           toast.error(`${file.name} is not an image file`);
@@ -373,9 +393,10 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
           continue;
         }
 
-        // Create unique filename
+        // Create unique filename using crypto.randomUUID
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+        const uniqueId = crypto.randomUUID();
+        const fileName = `${uniqueId}.${fileExt}`;
         const filePath = `business-images/${fileName}`;
 
         // Upload to Supabase Storage
@@ -401,8 +422,15 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
         toast.success(`${uploadedUrls.length} image(s) uploaded successfully!`);
       }
     } catch (error) {
-      console.error('Error uploading images:', error);
-      toast.error('Failed to upload images. Please try again.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to upload images. Please try again.'
+      );
+    } finally {
+      setIsUploading(false);
+      // Reset the input so the same file can be uploaded again if needed
+      event.target.value = '';
     }
   };
 
@@ -765,30 +793,53 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label className="text-base font-medium">
-                      Business Images
-                    </Label>
+                    <div className="flex items-center justify-between mb-3">
+                      <Label className="text-base font-medium">
+                        Business Images
+                      </Label>
+                      <span className="text-sm text-muted-foreground">
+                        {uploadedImages.length} / {MAX_IMAGES}
+                      </span>
+                    </div>
                     <p className="mb-3 text-sm text-muted-foreground">
                       Upload high-quality images of your business, food, or
-                      products
+                      products (max {MAX_IMAGES} images)
                     </p>
 
-                    <div className="rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center">
-                      <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium">
-                          Click to upload images
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Support for JPG, PNG files up to 5MB each
-                        </p>
-                      </div>
+                    <div className={`rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center relative ${isUploading || uploadedImages.length >= MAX_IMAGES ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                      {isUploading ? (
+                        <>
+                          <div className="h-12 w-12 mx-auto mb-4 animate-spin rounded-full border-b-2 border-primary"></div>
+                          <p className="text-sm font-medium">Uploading images...</p>
+                        </>
+                      ) : uploadedImages.length >= MAX_IMAGES ? (
+                        <>
+                          <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                          <p className="text-sm font-medium">Maximum images reached</p>
+                          <p className="text-xs text-muted-foreground">
+                            Remove an image to upload more
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                          <div className="space-y-2">
+                            <p className="text-sm font-medium">
+                              Click to upload images
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Support for JPG, PNG files up to 5MB each
+                            </p>
+                          </div>
+                        </>
+                      )}
                       <input
                         type="file"
                         multiple
                         accept="image/*"
                         onChange={handleImageUpload}
-                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                        disabled={isUploading || uploadedImages.length >= MAX_IMAGES}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
                       />
                     </div>
 
