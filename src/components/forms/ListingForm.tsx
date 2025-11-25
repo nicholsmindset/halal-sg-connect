@@ -211,7 +211,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
             isHalalCertified: listing.halal_certified || false,
             features: listing.features || [],
             tags: [], // Tags not in current schema
-            openingHours: {
+            openingHours: listing.opening_hours || {
               monday: { open: '09:00', close: '21:00' },
               tuesday: { open: '09:00', close: '21:00' },
               wednesday: { open: '09:00', close: '21:00' },
@@ -220,7 +220,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
               saturday: { open: '09:00', close: '21:00' },
               sunday: { open: '09:00', close: '21:00' },
             },
-            socialMedia: {
+            socialMedia: listing.social_media || {
               instagram: '',
               facebook: '',
               tiktok: '',
@@ -296,10 +296,8 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
         is_premium: false,
         verification_status: 'pending',
         owner_id: user.id,
-        // NOTE: opening_hours and social_media not in database schema yet
-        // TODO: Add database migration to include these fields:
-        // opening_hours: data.openingHours,
-        // social_media: data.socialMedia,
+        opening_hours: data.openingHours || null,
+        social_media: data.socialMedia || null,
       };
 
       // Only include slug for new listings, never update existing slug
@@ -478,6 +476,8 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
         is_premium: false,
         verification_status: 'draft',
         owner_id: user.id,
+        opening_hours: data.openingHours || null,
+        social_media: data.socialMedia || null,
       };
 
       // Only include slug for new listings

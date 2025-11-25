@@ -311,8 +311,8 @@ This guide covers QA testing for 10 critical and high priority bug fixes. All fi
 2. Try different search terms
 3. Test on both desktop and mobile viewports
 
-### Known Limitation
-⚠️ **Note:** Listings page does NOT yet filter results by search term. This requires additional implementation. Search successfully navigates with query parameter, but filtering is not yet implemented.
+### Implementation Status
+✅ **Implemented:** Search functionality works end-to-end. Search navigates to `/listings?search=term` and Listings page filters results by name, description, and address using Supabase query.
 
 ---
 
@@ -445,38 +445,46 @@ Test on:
 
 ---
 
-## Known Issues / Limitations
+## Recent Updates
 
-### ⚠️ Opening Hours and Social Media
-**Status:** NOT IMPLEMENTED
-**Reason:** Database schema doesn't have these columns yet
+### ✅ Opening Hours and Social Media
+**Status:** IMPLEMENTED (Requires Database Migration)
+**Date:** 2025-11-25
 
-**Expected Behavior:**
-- Form shows these fields
-- User can fill them in
-- Data is NOT saved to database
-- No error shown
+**Current State:**
+- ✅ TypeScript types updated with `opening_hours` and `social_media` fields
+- ✅ ListingForm code updated to save/load these fields
+- ✅ Form UI fully functional
+- ⚠️ **Database migration required** - see `DATABASE_MIGRATION_INSTRUCTIONS.md`
 
-**Fix Required:**
-- Database migration needed
-- See DATABASE_MIGRATION_REQUIRED.md
+**To Enable:**
+1. Apply SQL migration from `DATABASE_MIGRATION_ADDITIONAL_FIELDS.sql`
+2. Use Supabase dashboard SQL Editor (takes < 5 minutes)
+3. Follow instructions in `DATABASE_MIGRATION_INSTRUCTIONS.md`
 
-**Testing:**
-- Don't test these fields yet
-- They will be implemented in future sprint
+**After Migration:**
+- Users can save opening hours for each day of week
+- Users can save social media links (Instagram, Facebook, TikTok)
+- Data persists across edits
+- Form loads existing data correctly
 
-### ⚠️ Search Filtering
-**Status:** PARTIALLY IMPLEMENTED
-**Current:** Search navigates with query parameter
-**Missing:** Listings page doesn't filter results yet
+**Testing After Migration:**
+1. Create new business with opening hours → should save
+2. Edit existing business → opening hours should load
+3. Save as draft with partial data → should work
 
-**Expected Behavior:**
-- Search works, navigates to /listings?search=term
-- Results are NOT filtered (shows all businesses)
+### ✅ Search Filtering
+**Status:** FULLY IMPLEMENTED
+**Date:** 2025-11-06
 
-**Fix Required:**
-- Listings page needs to parse search param
-- Filter businesses by name/description
+**Implementation:**
+- ✅ Search navigates to `/listings?search=term`
+- ✅ Listings page parses search parameter
+- ✅ Filters by name, description, and address (case-insensitive)
+- ✅ Shows search context in page heading
+- ✅ Empty state message includes search term
+
+**No further action required** - feature is complete and functional.
 
 ---
 

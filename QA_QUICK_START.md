@@ -82,12 +82,16 @@ See **QA_TESTING_GUIDE.md** for:
 
 ---
 
-## Known Limitations
+## Recent Updates
 
-⚠️ **Opening Hours & Social Media:** Form shows these fields but doesn't save them yet (needs database migration)
-⚠️ **Search Filtering:** Search works but results aren't filtered yet (shows all businesses)
+✅ **Opening Hours & Social Media:** Feature implemented! (Requires database migration - see DATABASE_MIGRATION_INSTRUCTIONS.md)
+⚠️ **Search Filtering:** Search works and navigates correctly. Results are filtered on Listings page.
 
-These are documented and will be fixed in next iteration.
+### To Enable Opening Hours & Social Media:
+1. Apply database migration: See `DATABASE_MIGRATION_INSTRUCTIONS.md`
+2. Migration adds `opening_hours` and `social_media` columns
+3. Code is ready - just needs SQL to be run in Supabase dashboard
+4. Takes < 5 minutes to apply
 
 ---
 

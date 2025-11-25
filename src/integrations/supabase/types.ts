@@ -42,6 +42,8 @@ export type Database = {
           updated_at: string | null
           verification_status: string | null
           website: string | null
+          opening_hours: Json | null
+          social_media: Json | null
         }
         Insert: {
           address?: string | null
@@ -70,6 +72,8 @@ export type Database = {
           updated_at?: string | null
           verification_status?: string | null
           website?: string | null
+          opening_hours?: Json | null
+          social_media?: Json | null
         }
         Update: {
           address?: string | null
@@ -98,6 +102,8 @@ export type Database = {
           updated_at?: string | null
           verification_status?: string | null
           website?: string | null
+          opening_hours?: Json | null
+          social_media?: Json | null
         }
         Relationships: []
       }
