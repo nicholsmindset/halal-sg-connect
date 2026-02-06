@@ -8,6 +8,7 @@ import { lazy, Suspense } from 'react';
 import { Card } from '@/components/ui/card';
 import { HelmetProvider } from 'react-helmet-async';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 // Import error handler to initialize global handlers
 import '@/lib/errorHandler';
@@ -76,7 +77,8 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
+            <AuthProvider>
+              <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/listings" element={<Listings />} />
@@ -216,7 +218,8 @@ const App = () => (
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </Suspense>
+              </Suspense>
+            </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -142,6 +142,10 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const MAX_IMAGES = 10;
 
   const form = useForm<BusinessFormData>({
     resolver: zodResolver(businessSchema),
@@ -176,6 +180,73 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
     },
   });
 
+  // Load existing listing data when editing
+  useEffect(() => {
+    const loadListingData = async () => {
+      if (!listingId) return;
+
+      setIsLoading(true);
+      try {
+        const { data: listing, error } = await supabase
+          .from('businesses')
+          .select('*')
+          .eq('id', listingId)
+          .single();
+
+        if (error) throw error;
+
+        if (listing) {
+          // Populate form with existing data
+          form.reset({
+            name: listing.name,
+            description: listing.description || '',
+            category: listing.categories?.[0] || '',
+            subcategory: '',
+            district: listing.district || '',
+            address: listing.address || '',
+            phone: listing.phone || '',
+            email: listing.email || '',
+            website: listing.website || '',
+            priceRange: listing.price_range || '$$',
+            isHalalCertified: listing.halal_certified || false,
+            features: listing.features || [],
+            tags: [], // Tags not in current schema
+            openingHours: listing.opening_hours || {
+              monday: { open: '09:00', close: '21:00' },
+              tuesday: { open: '09:00', close: '21:00' },
+              wednesday: { open: '09:00', close: '21:00' },
+              thursday: { open: '09:00', close: '21:00' },
+              friday: { open: '09:00', close: '21:00' },
+              saturday: { open: '09:00', close: '21:00' },
+              sunday: { open: '09:00', close: '21:00' },
+            },
+            socialMedia: listing.social_media || {
+              instagram: '',
+              facebook: '',
+              tiktok: '',
+            },
+          });
+
+          // Set features and tags state
+          setSelectedFeatures(listing.features || []);
+          setSelectedTags([]);
+
+          // Set uploaded images
+          if (listing.images) {
+            setUploadedImages(listing.images);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading listing:', error);
+        toast.error('Failed to load listing data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadListingData();
+  }, [listingId, form]);
+
   const onSubmit = async (data: BusinessFormData) => {
     setIsSaving(true);
     try {
@@ -197,29 +268,42 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
+      // Get current user for owner_id
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('You must be logged in to create a listing');
+        setIsSaving(false);
+        return;
+      }
+
       // Prepare business data for Supabase
-      const businessData = {
+      const businessData: any = {
         name: data.name,
-        slug: listingId ? '' : slug, // Empty string for updates, slug for new listings
         description: data.description,
         address: data.address,
         district: data.district,
         phone: data.phone || null,
         email: data.email || null,
         website: data.website || null,
-        price_range: data.priceRange.toLowerCase().includes('$$$')
-          ? 'premium'
-          : data.priceRange.toLowerCase().includes('$$')
-            ? 'mid-range'
-            : 'budget',
+        price_range: data.priceRange,
         halal_certified: data.isHalalCertified,
-        category_slugs: [data.category],
+        categories: [data.category],
+        category_slugs: [data.category.toLowerCase()],
         features: selectedFeatures,
-        operating_hours: data.openingHours,
         images: uploadedImages.length > 0 ? uploadedImages : null,
-        is_active: true,
         is_premium: false,
+        verification_status: 'pending',
+        owner_id: user.id,
+        opening_hours: data.openingHours || null,
+        social_media: data.socialMedia || null,
       };
+
+      // Only include slug for new listings, never update existing slug
+      if (!listingId) {
+        businessData.slug = slug;
+      }
 
       if (listingId) {
         // Update existing listing
@@ -274,10 +358,27 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
+    // Check if adding these files would exceed the limit
+    const totalAfterUpload = uploadedImages.length + files.length;
+    if (totalAfterUpload > MAX_IMAGES) {
+      toast.error(`Maximum ${MAX_IMAGES} images allowed. You currently have ${uploadedImages.length} image(s).`);
+      return;
+    }
+
+    setIsUploading(true);
     try {
       const uploadedUrls: string[] = [];
+      const filesToUpload = Array.from(files);
 
-      for (const file of Array.from(files)) {
+      for (let i = 0; i < filesToUpload.length; i++) {
+        const file = filesToUpload[i];
+
+        // Check limit again during upload
+        if (uploadedImages.length + uploadedUrls.length >= MAX_IMAGES) {
+          toast.warning(`Reached maximum of ${MAX_IMAGES} images. Remaining files not uploaded.`);
+          break;
+        }
+
         // Validate file type
         if (!file.type.startsWith('image/')) {
           toast.error(`${file.name} is not an image file`);
@@ -290,9 +391,10 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
           continue;
         }
 
-        // Create unique filename
+        // Create unique filename using crypto.randomUUID
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+        const uniqueId = crypto.randomUUID();
+        const fileName = `${uniqueId}.${fileExt}`;
         const filePath = `business-images/${fileName}`;
 
         // Upload to Supabase Storage
@@ -318,14 +420,119 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
         toast.success(`${uploadedUrls.length} image(s) uploaded successfully!`);
       }
     } catch (error) {
-      console.error('Error uploading images:', error);
-      toast.error('Failed to upload images. Please try again.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to upload images. Please try again.'
+      );
+    } finally {
+      setIsUploading(false);
+      // Reset the input so the same file can be uploaded again if needed
+      event.target.value = '';
     }
   };
 
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
+
+  const handleSaveAsDraft = async () => {
+    setIsSaving(true);
+    try {
+      // Get form values without validation
+      const data = form.getValues();
+
+      // Create slug from business name
+      const slug = data.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      // Get current user for owner_id
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('You must be logged in to save a draft');
+        setIsSaving(false);
+        return;
+      }
+
+      // Prepare business data with draft status
+      const businessData: any = {
+        name: data.name || 'Untitled Draft',
+        description: data.description || null,
+        address: data.address || null,
+        district: data.district || null,
+        phone: data.phone || null,
+        email: data.email || null,
+        website: data.website || null,
+        price_range: data.priceRange || '$$',
+        halal_certified: data.isHalalCertified || false,
+        categories: data.category ? [data.category] : null,
+        category_slugs: data.category ? [data.category.toLowerCase()] : null,
+        features: selectedFeatures,
+        images: uploadedImages.length > 0 ? uploadedImages : null,
+        is_premium: false,
+        verification_status: 'draft',
+        owner_id: user.id,
+        opening_hours: data.openingHours || null,
+        social_media: data.socialMedia || null,
+      };
+
+      // Only include slug for new listings
+      if (!listingId) {
+        businessData.slug = `${slug}-${Date.now()}`;
+      }
+
+      if (listingId) {
+        // Update existing listing as draft
+        const { error } = await supabase
+          .from('businesses')
+          .update(businessData)
+          .eq('id', listingId);
+
+        if (error) throw error;
+        toast.success('Draft saved successfully!');
+      } else {
+        // Create new draft listing
+        const { error } = await supabase
+          .from('businesses')
+          .insert([businessData]);
+
+        if (error) throw error;
+        toast.success('Draft saved successfully!');
+      }
+
+      // Navigate back to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to save draft. Please try again.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Show loading state when fetching data for edit mode
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-4xl p-6">
+        <Card>
+          <CardContent className="flex items-center justify-center py-12">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+              <p className="text-muted-foreground">Loading listing data...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-4xl p-6">
@@ -586,30 +793,53 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label className="text-base font-medium">
-                      Business Images
-                    </Label>
+                    <div className="flex items-center justify-between mb-3">
+                      <Label className="text-base font-medium">
+                        Business Images
+                      </Label>
+                      <span className="text-sm text-muted-foreground">
+                        {uploadedImages.length} / {MAX_IMAGES}
+                      </span>
+                    </div>
                     <p className="mb-3 text-sm text-muted-foreground">
                       Upload high-quality images of your business, food, or
-                      products
+                      products (max {MAX_IMAGES} images)
                     </p>
 
-                    <div className="rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center">
-                      <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium">
-                          Click to upload images
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Support for JPG, PNG files up to 5MB each
-                        </p>
-                      </div>
+                    <div className={`rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center relative ${isUploading || uploadedImages.length >= MAX_IMAGES ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                      {isUploading ? (
+                        <>
+                          <div className="h-12 w-12 mx-auto mb-4 animate-spin rounded-full border-b-2 border-primary"></div>
+                          <p className="text-sm font-medium">Uploading images...</p>
+                        </>
+                      ) : uploadedImages.length >= MAX_IMAGES ? (
+                        <>
+                          <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                          <p className="text-sm font-medium">Maximum images reached</p>
+                          <p className="text-xs text-muted-foreground">
+                            Remove an image to upload more
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                          <div className="space-y-2">
+                            <p className="text-sm font-medium">
+                              Click to upload images
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Support for JPG, PNG files up to 5MB each
+                            </p>
+                          </div>
+                        </>
+                      )}
                       <input
                         type="file"
                         multiple
                         accept="image/*"
                         onChange={handleImageUpload}
-                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                        disabled={isUploading || uploadedImages.length >= MAX_IMAGES}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
                       />
                     </div>
 
@@ -812,7 +1042,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
               Cancel
             </Button>
             <div className="space-x-2">
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" onClick={handleSaveAsDraft} disabled={isSaving}>
                 Save as Draft
               </Button>
               <Button type="submit" disabled={isSaving}>

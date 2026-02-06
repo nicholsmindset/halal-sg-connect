@@ -4,27 +4,61 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const [resetEmail, setResetEmail] = useState('');
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [isResetLoading, setIsResetLoading] = useState(false);
+  const { signIn, resetPassword, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await signIn(email, password);
+      // Navigation is handled in the AuthContext
+    } catch (error) {
+      // Error handling is done in AuthContext
+    } finally {
       setIsLoading(false);
-      toast({
-        title: 'Login functionality',
-        description: 'Connect to Supabase to enable authentication',
-      });
-    }, 1000);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsResetLoading(true);
+
+    try {
+      await resetPassword(resetEmail);
+      setIsResetDialogOpen(false);
+      setResetEmail('');
+    } catch (error) {
+      // Error handling is done in AuthContext
+    } finally {
+      setIsResetLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      // Error handling is done in AuthContext
+    }
   };
 
   return (
@@ -79,9 +113,42 @@ const LoginForm = () => {
           <input type="checkbox" className="rounded" />
           <span>Remember me</span>
         </label>
-        <Button variant="link" size="sm" className="px-0">
-          Forgot password?
-        </Button>
+        <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="link" size="sm" className="px-0" type="button">
+              Forgot password?
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Reset Password</DialogTitle>
+              <DialogDescription>
+                Enter your email address and we'll send you a link to reset your
+                password.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handlePasswordReset} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="resetEmail">Email</Label>
+                <Input
+                  id="resetEmail"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={resetEmail}
+                  onChange={e => setResetEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isResetLoading}
+              >
+                {isResetLoading ? 'Sending...' : 'Send Reset Link'}
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
@@ -100,7 +167,11 @@ const LoginForm = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Button variant="outline" type="button">
+        <Button
+          variant="outline"
+          type="button"
+          onClick={handleGoogleSignIn}
+        >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -121,7 +192,7 @@ const LoginForm = () => {
           </svg>
           Google
         </Button>
-        <Button variant="outline" type="button">
+        <Button variant="outline" type="button" disabled>
           <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
