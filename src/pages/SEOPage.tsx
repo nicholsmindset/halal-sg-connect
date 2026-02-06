@@ -19,6 +19,191 @@ import {
 import { SEOPage as SEOPageType, SEOPageContent } from '@/types/import';
 import { supabase } from '@/integrations/supabase/client';
 
+// District mapping from Districts.tsx
+const districtData: Record<string, { name: string; region: string; type: string }> = {
+  orchard: { name: 'Orchard', region: 'Central Region', type: 'Tourist & Shopping' },
+  'marina-south': { name: 'Marina Bay', region: 'Central Region', type: 'Business & Tourist' },
+  'downtown-core': { name: 'Raffles Place', region: 'Central Region', type: 'Financial District' },
+  rochor: { name: 'Bugis / Arab Street', region: 'Central Region', type: 'Cultural Heritage' },
+  'little-india': { name: 'Little India', region: 'Central Region', type: 'Cultural Heritage' },
+  outram: { name: 'Chinatown', region: 'Central Region', type: 'Heritage & Business' },
+  'singapore-river': { name: 'Clarke Quay', region: 'Central Region', type: 'Entertainment' },
+  newton: { name: 'Newton', region: 'Central Region', type: 'Hawker & Medical' },
+  novena: { name: 'Novena', region: 'Central Region', type: 'Medical Hub' },
+  'bukit-timah': { name: 'Bukit Timah', region: 'Central Region', type: 'Upscale Residential' },
+  tanglin: { name: 'Tanglin', region: 'Central Region', type: 'Embassy District' },
+  'river-valley': { name: 'River Valley', region: 'Central Region', type: 'Urban Living' },
+  'toa-payoh': { name: 'Toa Payoh', region: 'Central Region', type: 'Mature Estate' },
+  queenstown: { name: 'Queenstown', region: 'Central Region', type: 'Heritage Estate' },
+  'bukit-merah': { name: 'Bukit Merah', region: 'Central Region', type: 'Central Living' },
+  geylang: { name: 'Geylang', region: 'Central Region', type: 'Cultural Hub' },
+  kallang: { name: 'Kallang', region: 'Central Region', type: 'Sports Hub' },
+  tampines: { name: 'Tampines', region: 'East Region', type: 'Regional Hub' },
+  bedok: { name: 'Bedok', region: 'East Region', type: 'Family Residential' },
+  'pasir-ris': { name: 'Pasir Ris', region: 'East Region', type: 'Beach & Family' },
+  changi: { name: 'Changi Airport', region: 'East Region', type: 'International Hub' },
+  'paya-lebar': { name: 'Paya Lebar', region: 'East Region', type: 'Commercial' },
+  'marine-parade': { name: 'Marine Parade', region: 'East Region', type: 'Beachfront' },
+  'changi-village': { name: 'Changi Village', region: 'East Region', type: 'Coastal Village' },
+  'jurong-east': { name: 'Jurong East', region: 'West Region', type: 'Regional Hub' },
+  'jurong-west': { name: 'Jurong West', region: 'West Region', type: 'Family Residential' },
+  clementi: { name: 'Clementi', region: 'West Region', type: 'University Town' },
+  'boon-lay': { name: 'Boon Lay', region: 'West Region', type: 'Mixed Development' },
+  'bukit-batok': { name: 'Bukit Batok', region: 'West Region', type: 'Residential' },
+  'choa-chu-kang': { name: 'Choa Chu Kang', region: 'West Region', type: 'Family Area' },
+  'bukit-panjang': { name: 'Bukit Panjang', region: 'West Region', type: 'Residential' },
+  pioneer: { name: 'Pioneer', region: 'West Region', type: 'Industrial' },
+  tengah: { name: 'Tengah Smart Town', region: 'West Region', type: 'New Smart Town' },
+  tuas: { name: 'Tuas', region: 'West Region', type: 'Industrial Hub' },
+  'west-coast': { name: 'West Coast', region: 'West Region', type: 'Waterfront' },
+  woodlands: { name: 'Woodlands', region: 'North Region', type: 'Border Town' },
+  yishun: { name: 'Yishun', region: 'North Region', type: 'Family Community' },
+  sembawang: { name: 'Sembawang', region: 'North Region', type: 'Quiet Residential' },
+  mandai: { name: 'Mandai', region: 'North Region', type: 'Nature & Zoo' },
+  seletar: { name: 'Seletar', region: 'North Region', type: 'Aerospace Hub' },
+  'lim-chu-kang': { name: 'Lim Chu Kang', region: 'North Region', type: 'Rural & Farms' },
+  'sungei-kadut': { name: 'Sungei Kadut', region: 'North Region', type: 'Industrial' },
+  hougang: { name: 'Hougang', region: 'Northeast Region', type: 'Traditional Town' },
+  punggol: { name: 'Punggol', region: 'Northeast Region', type: 'Waterfront New Town' },
+  sengkang: { name: 'Sengkang', region: 'Northeast Region', type: 'Modern New Town' },
+  'ang-mo-kio': { name: 'Ang Mo Kio', region: 'Northeast Region', type: 'Family Community' },
+  bishan: { name: 'Bishan', region: 'Northeast Region', type: 'Park Connector Hub' },
+  serangoon: { name: 'Serangoon', region: 'Northeast Region', type: 'Residential Hub' },
+};
+
+// Helper function to generate dynamic district page content
+async function generateDynamicDistrictPage(districtSlug: string): Promise<any> {
+  const district = districtData[districtSlug];
+
+  if (!district) {
+    return null;
+  }
+
+  // Query businesses in this planning area
+  const { data: businesses, error } = await supabase
+    .from('business_search_view')
+    .select('*')
+    .eq('verification_status', 'verified')
+    .ilike('planning_area', `%${district.name}%`)
+    .order('rating', { ascending: false })
+    .limit(50);
+
+  if (error) {
+    console.error('Error loading businesses for district:', error);
+  }
+
+  const businessList = businesses || [];
+  const totalCount = businessList.length;
+  const avgRating = totalCount > 0
+    ? Math.round((businessList.reduce((sum: number, b: any) => sum + (b.rating || 0), 0) / totalCount) * 10) / 10
+    : 0;
+
+  // Extract popular cuisines
+  const cuisineCount: Record<string, number> = {};
+  businessList.forEach((b: any) => {
+    if (b.cuisine_types && Array.isArray(b.cuisine_types)) {
+      b.cuisine_types.forEach((cuisine: string) => {
+        cuisineCount[cuisine] = (cuisineCount[cuisine] || 0) + 1;
+      });
+    }
+  });
+  const popularCuisines = Object.entries(cuisineCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5)
+    .map(([cuisine]) => cuisine);
+
+  // Extract top features
+  const featureCount: Record<string, number> = {};
+  businessList.forEach((b: any) => {
+    if (b.features && Array.isArray(b.features)) {
+      b.features.forEach((feature: string) => {
+        featureCount[feature] = (featureCount[feature] || 0) + 1;
+      });
+    }
+  });
+  const topFeatures = Object.entries(featureCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5)
+    .map(([feature]) => feature);
+
+  // Generate highlights
+  const highlights: string[] = [];
+  const topRated = businessList.filter((b: any) => b.rating >= 4.5).slice(0, 3);
+  if (topRated.length > 0) {
+    highlights.push(`Top-rated establishments include ${topRated.map((b: any) => b.name).join(', ')}`);
+  }
+
+  const certifiedCount = businessList.filter((b: any) => b.halal_certified).length;
+  if (certifiedCount > 0) {
+    highlights.push(`${certifiedCount} businesses with verified halal certification`);
+  }
+
+  const deliveryCount = businessList.filter((b: any) => b.delivery_platforms && b.delivery_platforms.length > 0).length;
+  if (deliveryCount > 0) {
+    highlights.push(`${deliveryCount} businesses offering delivery services`);
+  }
+
+  highlights.push(`Located in ${district.region}, known for ${district.type.toLowerCase()}`);
+
+  const content: SEOPageContent = {
+    intro_text: `Discover ${totalCount > 0 ? totalCount : 'authentic'} halal restaurants and businesses in ${district.name}. This Singapore planning area in the ${district.region} offers diverse halal dining options, from family-friendly neighborhood favorites to specialized cuisine establishments, all with verified halal certification.`,
+    highlights: highlights.slice(0, 4),
+    local_info: `${district.name} is a vibrant area in Singapore's ${district.region}, characterized by its ${district.type.toLowerCase()} atmosphere. The area is well-connected and offers a diverse range of halal dining and services for residents and visitors alike.`,
+    business_stats: {
+      total_count: totalCount,
+      avg_rating: avgRating,
+      price_distribution: {},
+      popular_cuisines: popularCuisines,
+      top_features: topFeatures,
+    },
+    faqs: [
+      {
+        question: `What halal food options are available in ${district.name}?`,
+        answer: `${district.name} offers a diverse range of halal dining options, from traditional Malay and Indian cuisine to modern fusion restaurants. Many establishments are MUIS-certified and cater to various budgets and preferences.`,
+      },
+      {
+        question: `How do I get to ${district.name} by public transport?`,
+        answer: `${district.name} is well-connected by MRT, bus services, and taxi. Check the specific business listings for detailed directions and the nearest MRT stations.`,
+      },
+      {
+        question: `Are the halal restaurants in ${district.name} certified?`,
+        answer: `Yes, all businesses listed on our platform with halal certification have been verified. Look for the MUIS halal certificate badge on business listings.`,
+      },
+    ],
+    related_searches: [
+      `halal food ${district.name}`,
+      `restaurants ${district.name}`,
+      `${district.name} halal dining`,
+      `best halal ${district.name}`,
+      `MUIS certified ${district.name}`,
+      `halal delivery ${district.name}`,
+    ],
+  };
+
+  return {
+    slug: districtSlug,
+    page_type: 'district',
+    title: `${totalCount > 0 ? totalCount + '+ ' : ''}Halal Businesses in ${district.name} | Singapore Directory`,
+    meta_description: `Find halal restaurants and businesses in ${district.name}, Singapore. Discover authentic halal dining in this ${district.type.toLowerCase()} area with verified MUIS certification.`,
+    h1_title: `Halal Businesses in ${district.name}`,
+    content,
+    filters: { planning_area: districtSlug, district: district.name },
+    business_count: totalCount,
+    view_count: 0,
+    last_content_update: new Date().toISOString(),
+    is_published: true,
+    canonical_url: `https://vocal-puffpuff-8d486c.netlify.app/district/${districtSlug}`,
+    schema_markup: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: `Halal Businesses in ${district.name}`,
+      description: content.intro_text,
+      url: `https://vocal-puffpuff-8d486c.netlify.app/district/${districtSlug}`,
+    },
+    related_pages: [],
+  };
+}
+
 export default function SEOPage() {
   const { '*': slugPath } = useParams();
   const navigate = useNavigate();
@@ -61,13 +246,16 @@ export default function SEOPage() {
 
       let seoPageData: any = existingPage;
 
-      // For now, if no existing page found, show 404
-      // TODO: Implement dynamic page generation when needed
+      // If no existing page found, generate dynamic content for district pages
+      if (!seoPageData && slug.startsWith('district/')) {
+        const districtSlug = pathParts[1];
+        seoPageData = await generateDynamicDistrictPage(districtSlug);
 
-      if (!seoPageData) {
-        setError('Page not found');
-        navigate('/404');
-        return;
+        if (!seoPageData) {
+          setError('Page not found');
+          navigate('/404');
+          return;
+        }
       }
 
       if (!seoPageData) {
@@ -78,11 +266,13 @@ export default function SEOPage() {
 
       setSeoPage(seoPageData);
 
-      // Update view count
-      await supabase
-        .from('seo_pages')
-        .update({ view_count: seoPageData.view_count + 1 })
-        .eq('id', seoPageData.id);
+      // Update view count only if page exists in database
+      if (seoPageData.id) {
+        await supabase
+          .from('seo_pages')
+          .update({ view_count: seoPageData.view_count + 1 })
+          .eq('id', seoPageData.id);
+      }
 
       // Load businesses based on filters
       await loadBusinesses(seoPageData.filters);
