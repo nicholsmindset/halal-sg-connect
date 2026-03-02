@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, Menu, User, LogOut, Settings, LayoutDashboard, X } from 'lucide-react';
+import { Search, Menu, User, LogOut, Settings, LayoutDashboard } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
   NavigationMenu,

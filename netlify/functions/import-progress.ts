@@ -1,8 +1,8 @@
 import { Handler } from '@netlify/functions';
-import { supabase } from '../../src/integrations/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 
-// Netlify Function to get import progress
-export const handler: Handler = async (event, context) => {
+// Netlify Function to get import progress - requires authentication
+export const handler: Handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -22,8 +22,42 @@ export const handler: Handler = async (event, context) => {
     };
   }
 
+  // Authenticate request
+  const authHeader = event.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return {
+      statusCode: 401,
+      headers,
+      body: JSON.stringify({ error: 'Unauthorized' }),
+    };
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Server configuration error' }),
+    };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return {
+      statusCode: 401,
+      headers,
+      body: JSON.stringify({ error: 'Invalid token' }),
+    };
+  }
+
   try {
-    const jobId = event.path.split('/').pop();
+    const jobId = event.path?.split('/').pop();
 
     if (!jobId) {
       return {
@@ -33,7 +67,6 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    // Get import job details
     const { data: importJob, error } = await supabase
       .from('import_jobs')
       .select('*')
@@ -48,22 +81,15 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    // Calculate progress percentage
+    const job = importJob as any;
     const progressPercentage =
-      importJob.total_records > 0
-        ? Math.round(
-            (importJob.processed_records / importJob.total_records) * 100
-          )
+      job.total_records > 0
+        ? Math.round((job.processed_records / job.total_records) * 100)
         : 0;
 
-    // Estimate completion time
     let estimatedCompletion = null;
-    if (
-      importJob.status === 'processing' &&
-      importJob.started_at &&
-      progressPercentage > 0
-    ) {
-      const startTime = new Date(importJob.started_at).getTime();
+    if (job.status === 'processing' && job.started_at && progressPercentage > 0) {
+      const startTime = new Date(job.started_at).getTime();
       const currentTime = new Date().getTime();
       const elapsedTime = currentTime - startTime;
       const estimatedTotalTime = (elapsedTime / progressPercentage) * 100;
@@ -72,14 +98,14 @@ export const handler: Handler = async (event, context) => {
     }
 
     const progress = {
-      job_id: importJob.id,
-      status: importJob.status,
+      job_id: job.id,
+      status: job.status,
       progress_percentage: progressPercentage,
-      current_record: importJob.processed_records,
-      total_records: importJob.total_records,
-      successful_imports: importJob.successful_imports,
-      failed_imports: importJob.failed_imports,
-      errors: importJob.error_log || [],
+      current_record: job.processed_records,
+      total_records: job.total_records,
+      successful_imports: job.successful_imports,
+      failed_imports: job.failed_imports,
+      errors: job.error_log || [],
       estimated_completion: estimatedCompletion,
     };
 
@@ -93,7 +119,7 @@ export const handler: Handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message || 'Internal server error' }),
+      body: JSON.stringify({ error: 'Internal server error' }),
     };
   }
 };

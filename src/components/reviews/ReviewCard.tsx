@@ -74,35 +74,31 @@ export const ReviewCard = ({
       }
 
       // Check if user already voted
-      const { data: existingVote } = await supabase
-        .from("review_votes")
+      const { data: existingVote } = await (supabase
+        .from("review_votes" as any)
         .select("*")
         .eq("review_id", review.id)
         .eq("user_id", currentUserId)
-        .single();
+        .single() as any);
 
       if (existingVote) {
-        // Update existing vote
-        if (existingVote.vote_type === voteType) {
-          // Remove vote if clicking same button
-          await supabase
-            .from("review_votes")
+        if ((existingVote as any).vote_type === voteType) {
+          await (supabase
+            .from("review_votes" as any)
             .delete()
-            .eq("id", existingVote.id);
+            .eq("id", (existingVote as any).id) as any);
         } else {
-          // Change vote type
-          await supabase
-            .from("review_votes")
+          await (supabase
+            .from("review_votes" as any)
             .update({ vote_type: voteType })
-            .eq("id", existingVote.id);
+            .eq("id", (existingVote as any).id) as any);
         }
       } else {
-        // Create new vote
-        await supabase.from("review_votes").insert({
+        await (supabase.from("review_votes" as any).insert([{
           review_id: review.id,
           user_id: currentUserId,
           vote_type: voteType,
-        });
+        }]) as any);
       }
     },
     onSuccess: () => {
@@ -124,14 +120,14 @@ export const ReviewCard = ({
         throw new Error("You must be logged in to respond");
       }
 
-      const { error } = await supabase
-        .from("reviews")
+      const { error } = await (supabase
+        .from("reviews" as any)
         .update({
           business_response: response,
           business_response_at: new Date().toISOString(),
           business_responder_id: currentUserId,
         })
-        .eq("id", review.id);
+        .eq("id", review.id) as any);
 
       if (error) throw error;
     },

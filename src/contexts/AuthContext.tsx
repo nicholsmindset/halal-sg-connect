@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Get initial session
     const initializeAuth = async () => {
       try {
         const {
@@ -64,7 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(currentSession?.user ?? null);
 
         if (currentSession?.user) {
-          checkAdminStatus(currentSession.user);
+          await checkAdminStatus(currentSession.user.id);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
@@ -75,15 +74,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     initializeAuth();
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+    } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
 
       if (currentSession?.user) {
-        checkAdminStatus(currentSession.user);
+        await checkAdminStatus(currentSession.user.id);
       } else {
         setIsAdmin(false);
       }
@@ -94,17 +92,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
-  const checkAdminStatus = (user: User) => {
-    const isUserAdmin =
-      user.user_metadata?.role === 'admin' ||
-      user.email?.endsWith('@admin.halalhub.sg') ||
-      false;
-    setIsAdmin(isUserAdmin);
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      setIsAdmin(!!data && !error);
+    } catch {
+      setIsAdmin(false);
+    }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -116,7 +121,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         description: 'You have successfully signed in.',
       });
 
-      // Navigate to dashboard or intended destination
       navigate('/dashboard');
     } catch (error: any) {
       toast({
@@ -139,7 +143,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   ) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -153,9 +157,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         title: 'Account created!',
         description: 'Please check your email to verify your account.',
       });
-
-      // Supabase sends a confirmation email by default
-      // User will be redirected after email confirmation
     } catch (error: any) {
       toast({
         title: 'Signup failed',

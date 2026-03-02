@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Rating } from "@/components/ui/rating";
 import { Card } from "@/components/ui/card";
-import { Loader2, Upload, X, Camera } from "lucide-react";
+import { Loader2, X, Camera } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -82,10 +82,11 @@ export const ReviewForm = ({
       if (photos.length > 0) {
         for (let i = 0; i < photos.length; i++) {
           const photo = photos[i];
+          if (!photo) continue;
           const fileExt = photo.name.split(".").pop();
           const fileName = `${user.id}/${businessId}/${Date.now()}-${i}.${fileExt}`;
 
-          const { data: uploadData, error: uploadError } = await supabase.storage
+          const { error: uploadError } = await supabase.storage
             .from("review-photos")
             .upload(fileName, photo);
 
@@ -104,9 +105,9 @@ export const ReviewForm = ({
       }
 
       // Create review
-      const { data: review, error: reviewError } = await supabase
-        .from("reviews")
-        .insert({
+      const { data: review, error: reviewError } = await (supabase
+        .from("reviews" as any)
+        .insert([{
           business_id: businessId,
           user_id: user.id,
           rating: data.rating,
@@ -114,9 +115,9 @@ export const ReviewForm = ({
           content: data.content,
           photos: photoUrls.length > 0 ? photoUrls : null,
           visit_date: data.visitDate || null,
-        })
+        }])
         .select()
-        .single();
+        .single() as any);
 
       if (reviewError) {
         throw reviewError;
@@ -196,8 +197,8 @@ export const ReviewForm = ({
   };
 
   const removePhoto = (index: number) => {
-    // Revoke preview URL to free memory
-    URL.revokeObjectURL(photoPreviews[index]);
+    const preview = photoPreviews[index];
+    if (preview) URL.revokeObjectURL(preview);
 
     setPhotos(photos.filter((_, i) => i !== index));
     setPhotoPreviews(photoPreviews.filter((_, i) => i !== index));

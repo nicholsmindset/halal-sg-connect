@@ -27,12 +27,15 @@ const ProtectedRoute = ({
         if (user) {
           setIsAuthenticated(true);
 
-          // Check if user is admin (you'll need to adjust this based on your user role logic)
-          // For now, checking if user metadata has an admin role
-          const isUserAdmin =
-            user.user_metadata?.role === 'admin' ||
-            user.email?.endsWith('@admin.halalhub.sg');
-          setIsAdmin(isUserAdmin);
+          // Check admin role from user_roles table (server-side)
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .eq('role', 'admin')
+            .maybeSingle();
+
+          setIsAdmin(!!roleData);
         } else {
           setIsAuthenticated(false);
           setIsAdmin(false);
@@ -48,16 +51,19 @@ const ProtectedRoute = ({
 
     checkAuth();
 
-    // Set up auth state listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setIsAuthenticated(!!session);
       if (session?.user) {
-        const isUserAdmin =
-          session.user.user_metadata?.role === 'admin' ||
-          session.user.email?.endsWith('@admin.halalhub.sg');
-        setIsAdmin(isUserAdmin);
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+
+        setIsAdmin(!!roleData);
       } else {
         setIsAdmin(false);
       }
@@ -68,7 +74,6 @@ const ProtectedRoute = ({
     };
   }, []);
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -82,12 +87,10 @@ const ProtectedRoute = ({
     );
   }
 
-  // Not authenticated - redirect to auth page
   if (!isAuthenticated) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // Authenticated but requires admin and user is not admin
   if (requireAdmin && !isAdmin) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -104,7 +107,6 @@ const ProtectedRoute = ({
     );
   }
 
-  // All checks passed - render protected content
   return <>{children}</>;
 };
 
