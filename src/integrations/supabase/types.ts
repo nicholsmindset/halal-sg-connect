@@ -31,7 +31,6 @@ export type Database = {
           latitude: number | null
           longitude: number | null
           name: string
-          owner_id: string | null
           phone: string | null
           planning_area: string | null
           price_range: string | null
@@ -42,8 +41,6 @@ export type Database = {
           updated_at: string | null
           verification_status: string | null
           website: string | null
-          opening_hours: Json | null
-          social_media: Json | null
         }
         Insert: {
           address?: string | null
@@ -61,7 +58,6 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name: string
-          owner_id?: string | null
           phone?: string | null
           planning_area?: string | null
           price_range?: string | null
@@ -72,8 +68,6 @@ export type Database = {
           updated_at?: string | null
           verification_status?: string | null
           website?: string | null
-          opening_hours?: Json | null
-          social_media?: Json | null
         }
         Update: {
           address?: string | null
@@ -91,7 +85,6 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name?: string
-          owner_id?: string | null
           phone?: string | null
           planning_area?: string | null
           price_range?: string | null
@@ -102,236 +95,6 @@ export type Database = {
           updated_at?: string | null
           verification_status?: string | null
           website?: string | null
-          opening_hours?: Json | null
-          social_media?: Json | null
-        }
-        Relationships: []
-      }
-      reviews: {
-        Row: {
-          id: string
-          business_id: string
-          user_id: string
-          rating: number
-          title: string | null
-          content: string
-          photos: string[] | null
-          helpful_count: number
-          not_helpful_count: number
-          view_count: number
-          verified_purchase: boolean
-          visit_date: string | null
-          business_response: string | null
-          business_response_at: string | null
-          business_responder_id: string | null
-          status: 'pending' | 'approved' | 'rejected' | 'flagged' | 'hidden'
-          moderation_notes: string | null
-          moderated_by: string | null
-          moderated_at: string | null
-          flag_count: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          business_id: string
-          user_id: string
-          rating: number
-          title?: string | null
-          content: string
-          photos?: string[] | null
-          helpful_count?: number
-          not_helpful_count?: number
-          view_count?: number
-          verified_purchase?: boolean
-          visit_date?: string | null
-          business_response?: string | null
-          business_response_at?: string | null
-          business_responder_id?: string | null
-          status?: 'pending' | 'approved' | 'rejected' | 'flagged' | 'hidden'
-          moderation_notes?: string | null
-          moderated_by?: string | null
-          moderated_at?: string | null
-          flag_count?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          business_id?: string
-          user_id?: string
-          rating?: number
-          title?: string | null
-          content?: string
-          photos?: string[] | null
-          helpful_count?: number
-          not_helpful_count?: number
-          view_count?: number
-          verified_purchase?: boolean
-          visit_date?: string | null
-          business_response?: string | null
-          business_response_at?: string | null
-          business_responder_id?: string | null
-          status?: 'pending' | 'approved' | 'rejected' | 'flagged' | 'hidden'
-          moderation_notes?: string | null
-          moderated_by?: string | null
-          moderated_at?: string | null
-          flag_count?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "reviews_business_id_fkey"
-            columns: ["business_id"]
-            referencedRelation: "businesses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      review_votes: {
-        Row: {
-          id: string
-          review_id: string
-          user_id: string
-          vote_type: 'helpful' | 'not_helpful'
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          review_id: string
-          user_id: string
-          vote_type: 'helpful' | 'not_helpful'
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          review_id?: string
-          user_id?: string
-          vote_type?: 'helpful' | 'not_helpful'
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "review_votes_review_id_fkey"
-            columns: ["review_id"]
-            referencedRelation: "reviews"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      review_statistics: {
-        Row: {
-          business_id: string
-          total_reviews: number
-          average_rating: number
-          rating_5_count: number
-          rating_4_count: number
-          rating_3_count: number
-          rating_2_count: number
-          rating_1_count: number
-          total_helpful_votes: number
-          verified_reviews_count: number
-          reviews_with_photos_count: number
-          avg_response_time_hours: number | null
-          response_rate: number | null
-          last_review_date: string | null
-          updated_at: string
-        }
-        Insert: {
-          business_id: string
-          total_reviews?: number
-          average_rating?: number
-          rating_5_count?: number
-          rating_4_count?: number
-          rating_3_count?: number
-          rating_2_count?: number
-          rating_1_count?: number
-          total_helpful_votes?: number
-          verified_reviews_count?: number
-          reviews_with_photos_count?: number
-          avg_response_time_hours?: number | null
-          response_rate?: number | null
-          last_review_date?: string | null
-          updated_at?: string
-        }
-        Update: {
-          business_id?: string
-          total_reviews?: number
-          average_rating?: number
-          rating_5_count?: number
-          rating_4_count?: number
-          rating_3_count?: number
-          rating_2_count?: number
-          rating_1_count?: number
-          total_helpful_votes?: number
-          verified_reviews_count?: number
-          reviews_with_photos_count?: number
-          avg_response_time_hours?: number | null
-          response_rate?: number | null
-          last_review_date?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "review_statistics_business_id_fkey"
-            columns: ["business_id"]
-            referencedRelation: "businesses"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      user_review_statistics: {
-        Row: {
-          user_id: string
-          total_reviews: number
-          total_helpful_votes: number
-          total_photos_uploaded: number
-          average_rating_given: number
-          review_streak_days: number
-          longest_streak_days: number
-          last_review_date: string | null
-          level: 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond'
-          badges: string[] | null
-          points: number
-          rank: number | null
-          updated_at: string
-        }
-        Insert: {
-          user_id: string
-          total_reviews?: number
-          total_helpful_votes?: number
-          total_photos_uploaded?: number
-          average_rating_given?: number
-          review_streak_days?: number
-          longest_streak_days?: number
-          last_review_date?: string | null
-          level?: 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond'
-          badges?: string[] | null
-          points?: number
-          rank?: number | null
-          updated_at?: string
-        }
-        Update: {
-          user_id?: string
-          total_reviews?: number
-          total_helpful_votes?: number
-          total_photos_uploaded?: number
-          average_rating_given?: number
-          review_streak_days?: number
-          longest_streak_days?: number
-          last_review_date?: string | null
-          level?: 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond'
-          badges?: string[] | null
-          points?: number
-          rank?: number | null
-          updated_at?: string
         }
         Relationships: []
       }
