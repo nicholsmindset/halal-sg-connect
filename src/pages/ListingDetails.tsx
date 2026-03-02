@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -12,11 +11,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 
 const ListingDetails = () => {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  
 
-  // Get current user
   const { data: currentUser } = useQuery({
     queryKey: ['current-user'],
     queryFn: async () => {
@@ -25,10 +23,10 @@ const ListingDetails = () => {
     },
   });
 
-  // Fetch listing from Supabase
   const { data: listing, isLoading, error } = useQuery({
     queryKey: ['listing', slug],
     queryFn: async () => {
+      if (!slug) throw new Error('No slug');
       const { data, error } = await supabase
         .from('businesses')
         .select('*')
@@ -41,10 +39,8 @@ const ListingDetails = () => {
     enabled: !!slug,
   });
 
-  // Check if current user is the business owner
-  const isBusinessOwner = listing && currentUser ? listing.owner_id === currentUser.id : false;
+  const isBusinessOwner = listing && currentUser ? (listing as any).owner_id === currentUser.id : false;
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -62,7 +58,6 @@ const ListingDetails = () => {
     );
   }
 
-  // Error or not found state
   if (error || !listing) {
     return (
       <div className="min-h-screen bg-background">
@@ -90,7 +85,6 @@ const ListingDetails = () => {
         <ListingGallery images={listing.images} />
         <ListingInfo listing={listing} />
 
-        {/* Reviews Section */}
         <div className="mt-12">
           <Tabs defaultValue="reviews" className="w-full">
             <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -118,14 +112,13 @@ const ListingDetails = () => {
                   businessId={listing.id}
                   businessName={listing.name}
                   onSuccess={() => {
-                    // Switch back to reviews tab after successful submission
                     const reviewsTab = document.querySelector('[value="reviews"]') as HTMLElement;
                     if (reviewsTab) reviewsTab.click();
                   }}
                 />
               ) : (
-                <div className="text-center py-8 bg-white rounded-lg border">
-                  <p className="text-gray-600 mb-4">
+                <div className="text-center py-8 bg-card rounded-lg border">
+                  <p className="text-muted-foreground mb-4">
                     You must be logged in to write a review
                   </p>
                   <Button onClick={() => navigate('/auth')}>

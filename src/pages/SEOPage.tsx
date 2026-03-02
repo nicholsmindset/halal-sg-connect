@@ -248,7 +248,7 @@ export default function SEOPage() {
 
       // If no existing page found, generate dynamic content for district pages
       if (!seoPageData && slug.startsWith('district/')) {
-        const districtSlug = pathParts[1];
+        const districtSlug = pathParts[1] || '';
         seoPageData = await generateDynamicDistrictPage(districtSlug);
 
         if (!seoPageData) {

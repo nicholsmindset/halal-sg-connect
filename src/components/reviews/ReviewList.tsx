@@ -39,14 +39,14 @@ export const ReviewList = ({
   const { data: statistics } = useQuery({
     queryKey: ["review-statistics", businessId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("review_statistics")
+      const { data, error } = await (supabase
+        .from("review_statistics" as any)
         .select("*")
         .eq("business_id", businessId)
-        .single();
+        .single() as any);
 
       if (error) throw error;
-      return data;
+      return data as any;
     },
   });
 
@@ -55,10 +55,10 @@ export const ReviewList = ({
     queryKey: ["reviews", businessId, sortBy, filterBy, page],
     queryFn: async () => {
       let query = supabase
-        .from("reviews")
+        .from("reviews" as any)
         .select("*", { count: "exact" })
         .eq("business_id", businessId)
-        .eq("status", "approved");
+        .eq("status", "approved") as any;
 
       // Apply filters
       if (filterBy !== "all" && filterBy !== "with_photos") {
@@ -227,7 +227,7 @@ export const ReviewList = ({
         </div>
       ) : (
         <div className="space-y-4">
-          {reviews.map((review) => (
+          {reviews.map((review: any) => (
             <ReviewCard
               key={review.id}
               review={review}

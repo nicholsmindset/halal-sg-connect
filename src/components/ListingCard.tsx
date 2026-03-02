@@ -3,16 +3,23 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, MapPin, Phone, Globe, Crown } from 'lucide-react';
-import { type Business } from '@/types/business';
 
 interface ListingCardProps {
-  listing: Business;
+  listing: any;
 }
 
 const ListingCard = ({ listing }: ListingCardProps) => {
+  const isPremium = listing.isPremium ?? listing.is_premium;
+  const isHalalCertified = listing.isHalalCertified ?? listing.halal_certified;
+  const reviewCount = listing.reviewCount ?? listing.review_count ?? 0;
+  const priceRange = listing.priceRange ?? listing.price_range ?? '$$';
+  const category = listing.category ?? listing.categories?.[0] ?? '';
+  const images = listing.images ?? [];
+  const firstImage = images[0] ?? '/placeholder.svg';
+
   return (
     <Card className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      {listing.isPremium && (
+      {isPremium && (
         <div className="absolute right-3 top-3 z-10">
           <Badge
             variant="secondary"
@@ -26,7 +33,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 
       <div className="aspect-video overflow-hidden">
         <img
-          src={listing.images[0]}
+          src={firstImage}
           alt={listing.name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
@@ -37,7 +44,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
           <h3 className="line-clamp-1 text-lg font-semibold transition-colors group-hover:text-primary">
             {listing.name}
           </h3>
-          {listing.isHalalCertified && (
+          {isHalalCertified && (
             <Badge
               variant="secondary"
               className="bg-success text-xs text-success-foreground"
@@ -54,13 +61,13 @@ const ListingCard = ({ listing }: ListingCardProps) => {
         <div className="mb-2 flex items-center justify-between">
           <div className="flex items-center space-x-1">
             <Star className="h-4 w-4 fill-warning text-warning" />
-            <span className="text-sm font-medium">{listing.rating}</span>
+            <span className="text-sm font-medium">{listing.rating ?? 0}</span>
             <span className="text-xs text-muted-foreground">
-              ({listing.reviewCount} reviews)
+              ({reviewCount} reviews)
             </span>
           </div>
           <div className="flex items-center text-xs text-muted-foreground">
-            <span>{'$'.repeat(parseInt(listing.priceRange))}</span>
+            <span>{priceRange}</span>
           </div>
         </div>
 
@@ -69,9 +76,11 @@ const ListingCard = ({ listing }: ListingCardProps) => {
           <span className="line-clamp-1">{listing.district}</span>
         </div>
 
-        <Badge variant="outline" className="text-xs">
-          {listing.category}
-        </Badge>
+        {category && (
+          <Badge variant="outline" className="text-xs">
+            {category}
+          </Badge>
+        )}
       </CardContent>
 
       <CardFooter className="p-4 pt-0">

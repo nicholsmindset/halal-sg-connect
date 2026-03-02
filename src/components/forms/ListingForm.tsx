@@ -211,7 +211,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
             isHalalCertified: listing.halal_certified || false,
             features: listing.features || [],
             tags: [], // Tags not in current schema
-            openingHours: listing.opening_hours || {
+            openingHours: (listing as any).opening_hours || {
               monday: { open: '09:00', close: '21:00' },
               tuesday: { open: '09:00', close: '21:00' },
               wednesday: { open: '09:00', close: '21:00' },
@@ -220,7 +220,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
               saturday: { open: '09:00', close: '21:00' },
               sunday: { open: '09:00', close: '21:00' },
             },
-            socialMedia: listing.social_media || {
+            socialMedia: (listing as any).social_media || {
               instagram: '',
               facebook: '',
               tiktok: '',
@@ -372,6 +372,7 @@ const ListingForm = ({ listingId, onSave }: ListingFormProps) => {
 
       for (let i = 0; i < filesToUpload.length; i++) {
         const file = filesToUpload[i];
+        if (!file) continue;
 
         // Check limit again during upload
         if (uploadedImages.length + uploadedUrls.length >= MAX_IMAGES) {

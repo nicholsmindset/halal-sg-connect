@@ -13,8 +13,6 @@ import {
   CheckCircle,
   XCircle,
   Flag,
-  MessageSquare,
-  AlertTriangle,
   Eye,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -31,7 +29,7 @@ const AdminModeration = () => {
     queryKey: ['admin-reviews', 'pending'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('reviews')
+        .from('reviews' as any)
         .select(`
           *,
           businesses:business_id (name, slug)
@@ -40,7 +38,7 @@ const AdminModeration = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
@@ -49,7 +47,7 @@ const AdminModeration = () => {
     queryKey: ['admin-reviews', 'flagged'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('reviews')
+        .from('reviews' as any)
         .select(`
           *,
           businesses:business_id (name, slug)
@@ -58,7 +56,7 @@ const AdminModeration = () => {
         .order('flag_count', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
@@ -67,7 +65,7 @@ const AdminModeration = () => {
     queryKey: ['admin-review-flags'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('review_flags')
+        .from('review_flags' as any)
         .select(`
           *,
           reviews:review_id (
@@ -81,7 +79,7 @@ const AdminModeration = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
@@ -100,7 +98,7 @@ const AdminModeration = () => {
       if (!user) throw new Error('Not authenticated');
 
       const { error } = await supabase
-        .from('reviews')
+        .from('reviews' as any)
         .update({
           status,
           moderation_notes: note || null,
@@ -142,7 +140,7 @@ const AdminModeration = () => {
       if (!user) throw new Error('Not authenticated');
 
       const { error } = await supabase
-        .from('review_flags')
+        .from('review_flags' as any)
         .update({
           status,
           reviewed_by: user.id,
@@ -185,8 +183,8 @@ const AdminModeration = () => {
                   </Badge>
                 )}
               </div>
-              <p className="text-sm text-gray-500">
-                User ID: {review.user_id.slice(0, 8)}... •{' '}
+              <p className="text-sm text-muted-foreground">
+                User ID: {review.user_id?.slice(0, 8)}... •{' '}
                 {formatDistanceToNow(new Date(review.created_at), {
                   addSuffix: true,
                 })}
@@ -199,7 +197,7 @@ const AdminModeration = () => {
             <h5 className="font-semibold text-lg">{review.title}</h5>
           )}
 
-          <p className="text-gray-700 whitespace-pre-wrap">{review.content}</p>
+          <p className="text-muted-foreground whitespace-pre-wrap">{review.content}</p>
 
           {review.photos && review.photos.length > 0 && (
             <div className="grid grid-cols-4 gap-2">
@@ -229,9 +227,7 @@ const AdminModeration = () => {
             <Button
               size="sm"
               variant="destructive"
-              onClick={() => {
-                setSelectedReview(review.id);
-              }}
+              onClick={() => setSelectedReview(review.id)}
               disabled={moderateMutation.isPending}
             >
               <XCircle className="h-4 w-4 mr-2" />
@@ -252,7 +248,7 @@ const AdminModeration = () => {
           </div>
 
           {selectedReview === review.id && (
-            <div className="space-y-2 mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="space-y-2 mt-4 p-4 bg-muted rounded-lg">
               <label className="text-sm font-medium">Moderation Note</label>
               <Textarea
                 value={moderationNote}
@@ -298,26 +294,26 @@ const AdminModeration = () => {
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <Badge variant="outline">{flag.reason}</Badge>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-muted-foreground">
                   {formatDistanceToNow(new Date(flag.created_at), {
                     addSuffix: true,
                   })}
                 </span>
               </div>
               <p className="text-sm font-semibold">
-                Business: {flag.reviews?.businesses?.[0]?.name}
+                Business: {flag.reviews?.businesses?.name || 'Unknown'}
               </p>
             </div>
           </div>
 
           {flag.details && (
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               <strong>Details:</strong> {flag.details}
             </p>
           )}
 
-          <div className="bg-gray-50 p-3 rounded">
-            <p className="text-sm text-gray-700">{flag.reviews?.content}</p>
+          <div className="bg-muted p-3 rounded">
+            <p className="text-sm text-muted-foreground">{flag.reviews?.content}</p>
           </div>
 
           <div className="flex gap-2">
@@ -360,9 +356,7 @@ const AdminModeration = () => {
             <div className="text-2xl font-bold">
               {pendingReviews?.length || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Awaiting moderation
-            </p>
+            <p className="text-xs text-muted-foreground">Awaiting moderation</p>
           </CardContent>
         </Card>
 
@@ -371,12 +365,10 @@ const AdminModeration = () => {
             <CardTitle className="text-sm font-medium">Flagged Reviews</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-destructive">
               {flaggedReviews?.length || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Require attention
-            </p>
+            <p className="text-xs text-muted-foreground">Require attention</p>
           </CardContent>
         </Card>
 
@@ -385,12 +377,10 @@ const AdminModeration = () => {
             <CardTitle className="text-sm font-medium">Pending Flags</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="text-2xl font-bold text-warning">
               {flags?.length || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
-              User reports
-            </p>
+            <p className="text-xs text-muted-foreground">User reports</p>
           </CardContent>
         </Card>
       </div>
@@ -412,12 +402,12 @@ const AdminModeration = () => {
           {loadingPending ? (
             <p>Loading...</p>
           ) : pendingReviews && pendingReviews.length > 0 ? (
-            pendingReviews.map((review) => (
+            pendingReviews.map((review: any) => (
               <ReviewItem key={review.id} review={review} />
             ))
           ) : (
             <Card>
-              <CardContent className="pt-6 text-center text-gray-500">
+              <CardContent className="pt-6 text-center text-muted-foreground">
                 No pending reviews
               </CardContent>
             </Card>
@@ -428,12 +418,12 @@ const AdminModeration = () => {
           {loadingFlagged ? (
             <p>Loading...</p>
           ) : flaggedReviews && flaggedReviews.length > 0 ? (
-            flaggedReviews.map((review) => (
+            flaggedReviews.map((review: any) => (
               <ReviewItem key={review.id} review={review} />
             ))
           ) : (
             <Card>
-              <CardContent className="pt-6 text-center text-gray-500">
+              <CardContent className="pt-6 text-center text-muted-foreground">
                 No flagged reviews
               </CardContent>
             </Card>
@@ -442,10 +432,10 @@ const AdminModeration = () => {
 
         <TabsContent value="flags" className="mt-6">
           {flags && flags.length > 0 ? (
-            flags.map((flag) => <FlagItem key={flag.id} flag={flag} />)
+            flags.map((flag: any) => <FlagItem key={flag.id} flag={flag} />)
           ) : (
             <Card>
-              <CardContent className="pt-6 text-center text-gray-500">
+              <CardContent className="pt-6 text-center text-muted-foreground">
                 No pending flags
               </CardContent>
             </Card>

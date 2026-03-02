@@ -3,31 +3,31 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Expand } from 'lucide-react';
 
 interface ListingGalleryProps {
-  images: string[];
+  images: string[] | null;
 }
 
 const ListingGallery = ({ images }: ListingGalleryProps) => {
   const [currentImage, setCurrentImage] = useState(0);
+  const safeImages = images ?? ['/placeholder.svg'];
 
   const nextImage = () => {
-    setCurrentImage(prev => (prev + 1) % images.length);
+    setCurrentImage(prev => (prev + 1) % safeImages.length);
   };
 
   const prevImage = () => {
-    setCurrentImage(prev => (prev - 1 + images.length) % images.length);
+    setCurrentImage(prev => (prev - 1 + safeImages.length) % safeImages.length);
   };
 
   return (
     <div className="mb-8">
-      {/* Main Image */}
       <div className="relative mb-4 aspect-video overflow-hidden rounded-lg bg-muted">
         <img
-          src={images[currentImage]}
+          src={safeImages[currentImage]}
           alt={`Image ${currentImage + 1}`}
           className="h-full w-full object-cover"
         />
 
-        {images.length > 1 && (
+        {safeImages.length > 1 && (
           <>
             <Button
               variant="secondary"
@@ -57,17 +57,16 @@ const ListingGallery = ({ images }: ListingGalleryProps) => {
           View Gallery
         </Button>
 
-        {images.length > 1 && (
+        {safeImages.length > 1 && (
           <div className="absolute bottom-4 left-4 rounded-full bg-black/50 px-3 py-1 text-sm text-white">
-            {currentImage + 1} / {images.length}
+            {currentImage + 1} / {safeImages.length}
           </div>
         )}
       </div>
 
-      {/* Thumbnail Grid */}
-      {images.length > 1 && (
+      {safeImages.length > 1 && (
         <div className="grid grid-cols-4 gap-2 md:grid-cols-6">
-          {images.map((image, index) => (
+          {safeImages.map((image, index) => (
             <button
               key={index}
               onClick={() => setCurrentImage(index)}

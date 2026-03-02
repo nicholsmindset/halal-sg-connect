@@ -14,10 +14,9 @@ import {
   MessageCircle,
   Twitter,
 } from 'lucide-react';
-import { type Business } from '@/types/business';
 
 interface ListingInfoProps {
-  listing: Business;
+  listing: any;
 }
 
 const ListingInfo = ({ listing }: ListingInfoProps) => {
@@ -28,11 +27,17 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
     twitter: Twitter,
   };
 
+  const isHalalCertified = listing.isHalalCertified ?? listing.halal_certified;
+  const reviewCount = listing.reviewCount ?? listing.review_count ?? 0;
+  const priceRange = listing.priceRange ?? listing.price_range ?? '$$';
+  const category = listing.category ?? listing.categories?.[0] ?? '';
+  const openingHours = listing.openingHours ?? listing.opening_hours;
+  const socialMedia = listing.socialMedia ?? listing.social_media;
+
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Main Content */}
       <div className="space-y-6 lg:col-span-2">
-        {/* Header */}
         <div>
           <div className="mb-4 flex items-start justify-between">
             <div>
@@ -42,13 +47,13 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
               <div className="mb-3 flex items-center space-x-4">
                 <div className="flex items-center space-x-1">
                   <Star className="h-5 w-5 fill-warning text-warning" />
-                  <span className="font-semibold">{listing.rating}</span>
+                  <span className="font-semibold">{listing.rating ?? 0}</span>
                   <span className="text-muted-foreground">
-                    ({listing.reviewCount} reviews)
+                    ({reviewCount} reviews)
                   </span>
                 </div>
-                <Badge variant="outline">{listing.category}</Badge>
-                {listing.isHalalCertified && (
+                {category && <Badge variant="outline">{category}</Badge>}
+                {isHalalCertified && (
                   <Badge className="bg-success text-success-foreground">
                     <Shield className="mr-1 h-3 w-3" />
                     Halal Certified
@@ -62,14 +67,13 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
             </div>
             <div className="text-right">
               <div className="mb-1 text-2xl font-bold text-primary">
-                {'$'.repeat(parseInt(listing.priceRange))}
+                {priceRange}
               </div>
               <span className="text-sm text-muted-foreground">Price Range</span>
             </div>
           </div>
         </div>
 
-        {/* Description */}
         <Card>
           <CardHeader>
             <CardTitle>About {listing.name}</CardTitle>
@@ -81,29 +85,29 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
           </CardContent>
         </Card>
 
-        {/* Opening Hours */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Clock className="mr-2 h-5 w-5" />
-              Opening Hours
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {Object.entries(listing.openingHours).map(([day, hours]) => (
-                <div key={day} className="flex justify-between">
-                  <span className="font-medium capitalize">{day}</span>
-                  <span className="text-muted-foreground">
-                    {hours.closed ? 'Closed' : `${hours.open} - ${hours.close}`}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {openingHours && typeof openingHours === 'object' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Clock className="mr-2 h-5 w-5" />
+                Opening Hours
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {Object.entries(openingHours).map(([day, hours]: [string, any]) => (
+                  <div key={day} className="flex justify-between">
+                    <span className="font-medium capitalize">{day}</span>
+                    <span className="text-muted-foreground">
+                      {hours?.closed ? 'Closed' : `${hours?.open || ''} - ${hours?.close || ''}`}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-        {/* Location Map Placeholder */}
         <Card>
           <CardHeader>
             <CardTitle>Location</CardTitle>
@@ -123,7 +127,6 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
 
       {/* Sidebar */}
       <div className="space-y-6">
-        {/* Contact Info */}
         <Card>
           <CardHeader>
             <CardTitle>Contact Information</CardTitle>
@@ -134,42 +137,29 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
                 <Phone className="h-5 w-5 text-primary" />
                 <div>
                   <div className="font-medium">Phone</div>
-                  <a
-                    href={`tel:${listing.phone}`}
-                    className="text-primary hover:underline"
-                  >
+                  <a href={`tel:${listing.phone}`} className="text-primary hover:underline">
                     {listing.phone}
                   </a>
                 </div>
               </div>
             )}
-
             {listing.email && (
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-primary" />
                 <div>
                   <div className="font-medium">Email</div>
-                  <a
-                    href={`mailto:${listing.email}`}
-                    className="text-primary hover:underline"
-                  >
+                  <a href={`mailto:${listing.email}`} className="text-primary hover:underline">
                     {listing.email}
                   </a>
                 </div>
               </div>
             )}
-
             {listing.website && (
               <div className="flex items-center space-x-3">
                 <Globe className="h-5 w-5 text-primary" />
                 <div>
                   <div className="font-medium">Website</div>
-                  <a
-                    href={listing.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
+                  <a href={listing.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Visit Website
                   </a>
                 </div>
@@ -178,22 +168,20 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
           </CardContent>
         </Card>
 
-        {/* Social Media */}
-        {listing.socialMedia && Object.keys(listing.socialMedia).length > 0 && (
+        {socialMedia && typeof socialMedia === 'object' && Object.keys(socialMedia).length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle>Follow Us</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {Object.entries(listing.socialMedia).map(([platform, url]) => {
+                {Object.entries(socialMedia).map(([platform, url]) => {
                   if (!url) return null;
-                  const Icon =
-                    socialIcons[platform as keyof typeof socialIcons];
+                  const Icon = socialIcons[platform as keyof typeof socialIcons];
                   if (!Icon) return null;
                   return (
                     <Button key={platform} variant="outline" size="sm" asChild>
-                      <a href={url} target="_blank" rel="noopener noreferrer">
+                      <a href={url as string} target="_blank" rel="noopener noreferrer">
                         <Icon className="mr-2 h-4 w-4" />
                         {platform.charAt(0).toUpperCase() + platform.slice(1)}
                       </a>
@@ -205,7 +193,6 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
           </Card>
         )}
 
-        {/* Action Buttons */}
         <Card>
           <CardContent className="p-4">
             <div className="space-y-3">
@@ -225,7 +212,6 @@ const ListingInfo = ({ listing }: ListingInfoProps) => {
           </CardContent>
         </Card>
 
-        {/* Ad Slot Placeholder */}
         <Card className="bg-muted/50">
           <CardContent className="p-6 text-center">
             <div className="text-sm text-muted-foreground">
